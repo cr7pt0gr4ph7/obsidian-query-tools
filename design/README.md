@@ -10,5 +10,6 @@ Implementation status tracks the remaining work.
 - [DESIGN.md](DESIGN.md): architecture, API contract, and safety decisions.
 - [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): implemented scope and
   remaining work.
-- [notes/](notes/): dated upstream research and the non-production console
-  test seam.
+- [notes/](notes/): dated research notes and proposals, including the
+  [proposed graph CLI specification](notes/2026-11-graph-cli.md) and
+  the non-production console test seam.
