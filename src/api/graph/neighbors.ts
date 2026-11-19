@@ -8,6 +8,15 @@ import type {
 	NeighborOptions,
 } from "./types.js";
 
+/**
+ * Return direct edges incident to a node, filtered by direction and field type.
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration, including indexed edge fields.
+ * @param maxResults Maximum configured result count.
+ * @param node Vault-relative Markdown path to query.
+ * @param options Direction, edge-type, and result-limit filters.
+ */
 export function neighbors(
 	index: GraphIndex,
 	generation: number,

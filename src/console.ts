@@ -9,29 +9,47 @@ Formats: json (default), markdown
 Query input is limited to 1 MiB. JavaScript modes are currently unsupported.
 `;
 
+/** Query mode names accepted by the preliminary console interface. */
 export type ConsoleMode = (typeof modes)[number];
 
+/** Query request passed from the console adapter to the shared API. */
 export interface ConsoleRequest {
+	/** Local vault directory selected by the user. */
 	vault: string;
+	/** Supported non-JavaScript query mode. */
 	type: "dataview" | "dataviewjs";
+	/** Query source text. */
 	query: string;
+	/** Optional vault-relative Markdown file context. */
 	file?: string;
 }
 
+/** Query output returned by the shared API adapter. */
 export interface ConsoleResult {
+	/** Query data to serialize as JSON or Markdown. */
 	data: unknown;
+	/** Non-fatal conditions reported by the query. */
 	diagnostics: { code: string; message: string }[];
+	/** Whether the result was limited. */
 	truncated: boolean;
+	/** Index generation used to produce the result, when available. */
 	generation?: number;
 }
 
+/** API and I/O dependencies required by the console command. */
 export interface ConsoleDependencies {
+	/** Shared API adapter invoked for supported queries. */
 	api: {
+		/** Execute the request through the shared query API. */
 		query(request: ConsoleRequest): Promise<ConsoleResult> | ConsoleResult;
 	};
+	/** Optional UTF-8 query input stream used with `--stdin`. */
 	stdin?: AsyncIterable<Uint8Array>;
+	/** Output stream for machine-readable results and help text. */
 	stdout: { write(value: string): unknown };
+	/** Output stream for diagnostics and errors. */
 	stderr: { write(value: string): unknown };
+	/** Optional package version displayed by `--version`. */
 	version?: string;
 }
 
@@ -180,6 +198,7 @@ function outputError(
 	return 1;
 }
 
+/** Parse, execute, and format one console query command. */
 export async function runConsole(
 	arguments_: string[],
 	dependencies: ConsoleDependencies,

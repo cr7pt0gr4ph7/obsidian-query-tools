@@ -7,6 +7,12 @@ import type { Vault, VaultOptions } from "./types.js";
 import { buildIndex } from "./indexer.js";
 import { optionsForOpen } from "./validation.js";
 
+/**
+ * Open and index a local Obsidian vault for read-only queries.
+ * @param root Path to the vault directory.
+ * @param options Optional edge-field configuration and resource limits.
+ * @returns A vault API context with an initial index generation.
+ */
 export async function openVault(
 	root: string,
 	options: VaultOptions = {},

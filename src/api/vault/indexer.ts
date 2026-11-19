@@ -155,6 +155,12 @@ function readEdges(
 	}
 }
 
+/**
+ * Build a bounded index for a vault without executing or modifying its contents.
+ * @param root Canonical local vault directory.
+ * @param config Validated index settings and resource limits.
+ * @returns A complete index; failures prevent partial publication.
+ */
 export async function buildIndex(
 	root: string,
 	config: Config,
