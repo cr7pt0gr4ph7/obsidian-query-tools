@@ -1,12 +1,8 @@
 import { fail } from "../errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
-import type {
-	GraphConfig,
-	GraphIndex,
-	Edge,
-	NeighborOptions,
-} from "./types.js";
+import type { GraphIndex, Edge, NeighborOptions } from "./types.js";
+import type { GraphConfig } from "./config.js";
 
 /**
  * Return direct edges incident to a node, filtered by direction and field type.

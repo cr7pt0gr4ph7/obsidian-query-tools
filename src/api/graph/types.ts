@@ -1,12 +1,6 @@
 import type { QueryResult } from "../utils/result.js";
 import type { ListOptions } from "../dataview/list.js";
 
-/** Maximum number of configured frontmatter edges to index. */
-export interface GraphLimits {
-	/** Indexing fails when the vault contains more edges than this count. */
-	maxEdges: number;
-}
-
 /** Filters for a direct-neighbor query. */
 export interface NeighborOptions extends ListOptions {
 	/** Return edges sourced from the node or edges targeting the node. */
@@ -33,14 +27,6 @@ export interface VaultGraph {
 	 * @param options Direction, edge-type, and result-limit filters.
 	 */
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
-}
-
-/** Edge-field configuration and limits used to construct the graph index. */
-export interface GraphConfig {
-	/** Frontmatter field names interpreted as typed relationships. */
-	edgeFields: string[];
-	/** Graph-specific resource limits. */
-	limits: GraphLimits;
 }
 
 /** Indexed Markdown files and their configured directed relationships. */

@@ -1,10 +1,6 @@
 import type { ListOptions } from "../dataview/list.js";
-import type {
-	GraphConfig,
-	GraphIndex,
-	GraphLimits,
-	VaultGraph,
-} from "../graph/types.js";
+import type { GraphIndex, VaultGraph } from "../graph/types.js";
+import type { GraphConfig, GraphLimits } from "../graph/config.js";
 import type { QueryResult } from "../utils/result.js";
 
 /** Resource limits applied while reading and querying a vault. */

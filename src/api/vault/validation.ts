@@ -1,5 +1,5 @@
 import { fail } from "../errors.js";
-import type { GraphLimits } from "../graph/types.js";
+import type { GraphLimits } from "../graph/config.js";
 import type { Config, VaultLimits, VaultOptions } from "./types.js";
 
 const defaults: VaultLimits & GraphLimits = Object.freeze({
