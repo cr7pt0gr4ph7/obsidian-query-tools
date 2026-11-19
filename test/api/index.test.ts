@@ -147,6 +147,22 @@ test("folder query and configured directed edges share an index", async (t) => {
 	);
 });
 
+test("current-file context must identify an indexed Markdown file", async (t) => {
+	const root = await fixture(t);
+	const vault = await openVault(root);
+	assert.deepEqual(
+		vault.list('LIST FROM "Tasks"', { file: "Tasks/a.md" }).data,
+		["Tasks/a.md", "Tasks/nested/b.md"],
+	);
+	for (const file of ["/outside.md", "../root.md", "root.txt", "missing.md"]) {
+		assert.throws(
+			() => vault.list('LIST FROM ""', { file }),
+			file === "missing.md" ? code("NOT_FOUND") : code("INVALID_PATH"),
+		);
+	}
+	vault.close();
+});
+
 test("indexes the pinned upstream Dataview vault as paths only", async () => {
 	const root = fileURLToPath(new URL("../fixtures/dataview/", import.meta.url));
 	const vault = await openVault(root);

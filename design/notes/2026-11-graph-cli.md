@@ -1,10 +1,9 @@
 # Console interface specification
 
-Status: proposed target, not a description of the current CLI or a claim that
-the shared API already implements it. The API-ready approval gate in the
-[implementation plan](../IMPLEMENTATION_PLAN.md) still applies. Query modes
-and output below require shared API support; the console must not implement
-its own query semantics.
+Status: preliminary implementation. This note describes the target interface;
+the current CLI implements only the supported `LIST FROM "<folder>"` subset
+through the shared API, and rejects JavaScript modes. This is not a claim that
+the shared API implements the full query modes or upstream semantics below.
 
 ## Invocation
 

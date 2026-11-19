@@ -62,14 +62,18 @@ per Markdown file, 100,000 edges, and 1,000 results. Requests may lower the
 configured result limit. Excess results set `truncated: true`; build-limit
 exhaustion is an error.
 
-The CLI uses Commander for command and option parsing, takes an explicit local
-vault and query input, outputs normalized JSON to stdout, and reports JSON
-errors on stderr with exit status 1. It exposes the shared API's `list` and
-`neighbors` operations without separate query semantics; results include their
-diagnostics in the JSON envelope. Framework parsing errors are normalized to
-the same structured CLI error format.
-The [console note](notes/2026-11-19-console-interface.md) describes a test
-seam, not a supported executable or query interface.
+The CLI uses Commander for command and option parsing. Its `list` and graph
+commands continue to expose the shared API directly. The preliminary
+`obsidian-query query` interface adds `dataview`/`dql` selectors over the same
+`Vault.list()` operation; only the project's `LIST FROM "<folder>"` subset is
+supported. It accepts inline or bounded UTF-8 stdin input, validates optional
+current-file context through the API, and defaults to JSON with optional
+Markdown. JavaScript selectors fail as unsupported without execution. The
+console includes diagnostics and truncation in JSON, and sends diagnostics to
+stderr for Markdown. The preliminary interface makes no upstream parity
+claim.
+The [console note](notes/2026-11-19-console-interface.md) records the current
+implementation boundary.
 The MCP server uses the official MCP SDK v2 over stdio, with a vault bound by
 server startup configuration rather than tool arguments. It exposes `list`,
 `neighbors`, and `refresh`, with strict schemas, bounded inputs, and

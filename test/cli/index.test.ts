@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawnSync } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -16,9 +16,16 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	t.after(() => rm(root, { recursive: true, force: true }));
 	const help = await exec(process.execPath, [cli, "--help"]);
 	assert.match(help.stdout, /Usage: obsidian-query-tools/);
+	assert.match(help.stdout, /query \[options\]/);
 	assert.match(help.stdout, /list \[options\] <query>/);
 	assert.match(help.stdout, /neighbors \[options\] <path>/);
 	assert.equal(help.stderr, "");
+	const queryHelp = await exec(process.execPath, [cli, "query", "--help"]);
+	assert.match(queryHelp.stdout, /Usage: obsidian-query query/);
+	assert.match(queryHelp.stdout, /--stdin/);
+	const version = await exec(process.execPath, [cli, "--version"]);
+	assert.equal(version.stdout, "0.1.0\n");
+	assert.equal(version.stderr, "");
 	await writeFile(path.join(root, "a.md"), "---\nparent: b\n---\n");
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const vault = await openVault(root, { edgeFields: ["parent"] });
@@ -35,6 +42,49 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 		JSON.parse(list.stdout),
 		vault.list('LIST FROM ""', { limit: 1 }),
 	);
+	const query = await exec(process.execPath, [
+		cli,
+		"query",
+		"--vault",
+		root,
+		"--type",
+		"dataview",
+		"--query",
+		'LIST FROM ""',
+		"--file",
+		"a.md",
+	]);
+	assert.equal(query.stderr, "");
+	assert.deepEqual(
+		JSON.parse(query.stdout),
+		vault.list('LIST FROM ""', {
+			file: "a.md",
+		}),
+	);
+	const stdinQuery = spawnSync(
+		process.execPath,
+		[cli, "query", "--vault", root, "--type", "dql", "--stdin"],
+		{ input: 'LIST FROM ""\n', encoding: "utf8" },
+	);
+	assert.equal(stdinQuery.status, 0, stdinQuery.stderr);
+	assert.deepEqual(JSON.parse(stdinQuery.stdout), vault.list('LIST FROM ""\n'));
+	const markdown = await exec(process.execPath, [
+		cli,
+		"query",
+		"--vault",
+		root,
+		"--type",
+		"dql",
+		"--query",
+		'LIST FROM ""',
+		"--format",
+		"markdown",
+	]);
+	assert.equal(
+		markdown.stderr,
+		"NON_ATOMIC_SNAPSHOT: The filesystem may change during indexing.\n",
+	);
+	assert.equal(markdown.stdout, "- a\\.md\n- b\\.md\n");
 	const neighbors = await exec(process.execPath, [
 		...common,
 		"neighbors",

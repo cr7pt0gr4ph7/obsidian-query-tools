@@ -169,7 +169,7 @@ test("formats simple result lists and reports diagnostics outside stdout", async
 		),
 		0,
 	);
-	assert.equal(h.stdout(), "- one|two\n- three four\n");
+	assert.equal(h.stdout(), "- one\\|two\n- three&#10;four\n");
 	assert.equal(
 		h.stderr(),
 		"NOTICE: Some data may have changed.\nResult truncated.\n",
@@ -200,6 +200,62 @@ test("formats records as a Markdown table with escaped pipes", async () => {
 		0,
 	);
 	assert.equal(h.stdout(), "| Name | Count |\n| --- | --- |\n| A\\|B | 2 |\n");
+});
+
+test("escapes HTML-sensitive text in Markdown results", async () => {
+	const h = harness({
+		data: ["<script>alert(1)</script>&"],
+		diagnostics: [],
+		truncated: false,
+	});
+	assert.equal(
+		await runConsole(
+			[
+				"query",
+				"--vault",
+				"vault",
+				"--type",
+				"dql",
+				"--query",
+				"query",
+				"--format",
+				"markdown",
+			],
+			h.dependencies,
+		),
+		0,
+	);
+	assert.equal(
+		h.stdout(),
+		"- &lt;script&gt;alert\\(1\\)&lt;/script&gt;&amp;\n",
+	);
+});
+
+test("empty markdown results produce one newline", async () => {
+	const h = harness({
+		data: [],
+		diagnostics: [],
+		truncated: false,
+	});
+	assert.equal(
+		await runConsole(
+			[
+				"query",
+				"--vault",
+				"vault",
+				"--type",
+				"dql",
+				"--query",
+				'LIST FROM "missing"',
+				"--format",
+				"markdown",
+			],
+			h.dependencies,
+		),
+		0,
+	);
+	assert.equal(h.stdout(), "\n");
+	assert.equal(h.stderr(), "");
 });
 
 test("disabled JavaScript aliases fail explicitly without invoking the API", async () => {

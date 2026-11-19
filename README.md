@@ -52,15 +52,29 @@ paths, with an optional `.md` suffix. These fail explicitly:
 
 ## CLI
 
-The CLI prints a single JSON result on stdout, or a JSON error on stderr with
-exit status 1.
+The existing `list` and graph commands print JSON. The preliminary `query`
+command defaults to JSON and can emit Markdown; errors go to stderr with exit
+status 1.
 
 ```sh
 node dist/cli/index.js --help
+node dist/cli/index.js query --vault /path/to/vault --type dataview \
+  --query 'LIST FROM "Tasks"' --format markdown
+node dist/cli/index.js query --vault /path/to/vault --type dql --stdin
 node dist/cli/index.js --vault /path/to/vault list 'LIST FROM "Tasks"'
 node dist/cli/index.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 node dist/cli/index.js --vault /path/to/vault graph neighbors Tasks/example.md --edge-field parent
 ```
+
+The `obsidian-query` binary is an alias for the CLI. Its preliminary `query`
+command accepts `dataview` and `dql` selectors but supports only the shared
+API's project-defined `LIST FROM "<folder>"` query. `dataviewjs` and `dqljs`
+are rejected without execution. `--query` and `--stdin` are mutually
+exclusive; stdin is UTF-8 and the query body is limited to 1 MiB. JSON is the
+default output; Markdown emits path lists as bullets. An optional `--file`
+must name an existing vault-relative Markdown file, but no current-file-
+dependent query syntax is currently supported. This is not a Dataview
+compatibility claim.
 
 | Option                 | Purpose                              |
 | ---------------------- | ------------------------------------ |

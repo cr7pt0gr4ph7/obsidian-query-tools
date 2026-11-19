@@ -1,13 +1,18 @@
-# Console test seam
+# Console interface implementation
 
-The proposed console is not part of the supported package or CLI. The
-injectable runner in `src/console.ts` and its mocked-API tests are a
-non-production contract seam; they do not implement query semantics or
-integrate the shared API. `npm test` type-checks these tests but does not run
-them.
+The preliminary `obsidian-query query` command is implemented by the injectable
+runner in `src/console.ts` and is reachable through the `obsidian-query` and
+`obsidian-query-tools` binaries. The CLI adapter routes declarative input
+through `Vault.list()`; it does not implement a separate query parser.
 
-The runner accepts declarative mode aliases and rejects JavaScript modes
-without evaluating them. Any future console must use the shared API, define
-its supported semantics and output, and preserve the requirements against
-vault-script execution, vault mutation, and external transmission. The
-current interfaces are documented in the [README](../../README.md).
+The `dataview` and `dql` selectors accept only the project's
+`LIST FROM "<folder>"` subset. `dataviewjs` and `dqljs` fail as unsupported and
+are never evaluated. Query input is limited to 1 MiB. Optional file context is
+validated by the shared API as an existing vault-relative Markdown path, but
+the current query subset does not consume current-file context or resolve
+relative links. Output is bounded by the API result limit, with JSON as the
+default and a Markdown path-list representation.
+
+These are project-defined semantics, not an upstream compatibility claim.
+The implementation preserves read-only vault access and does not transmit
+vault data. The tests run as part of `npm test`.
