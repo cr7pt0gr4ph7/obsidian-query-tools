@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { chmod, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { promisify } from "node:util";
 import test from "node:test";
 import { openVault, VaultQueryError } from "../src/index.js";
 import { fileURLToPath } from "node:url";
@@ -100,6 +102,20 @@ test("malformed fields, limits and symlinks fail explicitly", async t => {
   await assert.rejects(openVault(root), code("UNSAFE_PATH"));
 });
 
+test("a Markdown symlink cannot expose a file outside the vault", async t => {
+  const root = await fixture(t);
+  const outside = await mkdtemp(path.join(os.tmpdir(), "query-outside-test-"));
+  t.after(() => rm(outside, { recursive: true, force: true }));
+  await writeFile(path.join(outside, "secret.md"), "private contents\n");
+  await symlink(path.join(outside, "secret.md"), path.join(root, "linked.md"));
+  await assert.rejects(openVault(root), error => {
+    assert.equal(error.code, "UNSAFE_PATH");
+    assert.equal(error.path, "linked.md");
+    assert.ok(!error.message.includes("private contents"));
+    return true;
+  });
+});
+
 test("rejects invalid configuration and does not execute note JavaScript", async t => {
   const root = await fixture(t);
   await assert.rejects(openVault(root, { limits: { toString: 1 } }), code("INVALID_OPTIONS"));
@@ -130,4 +146,29 @@ test("result mutations do not alter the published index", async t => {
   listed.data.length = 0;
   assert.equal(vault.list('LIST FROM ""').data.length, 3);
   vault.close();
+});
+
+test("unreadable Markdown causes an explicit vault read error", async t => {
+  const root = await fixture(t);
+  const file = path.join(root, "Tasks", "a.md");
+  await chmod(file, 0);
+  if (process.getuid?.() !== 0) {
+    await assert.rejects(openVault(root), code("VAULT_READ_ERROR"));
+    return;
+  }
+  await chmod(root, 0o755);
+  const moduleUrl = new URL("../src/index.js", import.meta.url).href;
+  const program = `
+    import { openVault } from ${JSON.stringify(moduleUrl)};
+    process.setgid(65534);
+    process.setuid(65534);
+    try {
+      await openVault(process.argv[1]);
+      process.exitCode = 1;
+    } catch (error) {
+      process.stdout.write(error.code);
+    }
+  `;
+  const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", program, root]);
+  assert.equal(stdout, "VAULT_READ_ERROR");
 });

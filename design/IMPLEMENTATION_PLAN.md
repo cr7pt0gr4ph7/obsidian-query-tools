@@ -4,6 +4,9 @@
 
 The repository has a deliberately narrow standalone JavaScript API, CLI, and
 stdio MCP server. It does not claim Dataview or Breadcrumbs parity.
+The CLI and MCP prototypes were implemented before the API approval gate was
+specified. Do not continue interface work until the user declares the API
+implementation ready.
 
 ## Current
 
@@ -26,11 +29,14 @@ stdio MCP server. It does not claim Dataview or Breadcrumbs parity.
 - [x] Implement stdio MCP as a thin client of the shared API, with a
   startup-bound vault, structured results, and SDK integration tests.
 - [x] Verify the suite on Node 24.22.3 and 26.13.0 on Linux.
+- [x] Add an unprivileged unreadable-file API test.
 
 ## Next
 
-- [ ] Expand filesystem-race and unreadable-file coverage before describing
-  the initial implementation as release-ready.
+- [ ] Continue API-level implementation and unit tests, including
+  filesystem-race coverage and documented residual limitations.
+- [ ] Obtain the user's explicit API-ready declaration before continuing CLI
+  or MCP implementation.
 
 ## Tentative future
 
