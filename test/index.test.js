@@ -91,6 +91,10 @@ test("malformed fields, limits and symlinks fail explicitly", async t => {
   await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_EDGE"));
   await writeFile(path.join(root, "root.md"), "---\nparent: [unterminated\n---\n");
   await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
+  await writeFile(path.join(root, "root.md"), "---\nparent: !custom b\n---\n");
+  await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
+  await writeFile(path.join(root, "root.md"), "---\nparent: &link b\nother: *link\n---\n");
+  await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
   await writeFile(path.join(root, "root.md"), "# root\n");
   await symlink(os.tmpdir(), path.join(root, "outside"));
   await assert.rejects(openVault(root), code("UNSAFE_PATH"));
@@ -103,4 +107,27 @@ test("rejects invalid configuration and does not execute note JavaScript", async
   await writeFile(path.join(root, "script.md"), "```dataviewjs\nthrow new Error('executed');\n```\n");
   const vault = await openVault(root);
   assert.ok(vault.list('LIST FROM ""').data.includes("script.md"));
+});
+
+test("refresh cannot publish after close or overlap another refresh", async t => {
+  const vault = await openVault(await fixture(t), { edgeFields: ["parent"] });
+  const refreshing = vault.refresh();
+  await assert.rejects(vault.refresh(), code("REFRESH_IN_PROGRESS"));
+  vault.close();
+  await assert.rejects(refreshing, code("VAULT_CLOSED"));
+  await assert.rejects(vault.refresh(), code("VAULT_CLOSED"));
+});
+
+test("result mutations do not alter the published index", async t => {
+  const vault = await openVault(await fixture(t), { edgeFields: ["parent"] });
+  const result = vault.neighbors("Tasks/a.md");
+  result.data[0].target = "elsewhere.md";
+  result.data.push({ source: "fake.md", target: "fake.md", type: "parent" });
+  assert.deepEqual(vault.neighbors("Tasks/a.md").data, [
+    { source: "Tasks/a.md", target: "root.md", type: "parent" },
+  ]);
+  const listed = vault.list('LIST FROM ""');
+  listed.data.length = 0;
+  assert.equal(vault.list('LIST FROM ""').data.length, 3);
+  vault.close();
 });

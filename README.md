@@ -9,9 +9,9 @@ Markdown paths, and configured frontmatter fields provide direct typed graph
 edges. This is not a Dataview or Breadcrumbs parity claim. All interfaces
 are read-only.
 
-Requires Node.js 24 or later on Linux with procfs. Node 26 is the only
-runtime tested so far. Run `npm ci` to install dependencies and `npm test`
-to run the test suite.
+Requires Node.js 24 or later on Linux with procfs. The test suite has run on
+Node 24.22.3 and 26.13.0 on Linux. Run `npm ci` to install dependencies and
+`npm test` to run the test suite.
 
 ```js
 import { openVault } from "obsidian-query-tools";
@@ -25,7 +25,8 @@ vault.close();
 
 `parent` values are exact vault-root-relative Markdown paths, or arrays of
 paths, with an optional `.md` suffix. Unresolved targets, wikilinks, invalid
-frontmatter, symlinks and special files fail explicitly. Requests return
+or unsupported YAML (including aliases), symlinks and special files fail
+explicitly. Requests return
 `{ generation, data, diagnostics, truncated }`; errors expose a `code`.
 Limits, error behavior, and filesystem race limitations are described in the
 [design](design/DESIGN.md).

@@ -42,7 +42,7 @@ frontmatter fields (direct neighbors only). Edge values are vault-root-relative
 Markdown paths, optionally supplied as arrays; aliases, wikilinks, inference,
 and transitive rules are excluded. It does not claim Dataview or Breadcrumbs
 parity. The initial runtime target is Node.js 24 or later on Linux with
-procfs; only Node.js 26 has been tested so far.
+procfs; Node.js 24.22.3 and 26.13.0 have been tested.
 
 Out of scope initially: vault mutation, Obsidian UI/rendering, arbitrary
 DataviewJS or other JavaScript embedded in a vault or query, remote vault

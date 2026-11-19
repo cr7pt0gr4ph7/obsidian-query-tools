@@ -85,8 +85,9 @@ Frontmatter is YAML between opening and closing `---` lines. Only field names
 listed in `edgeFields` at vault open are interpreted. A field value must be a
 string or array of strings containing exact vault-root-relative Markdown
 paths, with an optional `.md` suffix. Unresolved targets or unsupported
-values fail the build. No note body, Obsidian settings, or plugin code is
-evaluated.
+values fail the build. Unsupported YAML tags and aliases are rejected,
+including outside configured fields. No note body, Obsidian settings, or
+plugin code is evaluated.
 
 Default limits are 100,000 visited directory entries, 10,000 Markdown files,
 1 MiB per Markdown file, 100,000 edges, and 1,000 results. A request may
@@ -148,8 +149,8 @@ valid and invalid query cases, but do not establish parity for the
 project-defined executor. Test the API subset and CLI/MCP equivalence,
 including protocol-clean output and vault selection boundaries.
 
-The initial Node target is 24 or later on Linux with procfs; this
-implementation has been tested on Node 26 only. The first release has no
-plugin compatibility matrix because it makes no plugin-parity claim. Any
-expansion or parity claim must first specify the relevant upstream revisions,
-OS/runtime support, and oracle evidence.
+The initial Node target is 24 or later on Linux with procfs; tests have run on
+Node 24.22.3 and 26.13.0 on Linux. The first release has no plugin
+compatibility matrix because it makes no plugin-parity claim. Any expansion or
+parity claim must first specify the relevant upstream revisions, OS/runtime
+support, and oracle evidence.

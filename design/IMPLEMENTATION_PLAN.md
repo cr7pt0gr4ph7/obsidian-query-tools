@@ -25,11 +25,12 @@ stdio MCP server. It does not claim Dataview or Breadcrumbs parity.
   machine-readable output, error reporting, and API-equivalence tests.
 - [x] Implement stdio MCP as a thin client of the shared API, with a
   startup-bound vault, structured results, and SDK integration tests.
+- [x] Verify the suite on Node 24.22.3 and 26.13.0 on Linux.
 
 ## Next
 
-- [ ] Expand negative and filesystem-race coverage and verify the runtime
-  matrix before describing the initial implementation as release-ready.
+- [ ] Expand filesystem-race and unreadable-file coverage before describing
+  the initial implementation as release-ready.
 
 ## Tentative future
 

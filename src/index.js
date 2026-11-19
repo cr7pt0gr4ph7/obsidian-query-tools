@@ -107,7 +107,9 @@ function readEdges(contents, relativePath, fields, maxEdges, edges) {
   const end = lines.indexOf("---", 1);
   if (end < 0) fail("INVALID_FRONTMATTER", "Unclosed frontmatter.", relativePath);
   const document = parseDocument(lines.slice(1, end).join("\n"), { uniqueKeys: true });
-  if (document.errors.length) fail("INVALID_FRONTMATTER", "Invalid YAML frontmatter.", relativePath);
+  if (document.errors.length || document.warnings.length) {
+    fail("INVALID_FRONTMATTER", "Invalid or unsupported YAML frontmatter.", relativePath);
+  }
   let frontmatter;
   try {
     frontmatter = document.toJS({ maxAliasCount: 0 });
