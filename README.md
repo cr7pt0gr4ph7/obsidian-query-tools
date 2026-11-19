@@ -52,16 +52,14 @@ paths, with an optional `.md` suffix. These fail explicitly:
 
 ## CLI
 
-The existing `list` and graph commands print JSON. The preliminary `query`
-command defaults to JSON and can emit Markdown; errors go to stderr with exit
-status 1.
+The graph commands print JSON. The preliminary `query` command defaults to
+JSON and can emit Markdown; errors go to stderr with exit status 1.
 
 ```sh
 node dist/cli/index.js --help
 node dist/cli/index.js query --vault /path/to/vault --type dataview \
   --query 'LIST FROM "Tasks"' --format markdown
 node dist/cli/index.js query --vault /path/to/vault --type dql --stdin
-node dist/cli/index.js --vault /path/to/vault list 'LIST FROM "Tasks"'
 node dist/cli/index.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 node dist/cli/index.js --vault /path/to/vault graph neighbors Tasks/example.md --edge-field parent
 ```

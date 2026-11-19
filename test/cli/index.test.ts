@@ -17,7 +17,7 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	const help = await exec(process.execPath, [cli, "--help"]);
 	assert.match(help.stdout, /Usage: obsidian-query-tools/);
 	assert.match(help.stdout, /query \[options\]/);
-	assert.match(help.stdout, /list \[options\] <query>/);
+	assert.doesNotMatch(help.stdout, /list \[options\] <query>/);
 	assert.match(help.stdout, /neighbors \[options\] <path>/);
 	assert.equal(help.stderr, "");
 	const queryHelp = await exec(process.execPath, [cli, "query", "--help"]);
@@ -30,18 +30,6 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const vault = await openVault(root, { edgeFields: ["parent"] });
 	const common = [cli, "--vault", root, "--edge-field", "parent"];
-	const list = await exec(process.execPath, [
-		...common,
-		"list",
-		'LIST FROM ""',
-		"--limit",
-		"1",
-	]);
-	assert.equal(list.stderr, "");
-	assert.deepEqual(
-		JSON.parse(list.stdout),
-		vault.list('LIST FROM ""', { limit: 1 }),
-	);
 	const query = await exec(process.execPath, [
 		cli,
 		"query",
@@ -159,7 +147,16 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			.neighbors("b.md", { direction: "incoming", types: ["parent"] }),
 	);
 	await assert.rejects(
-		exec(process.execPath, [...common, "list", "TASK FROM #tag"]),
+		exec(process.execPath, [
+			cli,
+			"query",
+			"--vault",
+			root,
+			"--type",
+			"dql",
+			"--query",
+			"TASK FROM #tag",
+		]),
 		(error) => {
 			assert.ok(
 				error instanceof Error &&
@@ -170,17 +167,22 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			assert.ok(typeof error.stderr === "string");
 			assert.equal(error.code, 1);
 			assert.equal(error.stdout, "");
-			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_QUERY");
+			assert.match(error.stderr, /^INVALID_QUERY:/);
 			return true;
 		},
 	);
 	await assert.rejects(
 		exec(process.execPath, [
-			...common,
-			"list",
+			cli,
+			"query",
+			"--vault",
+			root,
+			"--type",
+			"dql",
+			"--query",
 			'LIST FROM ""',
-			"--limit",
-			"1.5",
+			"--format",
+			"yaml",
 		]),
 		(error) => {
 			assert.ok(
@@ -188,7 +190,18 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			);
 			assert.ok(typeof error.stderr === "string");
 			assert.equal(error.stdout, "");
-			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+			assert.match(error.stderr, /^INVALID_OPTIONS:/);
+			return true;
+		},
+	);
+	await assert.rejects(
+		exec(process.execPath, [...common, "list", 'LIST FROM ""']),
+		(error) => {
+			assert.ok(
+				error instanceof Error && "stdout" in error && "stderr" in error,
+			);
+			assert.equal(error.stdout, "");
+			assert.match(String(error.stderr), /unknown command 'list'/i);
 			return true;
 		},
 	);
