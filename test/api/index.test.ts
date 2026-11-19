@@ -7,7 +7,9 @@ import { promisify } from "node:util";
 import test from "node:test";
 import type { TestContext } from "node:test";
 import { openVault, VaultQueryError } from "../../dist/api/index.js";
-import type { VaultGraph } from "../../dist/api/index.js";
+import type { GraphLimits, VaultGraph, VaultLimits } from "../../dist/api/index.js";
+import type { Config, GraphConfig, GraphIndex, VaultIndex } from "../../dist/api/types.js";
+import { optionsForOpen } from "../../dist/api/validation.js";
 import { fileURLToPath } from "node:url";
 
 async function fixture(t: TestContext) {
@@ -25,6 +27,30 @@ const code = (expected: string) => (error: unknown) => {
   assert.equal(error.code, expected);
   return true;
 };
+
+type Assert<T extends true> = T;
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends
+  (<T>() => T extends B ? 1 : 2) ? true : false;
+type GraphLimitKeys = Assert<Equal<keyof GraphLimits, "maxEdges">>;
+type VaultLimitKeys = Assert<Equal<keyof VaultLimits, "maxEntries" | "maxFiles" | "maxFileBytes" | "maxResults">>;
+type GraphConfigKeys = Assert<Equal<keyof GraphConfig, "edgeFields" | "limits">>;
+type ConfigKeys = Assert<Equal<keyof Config, "graph" | "limits">>;
+type GraphIndexKeys = Assert<Equal<keyof GraphIndex, "files" | "edges">>;
+type VaultIndexKeys = Assert<Equal<keyof VaultIndex, "graph">>;
+
+test("graph options are separated from vault limits without changing open options", async t => {
+  const config = optionsForOpen({ edgeFields: ["parent"], limits: { maxEdges: 3, maxFiles: 3 } });
+  assert.deepEqual(config.graph, { edgeFields: ["parent"], limits: { maxEdges: 3 } });
+  assert.equal(config.limits.maxFiles, 3);
+  assert.equal(Object.hasOwn(config.limits, "maxEdges"), false);
+  const root = await fixture(t);
+  const vault = await openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 3, maxFiles: 3 } });
+  assert.equal(vault.graph().neighbors("Tasks/nested/b.md").data.length, 2);
+  assert.equal(vault.list('LIST FROM ""').data.length, 3);
+  vault.close();
+  await assert.rejects(openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 2 } }), code("LIMIT_EXCEEDED"));
+  await assert.rejects(openVault(root, { limits: { maxEdges: 0 } }), code("INVALID_OPTIONS"));
+});
 
 test("vault errors only expose a path when one is supplied", () => {
   const withoutPath = new VaultQueryError("INVALID_QUERY", "Invalid query.");

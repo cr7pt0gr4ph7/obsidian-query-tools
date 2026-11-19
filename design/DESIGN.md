@@ -40,6 +40,11 @@ Results contain `{ generation, data, diagnostics, truncated }`; errors are
 Index-build errors abort the generation rather than publishing partial data.
 Paths use POSIX separators and results have deterministic ordering.
 
+Internally, graph configuration holds edge fields and graph limits, and the
+graph index holds file paths and edges. The vault index retains the graph index
+as part of the same published generation. Public open options remain flat:
+`edgeFields` and `limits.maxEdges` configure graph indexing.
+
 Only fields listed in `edgeFields` are interpreted. A field value must be a
 string or array of strings containing exact vault-root-relative Markdown
 paths, with an optional `.md` suffix. Unresolved targets or unsupported
