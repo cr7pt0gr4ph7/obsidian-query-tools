@@ -3,6 +3,9 @@
 This repository currently contains a design draft, not an implemented
 application. Read [the requirements](design/REQUIREMENTS.md) and
 [design](design/DESIGN.md) before making implementation decisions.
+Review [the implementation plan](design/IMPLEMENTATION_PLAN.md) for project
+status and planned work, and update it when implementation progress or
+substantive decisions change.
 
 - Preserve the shared JavaScript API as the basis for both CLI and MCP
   interfaces; do not implement separate query semantics in each interface.
