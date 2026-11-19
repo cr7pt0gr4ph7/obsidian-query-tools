@@ -1,185 +1,142 @@
-# Graph CLI specification
+# Console interface specification
 
-Status: partial CLI implementation. `graph neighbors` is supported as a thin
-adapter over the shared API. Traversal and graph export remain proposals
-because the shared API does not provide those operations. This does not claim
-Breadcrumbs compatibility.
+Status: proposed target, not a description of the current CLI or a claim that
+the shared API already implements it. The API-ready approval gate in the
+[implementation plan](../IMPLEMENTATION_PLAN.md) still applies. Query modes
+and output below require shared API support; the console must not implement
+its own query semantics.
 
-## Goals and boundaries
-
-- Keep the shared JavaScript API as the source of graph semantics; the CLI
-  must not implement independent graph-query behavior.
-- Preserve directed, typed relationships and vault-relative POSIX paths.
-- Use explicitly configured frontmatter edge fields only. Do not infer edges,
-  execute vault-supplied JavaScript, or apply Breadcrumbs transitive rules.
-- Keep operations local and read-only. Emit machine-readable data to stdout
-  and diagnostics to stderr.
-- Bound query and export work. Never present a partial graph as a complete
-  export.
-
-The current API supports direct neighbors for configured frontmatter fields.
-Traversal and whole-graph export require shared-API support before they can be
-implemented in the CLI.
-
-## Command shape
+## Invocation
 
 ```text
-obsidian-query-tools --vault <directory> graph neighbors <path>
-  --edge-field <field>... [--direction <incoming|outgoing>] [--edge-type <type>...]
-  [--limit <count>]
-
-obsidian-query-tools --vault <directory> graph traverse <path>
-  --edge-field <field>... [--direction <incoming|outgoing>] [--edge-type <type>...]
-  --max-depth <count> [--limit <count>]
-
-obsidian-query-tools --vault <directory> graph export
-  --edge-field <field>... --format <json|graphml|dot>
+obsidian-query query --vault <directory> --type <mode>
+  (--query <source> | --stdin) [--file <vault-relative-path>]
+  [--format <json|markdown>]
 ```
 
-`--edge-field` is specified after `graph <subcommand>` and may be repeated.
-The option chooses which frontmatter fields are indexed as typed edges; it
-does not redefine edge values or query semantics. `--edge-type` filters the
-resulting edge types and is separate from `--edge-field`. The vault is
-explicitly selected with `--vault`. All paths in arguments and output are
-vault-relative; absolute paths and paths escaping the vault are rejected.
+- `--vault` is required and selects one local vault root. Resolve it once
+  and apply the shared API's vault boundary and read-only policies. No
+  network access or vault mutation is implied.
+- `--type` is required: `dataview` or `dataviewjs`. These are CLI selectors, not
+  a claim that all four are upstream code-block names.
+- Supply exactly one query source: `--query` takes a single shell argument;
+  `--stdin` reads UTF-8 through EOF, including newlines. Pass the supplied
+  source unchanged to the selected shared API operation. The source is the
+  **body** of a code block, without Markdown fences or inline-query prefixes.
+  Empty input, malformed UTF-8, conflicting sources, and unknown options are
+  errors. Apply a documented input-size limit before execution.
+- `--file` optionally specifies an existing Markdown file relative to the
+  vault root as the query's current-file context. It is not a query file to
+  execute. Reject absolute paths, traversal, missing files, non-Markdown
+  files, and paths or symlinks that violate the vault boundary. Resolve
+  current-file references and relative links through the shared API. Without
+  `--file`, use no current-file context; a query requiring one must fail
+  explicitly, not silently choose a file or invent a context.
+- `--format json` requests structured output; `--format markdown` requests
+  human-readable plain text/Markdown. The default is `json`, independent of
+  whether stdout is a terminal. Unsupported format/result combinations fail
+  rather than silently changing format.
+- `--help` describes the options and `--version` reports the installed
+  version; neither requires a vault. Normal query execution never prompts.
+  Arguments, particularly `--query`, may be visible in shell history and
+  process listings; use `--stdin` where that matters.
 
-`neighbors` returns direct matches only. `direction` selects edges entering
-or leaving the requested note; if omitted, the API's documented default
-applies. `traverse` follows matching edges up to the required positive
-`--max-depth`. It returns each reached note once, with its minimum hop depth,
-and must terminate on cycles. Ordering is deterministic by depth and then
-vault-relative path unless the shared API specifies a stable equivalent.
-
-`export` includes every indexed Markdown note as a node, including isolated
-notes, and every indexed edge matching the requested fields. It preserves
-edge direction and type. JSON is intended for scripting, GraphML for graph
-analysis applications, and DOT for Graphviz visualization.
-
-## Output
-
-Successful commands write exactly one result to stdout. Query results use a
-JSON envelope with the index generation, data, diagnostics, and a `truncated`
-boolean. Errors produce no successful result, write a concise structured
-diagnostic to stderr, and exit nonzero. Vault contents and query results must
-not be logged to stderr.
-
-Example direct-neighbor command and output:
+Examples (target syntax, not promises of current support):
 
 ```sh
-obsidian-query-tools --vault ./vault graph neighbors Projects/Alpha.md \
-  --edge-field parent --direction outgoing --edge-type parent
+obsidian-query query --vault ./vault --type dataview \
+  --query 'TABLE rating FROM #books SORT rating DESC' --format markdown
+printf '%s\n' 'LIST FROM #books' |
+  obsidian-query query --vault ./vault --type dql --stdin --format json
+obsidian-query query --vault ./vault --file Projects/Index.md --type dql \
+  --query 'LIST FROM "Projects"'
 ```
 
-```json
-{
-	"generation": 1,
-	"data": [
-		{
-			"source": "Projects/Alpha.md",
-			"target": "Projects.md",
-			"type": "parent"
-		}
-	],
-	"diagnostics": [],
-	"truncated": false
-}
-```
+## Query semantics and compatibility
 
-Example JSON export command:
+The declarative modes target the same query-body input as an upstream
+`dataview` code block, including its query types and expressions; JavaScript
+modes target the body of an upstream `dataviewjs` block and its `dv` API.
+Inline DQL and inline JavaScript are different upstream interfaces and are
+not selected by these four modes. The CLI must not strip fences, rewrite
+queries, execute shell substitutions, or treat a file context as a source
+of executable query text.
 
-```sh
-obsidian-query-tools --vault ./vault graph export \
-  --edge-field parent --format json > graph.json
-```
+Compatibility is a target, not a parity claim. Features not implemented or
+not permitted by the safety policy must produce an explicit unsupported
+error, never be ignored or approximated as a successful complete result.
+Before claiming support for a feature, record the exact upstream revision,
+integration method, license and deviations, and compare representative
+non-sensitive fixtures with that revision in Obsidian. The
+[upstream research](2026-11-19-upstream.md) records the current evidence and
+standalone limitations. At the examined Dataview revision,
+[`src/main.ts`](https://github.com/blacksmithgu/obsidian-dataview/blob/5ad0994ff384cbb797de382e7edff2388141b73a/src/main.ts)
+registers `dataview` and a configurable JavaScript code-block keyword
+(default `dataviewjs`); `dql` and `dqljs` here are console aliases.
+See also the [Dataview query forms documentation](https://blacksmithgu.github.io/obsidian-dataview/queries/dql-js-inline/).
 
-The JSON `data` contains deterministically ordered `nodes` and `edges`.
-Nodes are relative Markdown paths; edges have `source`, `target`, and `type`.
-Isolated notes are included:
+### JavaScript execution gate
 
-```json
-{
-	"generation": 1,
-	"data": {
-		"nodes": ["Projects.md", "Projects/Alpha.md", "Projects/Beta.md"],
-		"edges": [
-			{
-				"source": "Projects/Alpha.md",
-				"target": "Projects.md",
-				"type": "parent"
-			}
-		]
-	},
-	"diagnostics": [],
-	"truncated": false
-}
-```
+The requested JavaScript selectors are part of the target interface, but
+execution is **not authorized by this specification**. The current project
+prohibits DataviewJS and vault-supplied scripts. Until a separately approved
+design defines an enforceable execution and authorization boundary, both
+selectors must fail explicitly as unsupported, without evaluating the input.
+An eventual design must preserve the prohibition on executing vault-supplied
+JavaScript, remain read-only and local by default, protect vault data from
+network access, and address arbitrary JavaScript's access to the host, its
+filesystem and resources. A Node `vm` alone is not a security boundary.
+Explicitly supplied code is not automatically safe, and stdin provenance
+cannot be assumed. Approval must resolve how executable input is authorized
+and how vault-supplied scripts are excluded before implementation. This gate
+does not authorize changing the existing security requirements.
 
-The same graph can be written as GraphML or DOT:
+For a future approved JavaScript mode, accept the same body for both aliases,
+provide a documented `dv` context and supported rendering operations through
+the shared API, and capture their ordered output as structured results.
+Operations that cannot be represented or safely supported must fail
+explicitly. Do not promise DOM/Obsidian UI behavior or arbitrary plugin APIs.
 
-```sh
-obsidian-query-tools --vault ./vault graph export \
-  --edge-field parent --format graphml > graph.graphml
+## Output and errors
 
-obsidian-query-tools --vault ./vault graph export \
-  --edge-field parent --format dot > graph.dot
-```
+For a successful query, stdout contains exactly one result, ending in a
+newline. JSON is one valid JSON document with an object envelope containing
+`data`, `diagnostics`, and boolean `truncated`; include a `generation` when
+the shared API exposes an index generation. `data` preserves the query's
+result kind and structure, including table columns and rows, list items,
+tasks or calendar entries where supported; document the exact per-kind
+schema and tagged encodings for links, dates, missing values and other
+non-JSON values before supporting them. Preserve explicit query ordering;
+otherwise use deterministic ordering and serialization. Never silently
+drop an unrepresentable value or emit invalid JSON.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
-  <key id="path" for="node" attr.name="path" attr.type="string"/>
-  <key id="type" for="edge" attr.name="type" attr.type="string"/>
-  <graph id="vault" edgedefault="directed">
-    <node id="n0"><data key="path">Projects.md</data></node>
-    <node id="n1"><data key="path">Projects/Alpha.md</data></node>
-    <node id="n2"><data key="path">Projects/Beta.md</data></node>
-    <edge id="e0" source="n1" target="n0">
-      <data key="type">parent</data>
-    </edge>
-  </graph>
-</graphml>
-```
+Markdown renders the same result and preserves its order and meaning, using
+appropriate headings, lists, tables and escaped text as applicable. It is
+plain Markdown, not an Obsidian UI or HTML execution environment. If the
+result cannot be represented without material loss, fail explicitly instead
+of omitting content. Emit diagnostics and any truncation notice to stderr so
+they cannot be mistaken for query data; JSON includes both in the envelope.
+Document result limits, apply them in the shared API, and explicitly mark
+truncation in both formats.
 
-GraphML node identifiers are stable generated IDs; each node's `path` data
-retains its vault-relative identity.
+Errors, including invalid vaults, contexts, queries, disabled JavaScript,
+limits and unsupported features, produce no success result on stdout, a
+concise actionable diagnostic on stderr and a nonzero exit status. Avoid
+printing vault contents or query source in diagnostics by default. Exit `0`
+only when a result is produced; a truncated result is successful but must
+be marked as such. Help and version output go to stdout and exit `0`.
+No progress or log messages may contaminate stdout.
 
-```dot
-digraph {
-  "Projects.md";
-  "Projects/Alpha.md";
-  "Projects/Beta.md";
-  "Projects/Alpha.md" -> "Projects.md" [label="parent"];
-}
-```
+## Acceptance before implementation is considered complete
 
-Native GraphML and DOT output must correctly escape identifiers and values.
-Their stdout must contain only the selected format, without a JSON wrapper.
-Diagnostics remain on stderr.
-
-## Limits, errors, and compatibility
-
-The shared API must enforce the configured node, edge, depth, and result
-limits. Query results may be explicitly marked truncated if the shared API
-supports that contract. A graph export must be complete: if configured
-resource limits prevent emitting the whole graph, fail with an actionable
-error instead of silently omitting nodes or edges. Do not promise atomic
-filesystem snapshots beyond the shared API's documented indexing guarantees.
-
-Invalid options, unsupported formats, invalid paths, build errors, and limit
-exhaustion fail explicitly with a nonzero exit status. Stdout must not contain
-progress or error messages that would corrupt JSON, GraphML, or DOT.
-
-The proposal describes a project-defined typed-edge graph, not Breadcrumbs
-parity. Any future compatibility claim requires pinned upstream revisions
-and representative fixture evidence, as described in the project
-requirements and design.
-
-## Implementation prerequisites
-
-1. Define shared API result types and semantics for bounded traversal and
-   complete graph export, including stable ordering, generation, and limits.
-2. Add API tests for direction, type filtering, cycles, isolated notes,
-   limits, serialization escaping, and unchanged vault contents.
-3. Implement `graph` as a thin CLI adapter over those API operations and test
-   stdout/stderr, exit status, and output format against representative
-   fixtures.
+- Exercise all four selectors and both input sources, including multiline
+  bodies, alias equivalence, invalid combinations, and disabled modes. Tests
+  must not execute JavaScript while the gate is closed.
+- Verify explicit and absent file contexts, invalid and escaping paths,
+  relative references, default and selected formats, empty and structured
+  results, escaping, diagnostics, truncation and exit statuses.
+- Compare the console with the shared API using the same fixtures, and
+  validate stdout as JSON or Markdown as requested. Verify no vault writes,
+  external transmission, or execution of vault-supplied JavaScript.
+- Publish the supported feature matrix, limits, exact output schemas and
+  compatibility evidence before making a release or upstream-parity claim.
