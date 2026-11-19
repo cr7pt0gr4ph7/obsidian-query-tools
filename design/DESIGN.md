@@ -95,8 +95,10 @@ truncated with `truncated: true`; index-building limit exhaustion is an
 explicit error. Refresh leaves the previous generation available if building
 the replacement fails.
 
-The planned CLI takes an explicit local vault and query input, outputs normalized JSON
-to stdout, and reports diagnostics on stderr with documented exit codes.
+The CLI takes an explicit local vault and query input, outputs normalized JSON
+to stdout, and reports JSON errors on stderr with exit status 1. It exposes
+the shared API's `list` and `neighbors` operations without separate query
+semantics; results include their diagnostics in the JSON envelope.
 The planned MCP server initially targets stdio, with a vault bound by server startup
 configuration rather than tool arguments. Tools expose declarative Dataview
 queries and bounded graph operations; their schemas specify inputs, filters,

@@ -30,5 +30,5 @@ The first implementation deliberately does not load either Obsidian plugin.
 The shared JavaScript API indexes Markdown paths and configured frontmatter
 edge fields. It supports only `LIST FROM "<folder>"` path results and direct
 neighbors. Its query and edge semantics are project-defined and must not be
-described as Dataview or Breadcrumbs parity. The CLI and MCP interfaces remain
-later thin clients of this same API.
+described as Dataview or Breadcrumbs parity. The CLI is a thin client of this
+API; the MCP interface remains planned.
