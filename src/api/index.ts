@@ -10,7 +10,7 @@ export type {
 	GraphLimits,
 	NeighborOptions,
 	VaultGraph,
-} from "./graph/types.js";
+} from "./graph/graph.js";
 /** Standard result envelope returned by query operations. */
 export type { QueryResult } from "./utils/result.js";
 /** Vault lifecycle, open configuration, and resource-limit types. */

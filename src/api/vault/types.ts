@@ -1,5 +1,6 @@
 import type { ListOptions } from "../dataview/list.js";
-import type { GraphIndex, VaultGraph } from "../graph/types.js";
+import type { VaultGraph } from "../graph/graph.js";
+import type { GraphIndex } from "../graph/indexing.js";
 import type { GraphConfig, GraphLimits } from "../graph/config.js";
 import type { QueryResult } from "../utils/result.js";
 

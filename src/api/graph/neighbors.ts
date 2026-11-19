@@ -1,7 +1,8 @@
 import { fail } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
-import type { GraphIndex, Edge, NeighborOptions } from "./types.js";
+import type { Edge, NeighborOptions } from "./graph.js";
+import type { GraphIndex } from "./indexing.js";
 import type { GraphConfig } from "./config.js";
 
 /**
