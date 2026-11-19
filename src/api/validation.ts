@@ -1,5 +1,5 @@
 import { fail } from "./errors.js";
-import type { ListOptions } from "./dataview/types.js";
+import type { ListOptions } from "./dataview/list.js";
 
 export function validatePath(value: string, allowEmpty = false): string {
 	if (

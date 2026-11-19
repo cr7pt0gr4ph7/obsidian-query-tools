@@ -1,5 +1,5 @@
 import type { QueryResult } from "../utils/result.js";
-import type { ListOptions } from "../dataview/types.js";
+import type { ListOptions } from "../dataview/list.js";
 
 export interface GraphLimits {
 	maxEdges: number;

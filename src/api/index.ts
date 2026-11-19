@@ -1,6 +1,6 @@
 export { VaultQueryError } from "./errors.js";
 export { openVault } from "./vault/vault.js";
-export type { ListOptions } from "./dataview/types.js";
+export type { ListOptions } from "./dataview/list.js";
 export type {
 	Edge,
 	GraphLimits,

@@ -1,4 +1,4 @@
-import type { ListOptions } from "../dataview/types.js";
+import type { ListOptions } from "../dataview/list.js";
 import type {
 	GraphConfig,
 	GraphIndex,

@@ -2,6 +2,11 @@ import { fail } from "../errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { validatePath } from "../validation.js";
 
+export interface ListOptions {
+	limit?: number;
+	file?: string;
+}
+
 export function list(
 	files: readonly string[],
 	generation: number,
