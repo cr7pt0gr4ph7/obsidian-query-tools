@@ -7,5 +7,5 @@ export type {
 	NeighborOptions,
 	VaultGraph,
 } from "./graph/types.js";
-export type { QueryResult } from "./types.js";
+export type { QueryResult } from "./utils/result.js";
 export type { Vault, VaultLimits, VaultOptions } from "./vault/types.js";

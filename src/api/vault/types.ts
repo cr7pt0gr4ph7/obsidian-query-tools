@@ -5,7 +5,7 @@ import type {
 	GraphLimits,
 	VaultGraph,
 } from "../graph/types.js";
-import type { QueryResult } from "../types.js";
+import type { QueryResult } from "../utils/result.js";
 
 export interface VaultLimits {
 	maxEntries: number;

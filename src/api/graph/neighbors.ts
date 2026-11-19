@@ -1,7 +1,6 @@
 import { fail } from "../errors.js";
-import { result } from "../result.js";
+import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
-import type { QueryResult } from "../types.js";
 import type {
 	GraphConfig,
 	GraphIndex,

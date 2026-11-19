@@ -1,4 +1,4 @@
-import type { QueryResult } from "../types.js";
+import type { QueryResult } from "../utils/result.js";
 import type { ListOptions } from "../dataview/types.js";
 
 export interface GraphLimits {

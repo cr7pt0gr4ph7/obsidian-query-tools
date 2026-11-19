@@ -1,6 +1,5 @@
 import { fail } from "../errors.js";
-import { result } from "../result.js";
-import type { QueryResult } from "../types.js";
+import { result, type QueryResult } from "../utils/result.js";
 import { validatePath } from "../validation.js";
 
 export function list(
