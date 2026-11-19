@@ -1,7 +1,8 @@
 # Obsidian Query Tools
 
-Node.js tools for read-only queries over a local Obsidian vault. The shared
-JavaScript API is the source of behavior for the CLI and MCP server.
+TypeScript-based Node.js tools for read-only queries over a local Obsidian
+vault. The compiled JavaScript API is the source of behavior for the CLI and
+MCP server; TypeScript declarations are provided alongside it.
 
 **Status: initial implementation.** The supported subset is deliberately
 narrow and project-defined: `LIST FROM "<folder>"` returns vault-relative
@@ -10,8 +11,9 @@ edges. This is not a Dataview or Breadcrumbs parity claim. All interfaces
 are read-only.
 
 Requires Node.js 24 or later on Linux with procfs. The test suite has run on
-Node 24.22.3 and 26.13.0 on Linux. Run `npm ci` to install dependencies and
-`npm test` to run the test suite.
+Node 24.22.3 and 26.13.0 on Linux. Run `npm ci` to install dependencies,
+`npm run build` to compile to `dist/`, and `npm test` to build, type-check,
+and run the test suite.
 
 ```js
 import { openVault } from "obsidian-query-tools";
@@ -37,12 +39,12 @@ exit status 1. Repeat `--edge-field` to configure multiple fields; use
 edges, and `--limit` to lower the result limit.
 
 ```sh
-node src/cli.js --vault /path/to/vault list 'LIST FROM "Tasks"'
-node src/cli.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
+node dist/cli.js --vault /path/to/vault list 'LIST FROM "Tasks"'
+node dist/cli.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 ```
 
 For MCP stdio, start
-`node src/mcp.js --vault /path/to/vault --edge-field parent`. The server
+`node dist/mcp.js --vault /path/to/vault --edge-field parent`. The server
 exposes `list`, `neighbors`, and `refresh`, with the vault bound at startup;
 tool arguments cannot select a different vault. Successful tool results carry
 the API result in `structuredContent` and as JSON text; failures have

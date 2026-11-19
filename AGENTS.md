@@ -24,4 +24,5 @@ substantive decisions change.
   Create a new file for separate runs if necessary, except if the information
   fits suitably into the existing files.
 
-Run `npm ci` to install dependencies and `npm test` for the current tests.
+Run `npm ci` to install dependencies, `npm run build` to compile TypeScript,
+and `npm test` to build, type-check, and run the current tests.

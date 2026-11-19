@@ -2,8 +2,9 @@
 
 ## Current status
 
-The repository has a deliberately narrow standalone JavaScript API, CLI, and
-stdio MCP server. It does not claim Dataview or Breadcrumbs parity.
+The repository has a deliberately narrow TypeScript implementation exposing a
+standalone JavaScript API, CLI, and stdio MCP server. It does not claim
+Dataview or Breadcrumbs parity.
 The CLI and MCP prototypes were implemented before the API approval gate was
 specified. Do not continue interface work until the user declares the API
 implementation ready.
@@ -32,6 +33,9 @@ implementation ready.
 - [x] Add an unprivileged unreadable-file API test.
 - [x] Import the pinned upstream Dataview test-vault Markdown data as an API
   fixture, excluding bundled plugin code, and test the supported folder form.
+- [x] Convert implementation and tests to TypeScript and expose generated
+  JavaScript and type declarations via the package entry point.
+- [x] Add a push-triggered GitHub Actions workflow for Node 24 and 26.
 
 ## Next
 

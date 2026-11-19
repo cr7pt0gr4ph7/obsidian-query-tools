@@ -6,10 +6,10 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { openVault } from "../src/index.js";
+import { openVault } from "../dist/index.js";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
+const cli = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
 
 test("CLI results match the shared API and errors do not corrupt stdout", async t => {
   const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-test-"));
@@ -25,12 +25,16 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
   assert.equal(neighbors.stderr, "");
   assert.deepEqual(JSON.parse(neighbors.stdout), vault.neighbors("b.md", { direction: "incoming", types: ["parent"] }));
   await assert.rejects(exec(process.execPath, [...common, "list", "TASK FROM #tag"]), error => {
+    assert.ok(error instanceof Error && "code" in error && "stdout" in error && "stderr" in error);
+    assert.ok(typeof error.stderr === "string");
     assert.equal(error.code, 1);
     assert.equal(error.stdout, "");
     assert.equal(JSON.parse(error.stderr).error.code, "INVALID_QUERY");
     return true;
   });
   await assert.rejects(exec(process.execPath, [...common, "list", 'LIST FROM ""', "--limit", "1.5"]), error => {
+    assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
+    assert.ok(typeof error.stderr === "string");
     assert.equal(error.stdout, "");
     assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
     return true;

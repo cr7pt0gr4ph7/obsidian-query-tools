@@ -5,13 +5,14 @@ import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod/v4";
 import { openVault, VaultQueryError } from "./index.js";
 
-function reply(data) {
-  return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: data };
+function reply(data: Record<string, unknown>) {
+  return { content: [{ type: "text" as const, text: JSON.stringify(data) }], structuredContent: data };
 }
 
-async function handle(operation) {
+async function handle(operation: () => object | Promise<object>) {
   try {
-    return reply(await operation());
+    const data = await operation();
+    return reply({ ...data });
   } catch (error) {
     const details = error instanceof VaultQueryError
       ? { code: error.code, message: error.message, ...(error.path === undefined ? {} : { path: error.path }) }

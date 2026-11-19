@@ -1,5 +1,7 @@
 import { constants } from "node:fs";
+import type { Stats } from "node:fs";
 import { lstat, open, opendir, realpath } from "node:fs/promises";
+import type { FileHandle } from "node:fs/promises";
 import path from "node:path";
 import { parseDocument } from "yaml";
 
@@ -10,11 +12,62 @@ const defaults = Object.freeze({
   maxEdges: 100_000,
   maxResults: 1_000,
 });
-const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
-const fdPath = handle => `/proc/self/fd/${handle.fd}`;
+
+export interface VaultLimits {
+  maxEntries: number;
+  maxFiles: number;
+  maxFileBytes: number;
+  maxEdges: number;
+  maxResults: number;
+}
+
+export interface VaultOptions {
+  edgeFields?: string[];
+  limits?: Partial<VaultLimits>;
+}
+
+export interface ListOptions {
+  limit?: number;
+}
+
+export interface NeighborOptions extends ListOptions {
+  direction?: "outgoing" | "incoming";
+  types?: string[];
+}
+
+export interface Edge {
+  source: string;
+  target: string;
+  type: string;
+}
+
+export interface QueryResult<T> {
+  generation: number;
+  data: T[];
+  diagnostics: { code: string; message: string }[];
+  truncated: boolean;
+}
+
+export interface Vault {
+  list(query: string, options?: ListOptions): QueryResult<string>;
+  neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
+  refresh(): Promise<number>;
+  close(): void;
+}
+
+interface Config {
+  edgeFields: string[];
+  limits: VaultLimits;
+}
+
+const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
+const fdPath = (handle: FileHandle): string => `/proc/self/fd/${handle.fd}`;
 
 export class VaultQueryError extends Error {
-  constructor(code, message, relativePath) {
+  readonly code: string;
+  declare readonly path?: string;
+
+  constructor(code: string, message: string, relativePath?: string) {
     super(message);
     this.name = "VaultQueryError";
     this.code = code;
@@ -22,11 +75,11 @@ export class VaultQueryError extends Error {
   }
 }
 
-function fail(code, message, relativePath) {
+function fail(code: string, message: string, relativePath?: string): never {
   throw new VaultQueryError(code, message, relativePath);
 }
 
-function validatePath(value, allowEmpty = false) {
+function validatePath(value: string, allowEmpty = false): string {
   if (
     typeof value !== "string" ||
     (!allowEmpty && !value) ||
@@ -41,7 +94,7 @@ function validatePath(value, allowEmpty = false) {
   return value;
 }
 
-function optionsForOpen(options) {
+function optionsForOpen(options: VaultOptions): Config {
   if (!options || typeof options !== "object" || Array.isArray(options)) {
     fail("INVALID_OPTIONS", "Options must be an object.");
   }
@@ -65,11 +118,11 @@ function optionsForOpen(options) {
   return { edgeFields: [...edgeFields], limits: { ...defaults, ...limits } };
 }
 
-function signature(stat) {
+function signature(stat: Stats): string {
   return `${stat.dev}:${stat.ino}:${stat.size}:${stat.mtimeMs}:${stat.ctimeMs}`;
 }
 
-async function readFile(parent, name, relativePath, limit) {
+async function readFile(parent: FileHandle, name: string, relativePath: string, limit: number): Promise<string> {
   const anchored = path.join(fdPath(parent), name);
   const stat = await lstat(anchored);
   if (!stat.isFile() || stat.isSymbolicLink()) {
@@ -105,7 +158,7 @@ async function readFile(parent, name, relativePath, limit) {
   }
 }
 
-function readEdges(contents, relativePath, fields, maxEdges, edges) {
+function readEdges(contents: string, relativePath: string, fields: string[], maxEdges: number, edges: Edge[]): void {
   const lines = contents.split(/\r?\n/);
   if (lines[0] !== "---") return;
   const end = lines.indexOf("---", 1);
@@ -114,7 +167,7 @@ function readEdges(contents, relativePath, fields, maxEdges, edges) {
   if (document.errors.length || document.warnings.length) {
     fail("INVALID_FRONTMATTER", "Invalid or unsupported YAML frontmatter.", relativePath);
   }
-  let frontmatter;
+  let frontmatter: unknown;
   try {
     frontmatter = document.toJS({ maxAliasCount: 0 });
   } catch {
@@ -126,7 +179,7 @@ function readEdges(contents, relativePath, fields, maxEdges, edges) {
   }
   for (const type of fields) {
     if (!Object.hasOwn(frontmatter, type)) continue;
-    const value = frontmatter[type];
+    const value: unknown = Reflect.get(frontmatter, type);
     const targets = Array.isArray(value) ? value : [value];
     for (const target of targets) {
       if (typeof target !== "string" || target.includes("[[") || target.includes("]]")) {
@@ -145,11 +198,11 @@ function readEdges(contents, relativePath, fields, maxEdges, edges) {
   }
 }
 
-async function buildIndex(root, config) {
-  const files = [];
-  const edges = [];
+async function buildIndex(root: string, config: Config): Promise<{ files: string[]; edges: Edge[] }> {
+  const files: string[] = [];
+  const edges: Edge[] = [];
   let entries = 0;
-  async function visit(directory, relativePath) {
+  async function visit(directory: FileHandle, relativePath: string): Promise<void> {
     const before = await directory.stat();
     const dir = await opendir(fdPath(directory));
     for await (const entry of dir) {
@@ -218,7 +271,7 @@ async function buildIndex(root, config) {
   return { files, edges };
 }
 
-function result(generation, values, limit) {
+function result<T>(generation: number, values: T[], limit: number): QueryResult<T> {
   return {
     generation,
     data: values.slice(0, limit),
@@ -227,7 +280,7 @@ function result(generation, values, limit) {
   };
 }
 
-function requestLimit(options, max, keys) {
+function requestLimit(options: ListOptions, max: number, keys: string[]): number {
   if (!options || typeof options !== "object" || Array.isArray(options)) fail("INVALID_OPTIONS", "Options must be an object.");
   for (const key of Object.keys(options)) {
     if (!keys.includes(key)) fail("INVALID_OPTIONS", `Unknown option: ${key}`);
@@ -237,7 +290,7 @@ function requestLimit(options, max, keys) {
   return limit;
 }
 
-export async function openVault(root, options = {}) {
+export async function openVault(root: string, options: VaultOptions = {}): Promise<Vault> {
   if (typeof root !== "string" || !root) fail("INVALID_VAULT", "A vault root is required.");
   const config = optionsForOpen(options);
   let canonical;
@@ -256,7 +309,7 @@ export async function openVault(root, options = {}) {
     if (closed) fail("VAULT_CLOSED", "Vault is closed.");
   }
   return {
-    list(query, options = {}) {
+    list(query: string, options: ListOptions = {}) {
       ensureOpen();
       const limit = requestLimit(options, config.limits.maxResults, ["limit"]);
       if (typeof query !== "string") fail("INVALID_QUERY", "Expected LIST FROM \"<folder>\".");
@@ -265,7 +318,7 @@ export async function openVault(root, options = {}) {
       const folder = validatePath(match[1], true);
       return result(generation, index.files.filter(file => !folder || file.startsWith(`${folder}/`)), limit);
     },
-    neighbors(node, options = {}) {
+    neighbors(node: string, options: NeighborOptions = {}) {
       ensureOpen();
       const limit = requestLimit(options, config.limits.maxResults, ["limit", "direction", "types"]);
       validatePath(node);

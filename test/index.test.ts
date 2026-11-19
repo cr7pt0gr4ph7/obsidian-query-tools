@@ -5,10 +5,11 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
-import { openVault, VaultQueryError } from "../src/index.js";
+import type { TestContext } from "node:test";
+import { openVault, VaultQueryError } from "../dist/index.js";
 import { fileURLToPath } from "node:url";
 
-async function fixture(t) {
+async function fixture(t: TestContext) {
   const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(path.join(root, "Tasks", "nested"), { recursive: true });
@@ -18,11 +19,18 @@ async function fixture(t) {
   return root;
 }
 
-const code = expected => error => {
+const code = (expected: string) => (error: unknown) => {
   assert.ok(error instanceof VaultQueryError);
   assert.equal(error.code, expected);
   return true;
 };
+
+test("vault errors only expose a path when one is supplied", () => {
+  const withoutPath = new VaultQueryError("INVALID_QUERY", "Invalid query.");
+  assert.equal(Object.hasOwn(withoutPath, "path"), false);
+  const withPath = new VaultQueryError("UNSAFE_PATH", "Unsafe path.", "note.md");
+  assert.equal(withPath.path, "note.md");
+});
 
 test("folder query and configured directed edges share an index", async t => {
   const root = await fixture(t);
@@ -80,6 +88,7 @@ test("Dataview-inspired unsupported syntax is rejected rather than approximated"
   ]) assert.throws(() => vault.list(query), code("INVALID_QUERY"));
   assert.throws(() => vault.list('LIST FROM "../outside"'), code("INVALID_PATH"));
   assert.throws(() => vault.neighbors("../root.md"), code("INVALID_PATH"));
+  // @ts-expect-error Exercise validation of an invalid JavaScript caller.
   assert.throws(() => vault.neighbors("root.md", { direction: "both" }), code("INVALID_OPTIONS"));
   assert.throws(() => vault.list('LIST FROM ""', { limit: 1001 }), code("INVALID_OPTIONS"));
 });
@@ -127,6 +136,7 @@ test("a Markdown symlink cannot expose a file outside the vault", async t => {
   await writeFile(path.join(outside, "secret.md"), "private contents\n");
   await symlink(path.join(outside, "secret.md"), path.join(root, "linked.md"));
   await assert.rejects(openVault(root), error => {
+    assert.ok(error instanceof VaultQueryError);
     assert.equal(error.code, "UNSAFE_PATH");
     assert.equal(error.path, "linked.md");
     assert.ok(!error.message.includes("private contents"));
@@ -136,6 +146,7 @@ test("a Markdown symlink cannot expose a file outside the vault", async t => {
 
 test("rejects invalid configuration and does not execute note JavaScript", async t => {
   const root = await fixture(t);
+  // @ts-expect-error Exercise validation of an invalid JavaScript caller.
   await assert.rejects(openVault(root, { limits: { toString: 1 } }), code("INVALID_OPTIONS"));
   await assert.rejects(openVault(root, { edgeFields: ["parent", "parent"] }), code("INVALID_OPTIONS"));
   await writeFile(path.join(root, "script.md"), "```dataviewjs\nthrow new Error('executed');\n```\n");
@@ -175,7 +186,7 @@ test("unreadable Markdown causes an explicit vault read error", async t => {
     return;
   }
   await chmod(root, 0o755);
-  const moduleUrl = new URL("../src/index.js", import.meta.url).href;
+  const moduleUrl = new URL("../dist/index.js", import.meta.url).href;
   const program = `
     import { openVault } from ${JSON.stringify(moduleUrl)};
     process.setgid(65534);
