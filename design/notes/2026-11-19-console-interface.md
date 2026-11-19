@@ -1,10 +1,16 @@
 # Console interface specification
 
-Status: proposed target, not a description of the current CLI or a claim that
-the shared API already implements it. The API-ready approval gate in the
-[implementation plan](../IMPLEMENTATION_PLAN.md) still applies. Query modes
-and output below require shared API support; the console must not implement
-its own query semantics.
+Status: proposed target, not a claim that the shared API implements its query
+modes. An injectable command runner and mocked-API contract tests are in
+`src/console.ts` and `test/console.test.ts`; they do not add a package
+executable or production adapter. The API-ready approval for this test work
+does not authorize implementing broader query semantics. The console must
+not implement its own query semantics.
+
+The runner limits query input to 1 MiB. Its current Markdown test seam handles
+scalar values, scalar lists, and flat records with matching columns; values
+outside those shapes fail explicitly until the API's result schemas and
+lossless renderings are specified.
 
 ## Invocation
 
@@ -133,7 +139,8 @@ No progress or log messages may contaminate stdout.
 
 - Exercise all four selectors and both input sources, including multiline
   bodies, alias equivalence, invalid combinations, and disabled modes. Tests
-  must not execute JavaScript while the gate is closed.
+  must not execute JavaScript while the gate is closed. Unit tests use an
+  injected API mock and verify that disabled JavaScript modes never call it.
 - Verify explicit and absent file contexts, invalid and escaping paths,
   relative references, default and selected formats, empty and structured
   results, escaping, diagnostics, truncation and exit statuses.
