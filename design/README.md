@@ -10,4 +10,5 @@ These documents describe the current scope and implementation status.
   safety, and decisions still to be made.
 - [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): current status and
   current, next, and tentative future work.
-- [notes/](notes/): dated research notes and evidence for the draft.
+- [notes/](notes/): dated research notes and proposals, including the
+  [proposed graph CLI specification](notes/2026-11-graph-cli.md).
