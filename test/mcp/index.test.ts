@@ -40,7 +40,7 @@ test("MCP stdio tools use the bound vault and shared API", async t => {
     if (text.type !== "text") throw new Error("Expected text content.");
     assert.deepEqual(JSON.parse(text.text), listed.structuredContent);
     const edges = await client.callTool({ name: "neighbors", arguments: { path: "b.md", direction: "incoming" } });
-    assert.deepEqual(edges.structuredContent, vault.neighbors("b.md", { direction: "incoming" }));
+    assert.deepEqual(edges.structuredContent, vault.graph().neighbors("b.md", { direction: "incoming" }));
     const bad = await client.callTool({ name: "list", arguments: { query: "TASK FROM #tag" } });
     assert.equal(bad.isError, true);
     assert.equal(record(record(bad.structuredContent).error).code, "INVALID_QUERY");

@@ -23,7 +23,7 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
   assert.deepEqual(JSON.parse(list.stdout), vault.list('LIST FROM ""', { limit: 1 }));
   const neighbors = await exec(process.execPath, [...common, "neighbors", "b.md", "--direction", "incoming", "--type", "parent"]);
   assert.equal(neighbors.stderr, "");
-  assert.deepEqual(JSON.parse(neighbors.stdout), vault.neighbors("b.md", { direction: "incoming", types: ["parent"] }));
+  assert.deepEqual(JSON.parse(neighbors.stdout), vault.graph().neighbors("b.md", { direction: "incoming", types: ["parent"] }));
   await assert.rejects(exec(process.execPath, [...common, "list", "TASK FROM #tag"]), error => {
     assert.ok(error instanceof Error && "code" in error && "stdout" in error && "stderr" in error);
     assert.ok(typeof error.stderr === "string");

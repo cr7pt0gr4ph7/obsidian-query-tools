@@ -54,7 +54,7 @@ async function main() {
       limit,
     }),
     annotations,
-  }, async ({ path, direction, types, limit }) => handle(() => vault.neighbors(path, { direction, types, limit })));
+  }, async ({ path, direction, types, limit }) => handle(() => vault.graph().neighbors(path, { direction, types, limit })));
   server.registerTool("refresh", {
     description: "Rebuild the bound vault index and return its new generation.",
     inputSchema: z.strictObject({}),

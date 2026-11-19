@@ -7,6 +7,7 @@ import { promisify } from "node:util";
 import test from "node:test";
 import type { TestContext } from "node:test";
 import { openVault, VaultQueryError } from "../../dist/api/index.js";
+import type { VaultGraph } from "../../dist/api/index.js";
 import { fileURLToPath } from "node:url";
 
 async function fixture(t: TestContext) {
@@ -36,6 +37,7 @@ test("folder query and configured directed edges share an index", async t => {
   const root = await fixture(t);
   const before = await readFile(path.join(root, "Tasks", "a.md"), "utf8");
   const vault = await openVault(root, { edgeFields: ["parent"] });
+  const graph: VaultGraph = vault.graph();
   const listed = vault.list('lIsT FROM "Tasks"');
   assert.deepEqual(listed.data, ["Tasks/a.md", "Tasks/nested/b.md"]);
   assert.equal(listed.generation, 1);
@@ -43,15 +45,17 @@ test("folder query and configured directed edges share an index", async t => {
   assert.equal(listed.diagnostics[0].code, "NON_ATOMIC_SNAPSHOT");
   assert.deepEqual(vault.list('LIST FROM ""', { limit: 1 }).data, ["Tasks/a.md"]);
   assert.equal(vault.list('LIST FROM ""', { limit: 1 }).truncated, true);
-  assert.deepEqual(vault.neighbors("Tasks/nested/b.md").data, [
+  assert.deepEqual(graph.neighbors("Tasks/nested/b.md").data, [
     { source: "Tasks/nested/b.md", target: "Tasks/a.md", type: "parent" },
     { source: "Tasks/nested/b.md", target: "root.md", type: "parent" },
   ]);
-  assert.equal(vault.neighbors("root.md", { direction: "incoming" }).data.length, 2);
-  assert.deepEqual(vault.neighbors("root.md", { direction: "incoming", types: [] }).data, []);
+  assert.equal(vault.graph().neighbors("root.md", { direction: "incoming" }).data.length, 2);
+  assert.deepEqual(vault.graph().neighbors("root.md", { direction: "incoming", types: [] }).data, []);
   assert.equal(await readFile(path.join(root, "Tasks", "a.md"), "utf8"), before);
   vault.close();
   assert.throws(() => vault.list('LIST FROM ""'), code("VAULT_CLOSED"));
+  assert.throws(() => vault.graph(), code("VAULT_CLOSED"));
+  assert.throws(() => graph.neighbors("Tasks/nested/b.md"), code("VAULT_CLOSED"));
 });
 
 test("indexes the pinned upstream Dataview vault as paths only", async () => {
@@ -87,27 +91,29 @@ test("Dataview-inspired unsupported syntax is rejected rather than approximated"
     'LIST FROM "Tasks" OR #games', 'LIST FROM "Tasks',
   ]) assert.throws(() => vault.list(query), code("INVALID_QUERY"));
   assert.throws(() => vault.list('LIST FROM "../outside"'), code("INVALID_PATH"));
-  assert.throws(() => vault.neighbors("../root.md"), code("INVALID_PATH"));
+  assert.throws(() => vault.graph().neighbors("../root.md"), code("INVALID_PATH"));
   // @ts-expect-error Exercise validation of an invalid JavaScript caller.
-  assert.throws(() => vault.neighbors("root.md", { direction: "both" }), code("INVALID_OPTIONS"));
+  assert.throws(() => vault.graph().neighbors("root.md", { direction: "both" }), code("INVALID_OPTIONS"));
   assert.throws(() => vault.list('LIST FROM ""', { limit: 1001 }), code("INVALID_OPTIONS"));
 });
 
 test("refresh publishes additions, modifications and deletions atomically on success", async t => {
   const root = await fixture(t);
   const vault = await openVault(root, { edgeFields: ["parent"] });
+  const graph = vault.graph();
   await writeFile(path.join(root, "Tasks", "a.md"), "---\nparent: missing\n---\n");
   await assert.rejects(vault.refresh(), code("UNRESOLVED_EDGE"));
   assert.equal(vault.list('LIST FROM ""').generation, 1);
-  assert.equal(vault.neighbors("root.md", { direction: "incoming" }).data.length, 2);
+  assert.equal(graph.neighbors("root.md", { direction: "incoming" }).data.length, 2);
   await writeFile(path.join(root, "Tasks", "a.md"), "---\nparent: Tasks/nested/b\n---\n");
   await rm(path.join(root, "root.md"));
   await writeFile(path.join(root, "Tasks", "nested", "b.md"), "# no edges\n");
   await writeFile(path.join(root, "new.md"), "# new\n");
   assert.equal(await vault.refresh(), 2);
   assert.deepEqual(vault.list('LIST FROM ""').data, ["Tasks/a.md", "Tasks/nested/b.md", "new.md"]);
-  assert.equal(vault.neighbors("Tasks/nested/b.md", { direction: "incoming" }).data.length, 1);
-  assert.throws(() => vault.neighbors("root.md"), code("NOT_FOUND"));
+  assert.equal(graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).generation, 2);
+  assert.equal(graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).data.length, 1);
+  assert.throws(() => vault.graph().neighbors("root.md"), code("NOT_FOUND"));
 });
 
 test("malformed fields, limits and symlinks fail explicitly", async t => {
@@ -165,10 +171,10 @@ test("refresh cannot publish after close or overlap another refresh", async t =>
 
 test("result mutations do not alter the published index", async t => {
   const vault = await openVault(await fixture(t), { edgeFields: ["parent"] });
-  const result = vault.neighbors("Tasks/a.md");
+  const result = vault.graph().neighbors("Tasks/a.md");
   result.data[0].target = "elsewhere.md";
   result.data.push({ source: "fake.md", target: "fake.md", type: "parent" });
-  assert.deepEqual(vault.neighbors("Tasks/a.md").data, [
+  assert.deepEqual(vault.graph().neighbors("Tasks/a.md").data, [
     { source: "Tasks/a.md", target: "root.md", type: "parent" },
   ]);
   const listed = vault.list('LIST FROM ""');
@@ -208,6 +214,6 @@ test("invalid UTF-8 is rejected without replacing the current generation", async
   await writeFile(path.join(root, "Tasks", "a.md"), Buffer.from([0xff, 0xfe]));
   await assert.rejects(vault.refresh(), code("INVALID_ENCODING"));
   assert.equal(vault.list('LIST FROM "Tasks"').generation, 1);
-  assert.equal(vault.neighbors("Tasks/a.md").data[0].target, "root.md");
+  assert.equal(vault.graph().neighbors("Tasks/a.md").data[0].target, "root.md");
   vault.close();
 });
