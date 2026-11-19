@@ -53,22 +53,7 @@ export async function openVault(
 	function ensureOpen() {
 		if (closed) fail("VAULT_CLOSED", "Vault is closed.");
 	}
-	return {
-		list(query: string, options: ListOptions = {}) {
-			ensureOpen();
-			const limit = requestLimit(options, config.limits.maxResults, ["limit"]);
-			if (typeof query !== "string")
-				fail("INVALID_QUERY", 'Expected LIST FROM "<folder>".');
-			const match = /^\s*list\s+from\s+"([^"]*)"\s*$/i.exec(query);
-			if (!match)
-				fail("INVALID_QUERY", 'Only LIST FROM "<folder>" is supported.');
-			const folder = validatePath(match[1], true);
-			return result(
-				generation,
-				index.files.filter((file) => !folder || file.startsWith(`${folder}/`)),
-				limit,
-			);
-		},
+	const graph = {
 		neighbors(node: string, options: NeighborOptions = {}) {
 			ensureOpen();
 			const limit = requestLimit(options, config.limits.maxResults, [
@@ -99,6 +84,27 @@ export async function openVault(
 				values.map((edge: Edge) => ({ ...edge })),
 				limit,
 			);
+		},
+	};
+	return {
+		list(query: string, options: ListOptions = {}) {
+			ensureOpen();
+			const limit = requestLimit(options, config.limits.maxResults, ["limit"]);
+			if (typeof query !== "string")
+				fail("INVALID_QUERY", 'Expected LIST FROM "<folder>".');
+			const match = /^\s*list\s+from\s+"([^"]*)"\s*$/i.exec(query);
+			if (!match)
+				fail("INVALID_QUERY", 'Only LIST FROM "<folder>" is supported.');
+			const folder = validatePath(match[1], true);
+			return result(
+				generation,
+				index.files.filter((file) => !folder || file.startsWith(`${folder}/`)),
+				limit,
+			);
+		},
+		graph() {
+			ensureOpen();
+			return graph;
 		},
 		async refresh() {
 			ensureOpen();

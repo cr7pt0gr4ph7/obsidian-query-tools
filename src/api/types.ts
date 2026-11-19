@@ -37,8 +37,9 @@ export interface VaultGraph {
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
 }
 
-export interface Vault extends VaultGraph {
+export interface Vault {
 	list(query: string, options?: ListOptions): QueryResult<string>;
+	graph(): VaultGraph;
 	refresh(): Promise<number>;
 	close(): void;
 }

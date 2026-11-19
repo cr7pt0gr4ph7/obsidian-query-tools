@@ -29,10 +29,12 @@ internal modules for vault lifecycle and queries (`vault.ts`), index building
 (`indexer.ts`), validation (`validation.ts`), errors (`errors.ts`), and
 shared types (`types.ts`). It is exported as JavaScript and declarations
 from `dist/api/`. `openVault(root, options)` creates a context. `list(query,
-{ limit })` supports only `LIST FROM "<folder>"`; the `VaultGraph` interface
-provides `neighbors(path, { direction, types, limit })`, which returns direct
-`{ source, target, type }` edges. `Vault` extends `VaultGraph`.
-`refresh()` publishes a new generation on success; `close()` invalidates the context.
+{ limit })` supports only `LIST FROM "<folder>"`; `graph()` returns a
+`VaultGraph` with `neighbors(path, { direction, types, limit })`, which returns
+direct `{ source, target, type }` edges. A graph obtained before refresh uses
+the current generation, and is invalidated when the vault closes.
+`refresh()` publishes a new generation on success; `close()` invalidates the
+context.
 Results contain `{ generation, data, diagnostics, truncated }`; errors are
 `VaultQueryError` instances with a stable `code` and optional relative `path`.
 Index-build errors abort the generation rather than publishing partial data.

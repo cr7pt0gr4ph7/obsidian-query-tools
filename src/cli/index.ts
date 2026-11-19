@@ -42,7 +42,7 @@ async function main(args: string[]) {
       options.direction = values.direction;
     }
     if (values.type !== undefined) options.types = values.type;
-    return vault.neighbors(positionals[1], options);
+    return vault.graph().neighbors(positionals[1], options);
   } finally {
     vault.close();
   }
