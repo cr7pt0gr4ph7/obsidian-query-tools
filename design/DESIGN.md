@@ -85,9 +85,9 @@ Frontmatter is YAML between opening and closing `---` lines. Only field names
 listed in `edgeFields` at vault open are interpreted. A field value must be a
 string or array of strings containing exact vault-root-relative Markdown
 paths, with an optional `.md` suffix. Unresolved targets or unsupported
-values fail the build. Unsupported YAML tags and aliases are rejected,
-including outside configured fields. No note body, Obsidian settings, or
-plugin code is evaluated.
+values fail the build. Invalid UTF-8 and unsupported YAML tags and aliases
+are rejected, including outside configured fields. No note body, Obsidian
+settings, or plugin code is evaluated.
 
 Default limits are 100,000 visited directory entries, 10,000 Markdown files,
 1 MiB per Markdown file, 100,000 edges, and 1,000 results. A request may

@@ -95,7 +95,11 @@ async function readFile(parent, name, relativePath, limit) {
     if (!current.isFile() || signature(before) !== signature(after) || signature(after) !== signature(current)) {
       fail("VAULT_CHANGED", "File changed while indexing.", relativePath);
     }
-    return buffer.subarray(0, length).toString("utf8");
+    try {
+      return new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, length));
+    } catch {
+      fail("INVALID_ENCODING", "Markdown file is not valid UTF-8.", relativePath);
+    }
   } finally {
     await file.close();
   }

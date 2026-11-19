@@ -46,11 +46,29 @@ test("folder query and configured directed edges share an index", async t => {
   assert.throws(() => vault.list('LIST FROM ""'), code("VAULT_CLOSED"));
 });
 
-test("indexes the pinned upstream Dataview task fixture as a path only", async () => {
+test("indexes the pinned upstream Dataview vault as paths only", async () => {
   const root = fileURLToPath(new URL("./fixtures/dataview/", import.meta.url));
   const vault = await openVault(root);
-  assert.deepEqual(vault.list('LIST FROM "tasks"').data, ["tasks/checklist.md"]);
+  assert.deepEqual(vault.list('lIsT FROM "tasks"').data, [
+    "tasks/Annotated Tasks.md",
+    "tasks/Completed Tasks.md",
+    "tasks/Grouped Sorted Tasks.md",
+    "tasks/Sorted Tasks.md",
+    "tasks/Tasks Completed on specific Date.md",
+    "tasks/Tasks in a specific section.md",
+    "tasks/Uncompleted Tasks.md",
+    "tasks/checklist.md",
+    "tasks/example tasks.md",
+  ]);
+  assert.deepEqual(vault.list('LIST FROM "books"').data, [
+    "books/Catcher in the Rye.md",
+    "books/Origin of Species.md",
+    "books/The Great Gatsby.md",
+  ]);
+  assert.deepEqual(vault.list('LIST FROM "book"').data, []);
   assert.throws(() => vault.list("TASK FROM #page-tag"), code("INVALID_QUERY"));
+  assert.throws(() => vault.list("list from [[Stuff]]"), code("INVALID_QUERY"));
+  vault.close();
 });
 
 test("Dataview-inspired unsupported syntax is rejected rather than approximated", async t => {
@@ -171,4 +189,14 @@ test("unreadable Markdown causes an explicit vault read error", async t => {
   `;
   const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", program, root]);
   assert.equal(stdout, "VAULT_READ_ERROR");
+});
+
+test("invalid UTF-8 is rejected without replacing the current generation", async t => {
+  const root = await fixture(t);
+  const vault = await openVault(root, { edgeFields: ["parent"] });
+  await writeFile(path.join(root, "Tasks", "a.md"), Buffer.from([0xff, 0xfe]));
+  await assert.rejects(vault.refresh(), code("INVALID_ENCODING"));
+  assert.equal(vault.list('LIST FROM "Tasks"').generation, 1);
+  assert.equal(vault.neighbors("Tasks/a.md").data[0].target, "root.md");
+  vault.close();
 });

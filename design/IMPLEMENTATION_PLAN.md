@@ -30,6 +30,8 @@ implementation ready.
   startup-bound vault, structured results, and SDK integration tests.
 - [x] Verify the suite on Node 24.22.3 and 26.13.0 on Linux.
 - [x] Add an unprivileged unreadable-file API test.
+- [x] Import the pinned upstream Dataview test-vault Markdown data as an API
+  fixture, excluding bundled plugin code, and test the supported folder form.
 
 ## Next
 

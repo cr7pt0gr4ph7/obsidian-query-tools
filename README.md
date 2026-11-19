@@ -25,8 +25,8 @@ vault.close();
 
 `parent` values are exact vault-root-relative Markdown paths, or arrays of
 paths, with an optional `.md` suffix. Unresolved targets, wikilinks, invalid
-or unsupported YAML (including aliases), symlinks and special files fail
-explicitly. Requests return
+UTF-8 or unsupported YAML (including aliases), symlinks and special files
+fail explicitly. Requests return
 `{ generation, data, diagnostics, truncated }`; errors expose a `code`.
 Limits, error behavior, and filesystem race limitations are described in the
 [design](design/DESIGN.md).
