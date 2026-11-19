@@ -27,13 +27,13 @@ vault.
 
 ```js
 const vault = await openVault("/home/me/Notes", {
-    edgeFields: ["parent", "project"],
+	edgeFields: ["parent", "project"],
 });
 
 try {
-    // Query the vault here.
+	// Query the vault here.
 } finally {
-    vault.close();
+	vault.close();
 }
 ```
 
@@ -43,24 +43,24 @@ type. Unknown options and invalid limits raise `VaultQueryError`.
 
 The default resource limits are:
 
-| Limit option | Default | Applies to |
-| --- | ---: | --- |
-| `maxEntries` | 100,000 | Directory entries visited |
-| `maxFiles` | 10,000 | Markdown files indexed |
+| Limit option   |   Default | Applies to                  |
+| -------------- | --------: | --------------------------- |
+| `maxEntries`   |   100,000 | Directory entries visited   |
+| `maxFiles`     |    10,000 | Markdown files indexed      |
 | `maxFileBytes` | 1,048,576 | Bytes in each Markdown file |
-| `maxEdges` | 100,000 | Configured relationships |
-| `maxResults` | 1,000 | Results returned by a query |
+| `maxEdges`     |   100,000 | Configured relationships    |
+| `maxResults`   |     1,000 | Results returned by a query |
 
 You can lower or raise the index limits when opening the vault. Each configured
 limit must be a positive safe integer. For example:
 
 ```js
 const vault = await openVault("/home/me/Notes", {
-    edgeFields: ["parent"],
-    limits: {
-        maxFiles: 2_000,
-        maxResults: 250,
-    },
+	edgeFields: ["parent"],
+	limits: {
+		maxFiles: 2_000,
+		maxResults: 250,
+	},
 });
 ```
 
@@ -87,7 +87,7 @@ An optional per-query `limit` can lower the configured `maxResults`:
 ```js
 const result = vault.list('LIST FROM ""', { limit: 25 });
 if (result.truncated) {
-    console.log("The result was limited.");
+	console.log("The result was limited.");
 }
 ```
 
@@ -122,8 +122,8 @@ empty array for no edges). `limit` behaves as it does for `list`.
 
 ```js
 const result = vault.neighbors("Projects/Active/task.md", {
-    direction: "outgoing",
-    types: ["parent"],
+	direction: "outgoing",
+	types: ["parent"],
 });
 
 console.log(result.data);
@@ -142,10 +142,10 @@ Both query methods return a `QueryResult<T>`:
 
 ```ts
 interface QueryResult<T> {
-  generation: number;
-  data: T[];
-  diagnostics: { code: string; message: string }[];
-  truncated: boolean;
+	generation: number;
+	data: T[];
+	diagnostics: { code: string; message: string }[];
+	truncated: boolean;
 }
 ```
 
@@ -165,13 +165,13 @@ and an optional vault-relative `path` identifying the affected file:
 
 ```js
 try {
-    vault.list("TABLE FROM #projects");
+	vault.list("TABLE FROM #projects");
 } catch (error) {
-    if (error instanceof VaultQueryError) {
-        console.error(error.code, error.path, error.message);
-    } else {
-        throw error;
-    }
+	if (error instanceof VaultQueryError) {
+		console.error(error.code, error.path, error.message);
+	} else {
+		throw error;
+	}
 }
 ```
 

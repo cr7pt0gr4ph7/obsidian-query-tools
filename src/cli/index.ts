@@ -1,34 +1,27 @@
 #!/usr/bin/env node
+import { Command, CommanderError, Option } from "commander";
 import { pathToFileURL } from "node:url";
 import { VaultQueryError, openVault } from "../api/index.js";
 import type { NeighborOptions, Vault } from "../api/index.js";
 
-type Command =
+type CliCommand =
 	| { operation: "list"; query: string; limit?: number }
-	| {
-			operation: "neighbors";
-			path: string;
-			options: NeighborOptions;
-	  };
+	| { operation: "neighbors"; path: string; options: NeighborOptions };
 
-interface ParsedArguments {
-	vaultPath: string;
-	edgeFields: string[];
-	command: Command;
+interface RootOptions {
+	vault?: string;
+	edgeField: string[];
 }
 
-const usage = `Usage:
-  obsidian-query-tools --vault <directory> [--edge-field <field> ...] list <query> [--limit <count>]
-  obsidian-query-tools --vault <directory> [--edge-field <field> ...] neighbors <path> [--direction <incoming|outgoing>] [--edge-type <type> ...] [--limit <count>]
+interface LimitOptions {
+	limit?: string;
+}
 
-Options:
-  --vault <directory>      Select the local vault to query
-  --edge-field <field>     Index a configured frontmatter edge field (repeatable)
-  --edge-type <type>       Filter neighbors by edge type (repeatable)
-  --direction <direction>  Select incoming or outgoing neighbors
-  --limit <count>          Lower the API's default result limit
-  --help                   Show this help
-`;
+interface NeighborCliOptions extends LimitOptions {
+	direction?: "incoming" | "outgoing";
+	edgeType?: string[];
+	edgeField?: string[];
+}
 
 function invalidArguments(message: string): never {
 	throw new VaultQueryError("INVALID_OPTIONS", message);
@@ -43,132 +36,6 @@ function positiveInteger(value: string, option: string): number {
 		invalidArguments(`${option} must be a positive integer.`);
 	}
 	return parsed;
-}
-
-function parseArguments(args: string[]): ParsedArguments {
-	let vaultPath: string | undefined;
-	let direction: "incoming" | "outgoing" | undefined;
-	let limit: number | undefined;
-	const edgeFields: string[] = [];
-	const types: string[] = [];
-	const positionals: string[] = [];
-	let sawDirection = false;
-	let sawLimit = false;
-
-	for (let index = 0; index < args.length; index += 1) {
-		const arg = args[index];
-		if (!arg.startsWith("--")) {
-			positionals.push(arg);
-			continue;
-		}
-
-		const equalsIndex = arg.indexOf("=");
-		const option = equalsIndex < 0 ? arg : arg.slice(0, equalsIndex);
-		let value = equalsIndex < 0 ? undefined : arg.slice(equalsIndex + 1);
-		if (option === "--help") invalidArguments("Help requested.");
-
-		if (
-			![
-				"--vault",
-				"--edge-field",
-				"--direction",
-				"--edge-type",
-				"--limit",
-			].includes(option)
-		) {
-			invalidArguments(`Unknown option: ${option}`);
-		}
-		if (value === undefined) {
-			index += 1;
-			value = args[index];
-		}
-		if (value === undefined || value.startsWith("--")) {
-			invalidArguments(`Missing value for ${option}.`);
-		}
-
-		switch (option) {
-			case "--vault":
-				if (vaultPath !== undefined)
-					invalidArguments("--vault may be specified once.");
-				vaultPath = value;
-				break;
-			case "--edge-field":
-				edgeFields.push(value);
-				break;
-			case "--edge-type":
-				types.push(value);
-				break;
-			case "--direction":
-				if (sawDirection)
-					invalidArguments("--direction may be specified once.");
-				sawDirection = true;
-				if (value !== "incoming" && value !== "outgoing") {
-					invalidArguments("--direction must be incoming or outgoing.");
-				}
-				direction = value;
-				break;
-			case "--limit":
-				if (sawLimit) invalidArguments("--limit may be specified once.");
-				sawLimit = true;
-				limit = positiveInteger(value, "--limit");
-				break;
-		}
-	}
-
-	if (vaultPath === undefined || !vaultPath)
-		invalidArguments("--vault is required.");
-	let operation: string;
-	let input: string;
-	if (positionals[0] === "graph") {
-		if (positionals[1] === "traverse" || positionals[1] === "export") {
-			throw new VaultQueryError(
-				"UNSUPPORTED_FEATURE",
-				`The graph ${positionals[1]} command requires shared API support that is not available.`,
-			);
-		}
-		if (
-			positionals.length !== 3 ||
-			positionals[1] !== "neighbors" ||
-			edgeFields.length === 0
-		) {
-			invalidArguments(
-				"Use graph neighbors <path> with at least one --edge-field.",
-			);
-		}
-		operation = "neighbors";
-		input = positionals[2];
-	} else {
-		if (positionals.length !== 2) {
-			invalidArguments("Specify exactly one operation and one query or path.");
-		}
-		operation = positionals[0];
-		input = positionals[1];
-	}
-
-	if (operation === "list") {
-		if (direction !== undefined || types.length > 0) {
-			invalidArguments(
-				"--direction and --edge-type are only valid for neighbors.",
-			);
-		}
-		return {
-			vaultPath,
-			edgeFields,
-			command: { operation, query: input, limit },
-		};
-	}
-	if (operation === "neighbors") {
-		const options: NeighborOptions = {};
-		if (direction !== undefined) options.direction = direction;
-		if (types.length > 0) options.types = types;
-		if (limit !== undefined) options.limit = limit;
-		return {
-			vaultPath,
-			edgeFields,
-			command: { operation, path: input, options },
-		};
-	}
-	invalidArguments(`Unsupported operation: ${operation}`);
 }
 
 function serializeError(error: unknown): string {
@@ -188,29 +55,158 @@ function serializeError(error: unknown): string {
 	});
 }
 
-async function execute(vault: Vault, command: Command): Promise<unknown> {
+async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
 	if (command.operation === "list") {
 		return vault.list(command.query, { limit: command.limit });
 	}
 	return vault.graph().neighbors(command.path, command.options);
 }
 
-export async function runCli(args: string[]): Promise<number> {
-	if (args.includes("--help")) {
-		process.stdout.write(usage);
-		return 0;
+function createProgram(select: (command: CliCommand) => void): Command {
+	const program = new Command()
+		.name("obsidian-query-tools")
+		.description("Query a local Obsidian vault.")
+		.requiredOption("--vault <directory>", "Select the local vault to query")
+		.option(
+			"--edge-field <field>",
+			"Index a configured frontmatter edge field (repeatable)",
+			(value: string, previous: string[]) => [...previous, value],
+			[],
+		)
+		.allowExcessArguments(false)
+		.exitOverride()
+		.configureOutput({
+			writeOut: (text) => process.stdout.write(text),
+			writeErr: () => {},
+		});
+
+	program
+		.command("list <query>")
+		.description("Run a supported LIST query.")
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((query: string, options: LimitOptions) => {
+			const command: CliCommand = {
+				operation: "list",
+				query,
+			};
+			if (options.limit !== undefined) {
+				command.limit = positiveInteger(options.limit, "--limit");
+			}
+			select(command);
+		});
+
+	const neighbors = (path: string, options: NeighborCliOptions) => {
+		const neighborOptions: NeighborOptions = {};
+		if (options.direction !== undefined) {
+			neighborOptions.direction = options.direction;
+		}
+		if (options.edgeType !== undefined) {
+			neighborOptions.types = options.edgeType;
+		}
+		if (options.limit !== undefined) {
+			neighborOptions.limit = positiveInteger(options.limit, "--limit");
+		}
+		select({ operation: "neighbors", path, options: neighborOptions });
+	};
+
+	program
+		.command("neighbors <path>")
+		.description("Query direct graph neighbors.")
+		.addOption(
+			new Option(
+				"--direction <direction>",
+				"Select incoming or outgoing neighbors",
+			).choices(["incoming", "outgoing"]),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter neighbors by edge type (repeatable)",
+			(value: string, previous: string[]) => [...previous, value],
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action(neighbors);
+
+	const graph = program.command("graph").description("Run a graph operation.");
+
+	graph
+		.command("neighbors <path>")
+		.description("Query direct graph neighbors.")
+		.option(
+			"--edge-field <field>",
+			"Index a configured frontmatter edge field",
+			(value: string, previous: string[]) => [...previous, value],
+			[],
+		)
+		.addOption(
+			new Option(
+				"--direction <direction>",
+				"Select incoming or outgoing neighbors",
+			).choices(["incoming", "outgoing"]),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter neighbors by edge type (repeatable)",
+			(value: string, previous: string[]) => [...previous, value],
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((path: string, options: NeighborCliOptions, command: Command) => {
+			const globalOptions = command.optsWithGlobals<RootOptions>();
+			const edgeFields = [
+				...globalOptions.edgeField,
+				...(options.edgeField ?? []),
+			];
+			if (edgeFields.length === 0) {
+				invalidArguments(
+					"Use graph neighbors <path> with at least one --edge-field.",
+				);
+			}
+			neighbors(path, options);
+		});
+
+	for (const operation of ["traverse", "export"]) {
+		graph
+			.command(`${operation} [arguments...]`)
+			.description(`Graph ${operation} is not available in the shared API.`)
+			.action(() => {
+				throw new VaultQueryError(
+					"UNSUPPORTED_FEATURE",
+					`The graph ${operation} command requires shared API support that is not available.`,
+				);
+			});
 	}
+
+	return program;
+}
+
+export async function runCli(args: string[]): Promise<number> {
+	let selectedCommand: CliCommand | undefined;
+	const program = createProgram((command) => {
+		selectedCommand = command;
+	});
 
 	let vault: Vault | undefined;
 	try {
-		const parsed = parseArguments(args);
-		vault = await openVault(parsed.vaultPath, {
-			edgeFields: parsed.edgeFields,
-		});
-		const result = await execute(vault, parsed.command);
+		await program.parseAsync(args, { from: "user" });
+		if (selectedCommand === undefined) {
+			invalidArguments("Specify a supported operation.");
+		}
+		const options = program.opts<RootOptions>();
+		if (!options.vault) invalidArguments("--vault is required.");
+		vault = await openVault(options.vault, { edgeFields: options.edgeField });
+		const result = await execute(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);
 		return 0;
 	} catch (error) {
+		if (error instanceof CommanderError && error.exitCode === 0) return 0;
+		if (error instanceof CommanderError) {
+			const message = error.message.replace(/^error: /, "");
+			process.stderr.write(
+				`${serializeError(new VaultQueryError("INVALID_OPTIONS", message))}\n`,
+			);
+			return 1;
+		}
 		process.stderr.write(`${serializeError(error)}\n`);
 		return 1;
 	} finally {

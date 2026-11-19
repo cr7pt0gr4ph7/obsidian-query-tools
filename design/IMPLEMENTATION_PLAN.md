@@ -14,7 +14,8 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - Graph-specific limits, configuration, and index structures within the shared vault index.
 - Shared API domain modules with a stable public entrypoint and unchanged
   CLI/MCP API usage.
-- CLI and stdio MCP adapters that use the API and return bounded results.
+- Commander-based CLI and stdio MCP adapters that use the API and return
+  bounded results.
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
 - Node.js 24 and 26 CI coverage; reproducible install, build, and test commands.

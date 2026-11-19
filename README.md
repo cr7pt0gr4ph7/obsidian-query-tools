@@ -56,6 +56,7 @@ The CLI prints a single JSON result on stdout, or a JSON error on stderr with
 exit status 1.
 
 ```sh
+node dist/cli/index.js --help
 node dist/cli/index.js --vault /path/to/vault list 'LIST FROM "Tasks"'
 node dist/cli/index.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 node dist/cli/index.js --vault /path/to/vault graph neighbors Tasks/example.md --edge-field parent

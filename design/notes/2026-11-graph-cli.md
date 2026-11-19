@@ -72,16 +72,16 @@ obsidian-query-tools --vault ./vault graph neighbors Projects/Alpha.md \
 
 ```json
 {
-  "generation": 1,
-  "data": [
-    {
-      "source": "Projects/Alpha.md",
-      "target": "Projects.md",
-      "type": "parent"
-    }
-  ],
-  "diagnostics": [],
-  "truncated": false
+	"generation": 1,
+	"data": [
+		{
+			"source": "Projects/Alpha.md",
+			"target": "Projects.md",
+			"type": "parent"
+		}
+	],
+	"diagnostics": [],
+	"truncated": false
 }
 ```
 
@@ -98,23 +98,19 @@ Isolated notes are included:
 
 ```json
 {
-  "generation": 1,
-  "data": {
-    "nodes": [
-      "Projects.md",
-      "Projects/Alpha.md",
-      "Projects/Beta.md"
-    ],
-    "edges": [
-      {
-        "source": "Projects/Alpha.md",
-        "target": "Projects.md",
-        "type": "parent"
-      }
-    ]
-  },
-  "diagnostics": [],
-  "truncated": false
+	"generation": 1,
+	"data": {
+		"nodes": ["Projects.md", "Projects/Alpha.md", "Projects/Beta.md"],
+		"edges": [
+			{
+				"source": "Projects/Alpha.md",
+				"target": "Projects.md",
+				"type": "parent"
+			}
+		]
+	},
+	"diagnostics": [],
+	"truncated": false
 }
 ```
 

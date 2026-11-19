@@ -62,10 +62,12 @@ per Markdown file, 100,000 edges, and 1,000 results. Requests may lower the
 configured result limit. Excess results set `truncated: true`; build-limit
 exhaustion is an error.
 
-The CLI takes an explicit local vault and query input, outputs normalized JSON
-to stdout, and reports JSON errors on stderr with exit status 1. It exposes
-the shared API's `list` and `neighbors` operations without separate query
-semantics; results include their diagnostics in the JSON envelope.
+The CLI uses Commander for command and option parsing, takes an explicit local
+vault and query input, outputs normalized JSON to stdout, and reports JSON
+errors on stderr with exit status 1. It exposes the shared API's `list` and
+`neighbors` operations without separate query semantics; results include their
+diagnostics in the JSON envelope. Framework parsing errors are normalized to
+the same structured CLI error format.
 The [console note](notes/2026-11-19-console-interface.md) describes a test
 seam, not a supported executable or query interface.
 The MCP server uses the official MCP SDK v2 over stdio, with a vault bound by
