@@ -18,6 +18,8 @@
   },
   "scripts": {
     "build": "tsc && chmod +x dist/cli/index.js dist/mcp/index.js",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "test": "npm run build && tsc -p tsconfig.test.json && node --test test/api/*.test.ts test/cli/*.test.ts test/mcp/*.test.ts"
   },
   "dependencies": {
@@ -26,6 +28,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.8",
     "@modelcontextprotocol/client": "2.4.0",
     "@types/node": "24.19.2",
     "typescript": "6.0.3"
