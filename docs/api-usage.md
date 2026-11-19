@@ -27,13 +27,13 @@ vault.
 
 ```js
 const vault = await openVault("/home/me/Notes", {
-  edgeFields: ["parent", "project"],
+    edgeFields: ["parent", "project"],
 });
 
 try {
-  // Query the vault here.
+    // Query the vault here.
 } finally {
-  vault.close();
+    vault.close();
 }
 ```
 
@@ -56,11 +56,11 @@ limit must be a positive safe integer. For example:
 
 ```js
 const vault = await openVault("/home/me/Notes", {
-  edgeFields: ["parent"],
-  limits: {
-    maxFiles: 2_000,
-    maxResults: 250,
-  },
+    edgeFields: ["parent"],
+    limits: {
+        maxFiles: 2_000,
+        maxResults: 250,
+    },
 });
 ```
 
@@ -87,7 +87,7 @@ An optional per-query `limit` can lower the configured `maxResults`:
 ```js
 const result = vault.list('LIST FROM ""', { limit: 25 });
 if (result.truncated) {
-  console.log("The result was limited.");
+    console.log("The result was limited.");
 }
 ```
 
@@ -122,8 +122,8 @@ empty array for no edges). `limit` behaves as it does for `list`.
 
 ```js
 const result = vault.neighbors("Projects/Active/task.md", {
-  direction: "outgoing",
-  types: ["parent"],
+    direction: "outgoing",
+    types: ["parent"],
 });
 
 console.log(result.data);
@@ -165,13 +165,13 @@ and an optional vault-relative `path` identifying the affected file:
 
 ```js
 try {
-  vault.list("TABLE FROM #projects");
+    vault.list("TABLE FROM #projects");
 } catch (error) {
-  if (error instanceof VaultQueryError) {
-    console.error(error.code, error.path, error.message);
-  } else {
-    throw error;
-  }
+    if (error instanceof VaultQueryError) {
+        console.error(error.code, error.path, error.message);
+    } else {
+        throw error;
+    }
 }
 ```
 

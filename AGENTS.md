@@ -19,6 +19,7 @@ substantive decisions change.
   versions and representative, non-sensitive fixtures. Do not claim parity
   without evidence.
 - Keep design documents in sync with substantive implementation decisions.
+- Indent JavaScript in Markdown code blocks with four spaces.
 - Store research and other project notes in `design/notes/` using filenames
   that begin with `YYYY-MM-` (for example, `2026-11-upstream.md`).
   Create a new file for separate runs if necessary, except if the information
