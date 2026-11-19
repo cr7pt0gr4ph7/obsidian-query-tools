@@ -33,9 +33,12 @@ export interface QueryResult<T> {
 	truncated: boolean;
 }
 
-export interface Vault {
-	list(query: string, options?: ListOptions): QueryResult<string>;
+export interface VaultGraph {
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
+}
+
+export interface Vault extends VaultGraph {
+	list(query: string, options?: ListOptions): QueryResult<string>;
 	refresh(): Promise<number>;
 	close(): void;
 }
