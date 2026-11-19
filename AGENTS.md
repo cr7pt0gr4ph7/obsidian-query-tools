@@ -22,6 +22,8 @@ substantive decisions change.
 - Keep design documents in sync with substantive implementation decisions.
 - Store research and other project notes in `design/notes/` using filenames
   that begin with `YYYY-MM-` (for example, `2026-11-upstream.md`).
+  Create a new file for separate runs if necessary, except if the information
+  fits suitably into the existing files.
 
 There are no project build, lint, or test commands yet. Add and document them
 when the implementation is introduced.
