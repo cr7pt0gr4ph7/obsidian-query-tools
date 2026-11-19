@@ -6,8 +6,9 @@ The repository has a deliberately narrow TypeScript implementation exposing a
 standalone JavaScript API, CLI, and stdio MCP server. It does not claim
 Dataview or Breadcrumbs parity.
 The CLI and MCP prototypes were implemented before the API approval gate was
-specified. Do not continue interface work until the user declares the API
-implementation ready.
+specified. The user approved API readiness for the proposed-console contract
+test seam in this PR only; this does not approve production integration or
+broader query semantics.
 
 ## Current
 
@@ -40,13 +41,17 @@ implementation ready.
   prototype, including output formats, vault and current-file selection, and
   a safety gate for requested JavaScript modes:
   [console specification](notes/2026-11-19-console-interface.md).
+- [x] Add an injectable proposed-console command runner and mocked-API unit
+  tests for argument/input handling, API dispatch, output, errors, and the
+  disabled JavaScript modes. This is not a production executable or API
+  adapter.
 
 ## Next
 
 - [ ] Continue API-level implementation and unit tests, including
   filesystem-race coverage and documented residual limitations.
-- [ ] Obtain the user's explicit API-ready declaration before continuing CLI
-  or MCP implementation.
+- [ ] Obtain separate API-ready approval before production integration of the
+  proposed console query modes or any expansion beyond the existing API.
 - [ ] Before enabling JavaScript query modes, obtain a separately approved
   execution and authorization design that preserves the vault-script
   prohibition and the project's privacy and read-only requirements.
