@@ -4,7 +4,7 @@ import { lstat, open, opendir } from "node:fs/promises";
 import type { FileHandle } from "node:fs/promises";
 import path from "node:path";
 import { parseDocument } from "yaml";
-import { fail, VaultQueryError } from "../errors.js";
+import { fail, VaultQueryError } from "../utils/errors.js";
 import type { Edge, GraphIndex } from "../graph/types.js";
 import { validatePath } from "../validation.js";
 import type { Config, VaultIndex } from "./types.js";

@@ -1,4 +1,4 @@
-import { fail } from "../errors.js";
+import { fail } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { validatePath } from "../validation.js";
 

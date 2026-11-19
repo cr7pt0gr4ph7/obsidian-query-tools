@@ -1,4 +1,4 @@
-import { fail } from "../errors.js";
+import { fail } from "../utils/errors.js";
 import type { GraphLimits } from "../graph/config.js";
 import type { Config, VaultLimits, VaultOptions } from "./types.js";
 

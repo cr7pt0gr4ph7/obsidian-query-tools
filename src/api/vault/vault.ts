@@ -1,5 +1,5 @@
 import { lstat, realpath } from "node:fs/promises";
-import { fail, VaultQueryError } from "../errors.js";
+import { fail, VaultQueryError } from "../utils/errors.js";
 import { list } from "../dataview/list.js";
 import { neighbors } from "../graph/neighbors.js";
 import { requestLimit, validatePath } from "../validation.js";

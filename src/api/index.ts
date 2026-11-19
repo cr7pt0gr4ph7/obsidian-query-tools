@@ -1,5 +1,5 @@
 /** Structured error type raised by shared API operations. */
-export { VaultQueryError } from "./errors.js";
+export { VaultQueryError } from "./utils/errors.js";
 /** Open a local vault and create the shared read-only query context. */
 export { openVault } from "./vault/vault.js";
 /** Options for folder-list queries. */

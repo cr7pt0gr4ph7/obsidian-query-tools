@@ -1,4 +1,4 @@
-import { fail } from "./errors.js";
+import { fail } from "./utils/errors.js";
 import type { ListOptions } from "./dataview/list.js";
 
 /**
