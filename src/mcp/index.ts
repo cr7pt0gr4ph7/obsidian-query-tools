@@ -3,7 +3,7 @@ import { parseArgs } from "node:util";
 import { McpServer } from "@modelcontextprotocol/server";
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod/v4";
-import { openVault, VaultQueryError } from "./index.js";
+import { openVault, VaultQueryError } from "../api/index.js";
 
 function reply(data: Record<string, unknown>) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data) }], structuredContent: data };

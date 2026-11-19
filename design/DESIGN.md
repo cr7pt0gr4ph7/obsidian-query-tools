@@ -70,8 +70,10 @@ material for syntax and edge cases, not a parity oracle for this API.
 
 ## Interface contract
 
-The API is implemented in TypeScript at `src/index.ts` and exported as
-JavaScript and TypeScript declarations from `dist/`. `openVault(root, options)` creates a
+The API is implemented in TypeScript at `src/api/index.ts` and exported as
+JavaScript and TypeScript declarations from `dist/api/`. The CLI and MCP
+entrypoints live in `src/cli/` and `src/mcp/`, with corresponding generated
+files under `dist/`. `openVault(root, options)` creates a
 context; `list(query, { limit })` accepts only `LIST FROM "<folder>"`;
 `neighbors(path, { direction, types, limit })` returns direct
 `{ source, target, type }` edges; `refresh()` builds and publishes the next

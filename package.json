@@ -5,19 +5,19 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.js"
     }
   },
   "bin": {
-    "obsidian-query-tools": "./dist/cli.js",
-    "obsidian-query-tools-mcp": "./dist/mcp.js"
+    "obsidian-query-tools": "./dist/cli/index.js",
+    "obsidian-query-tools-mcp": "./dist/mcp/index.js"
   },
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "build": "tsc && chmod +x dist/cli.js dist/mcp.js",
+    "build": "tsc && chmod +x dist/cli/index.js dist/mcp/index.js",
     "test": "npm run build && tsc -p tsconfig.test.json && node --test test/*.test.ts"
   },
   "dependencies": {

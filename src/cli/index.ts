@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { openVault, VaultQueryError } from "./index.js";
-import type { NeighborOptions } from "./index.js";
+import { openVault, VaultQueryError } from "../api/index.js";
+import type { NeighborOptions } from "../api/index.js";
 
 async function main(args: string[]) {
   let parsed;

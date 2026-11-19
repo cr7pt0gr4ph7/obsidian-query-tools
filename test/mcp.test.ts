@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
-import { openVault } from "../dist/index.js";
+import { openVault } from "../dist/api/index.js";
 
 function record(value: unknown): Record<string, unknown> {
   assert.ok(value !== null && typeof value === "object" && !Array.isArray(value));
@@ -20,7 +20,7 @@ test("MCP stdio tools use the bound vault and shared API", async t => {
   await writeFile(path.join(root, "b.md"), "# b\n");
   const vault = await openVault(root, { edgeFields: ["parent"] });
   const client = new Client({ name: "test-client", version: "1.0.0" });
-  const server = fileURLToPath(new URL("../dist/mcp.js", import.meta.url));
+  const server = fileURLToPath(new URL("../dist/mcp/index.js", import.meta.url));
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [server, "--vault", root, "--edge-field", "parent"],

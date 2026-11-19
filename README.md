@@ -39,12 +39,12 @@ exit status 1. Repeat `--edge-field` to configure multiple fields; use
 edges, and `--limit` to lower the result limit.
 
 ```sh
-node dist/cli.js --vault /path/to/vault list 'LIST FROM "Tasks"'
-node dist/cli.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
+node dist/cli/index.js --vault /path/to/vault list 'LIST FROM "Tasks"'
+node dist/cli/index.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 ```
 
 For MCP stdio, start
-`node dist/mcp.js --vault /path/to/vault --edge-field parent`. The server
+`node dist/mcp/index.js --vault /path/to/vault --edge-field parent`. The server
 exposes `list`, `neighbors`, and `refresh`, with the vault bound at startup;
 tool arguments cannot select a different vault. Successful tool results carry
 the API result in `structuredContent` and as JSON text; failures have
