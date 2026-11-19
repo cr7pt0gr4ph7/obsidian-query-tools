@@ -4,13 +4,11 @@ Status: initial implementation scope. **Must** denotes a target requirement,
 not necessarily an implemented feature. The initial subset is intentionally
 not a plugin-compatibility claim.
 
-## Goal and terminology
+## Goal and scope
 
 Provide a local Node.js library, CLI, and MCP server for querying an Obsidian
-vault with a shared JavaScript API.
-An Obsidian “database” here means the vault's Markdown files, attachments,
-and relevant configuration, rather than a separate database server. An
-index is a derived, disposable representation of that content.
+vault with a shared JavaScript API. The index is a derived, disposable
+representation of vault content.
 
 Reuse upstream code unchanged where practical, but do not assume plugin
 compatibility. The initial subset below has project-defined behavior and does
@@ -33,22 +31,16 @@ unsupported cases.
 | F9 | Return actionable errors for invalid vaults, configuration, queries, unsupported features, resource limits, and unreadable files. Partial results, if provided, must be explicitly marked with diagnostics. |
 | F10 | Supply configurable resource limits for directory entries, Markdown files, file size, edge count, and results; signal truncation or a limit error rather than silently returning incomplete results. |
 
-### Initial scope
+The implementation targets local, read-only access to one selected vault at
+a time. Edge values are vault-root-relative Markdown paths, optionally
+supplied as arrays; aliases, wikilinks, inferred edges, and transitive rules
+are excluded. The runtime target is Node.js 24 or later on Linux with procfs;
+Node.js 24.22.3 and 26.13.0 have been tested.
 
-The first implementation targets local, read-only access to one selected
-vault at a time. Its intentionally narrow, project-defined subset is
-`LIST FROM "<folder>"` (paths only) and direct typed edges from configured
-frontmatter fields (direct neighbors only). Edge values are vault-root-relative
-Markdown paths, optionally supplied as arrays; aliases, wikilinks, inference,
-and transitive rules are excluded. It does not claim Dataview or Breadcrumbs
-parity. The initial runtime target is Node.js 24 or later on Linux with
-procfs; Node.js 24.22.3 and 26.13.0 have been tested.
-
-Out of scope initially: vault mutation, Obsidian UI/rendering, arbitrary
-DataviewJS or other JavaScript embedded in a vault or query, remote vault
-access, hosting a multi-user service, and replacing Obsidian's plugin UI.
-Running plugin code to implement queries is distinct from executing
-user-supplied scripts; the latter is prohibited by default.
+Vault mutation, Obsidian UI/rendering, executing JavaScript embedded in a
+vault or query, remote vault access, multi-user hosting, and replacing
+Obsidian's plugin UI are out of scope. Upstream code reuse does not authorize
+execution of user-supplied scripts.
 
 ## Non-functional requirements
 
@@ -56,20 +48,20 @@ user-supplied scripts; the latter is prohibited by default.
   explicit allowlist; account for symlinks and path traversal. No network
   transmission of vault data by default. MCP requests must not choose arbitrary
   server filesystem paths. Avoid logging note contents by default.
-- **Reuse and maintenance:** assess existing upstream packages, source imports,
-  submodules, and adapters in that order of suitability, without presuming an
-  npm package is standalone-compatible. Pin exact revisions and dependencies
-  reproducibly; retain required license notices and document any patches.
+- **Reuse and maintenance:** assess upstream packages, source imports,
+  submodules, and adapters without presuming standalone compatibility. Pin
+  revisions and dependencies reproducibly, retain license notices, and
+  document patches.
 - **Correctness:** test the documented project-defined subset with
   representative fixtures, including negative, unsupported-feature, and
   security-boundary cases. Do not imply upstream parity; any future parity
   claim requires same-revision Obsidian oracle evidence.
-- **Operational behavior:** provide deterministic serialization and ordering
-  where query semantics do not specify an order, documented limits, clean
-  lifecycle/shutdown, and actionable diagnostics without corrupting CLI JSON
-  or MCP stdio.
-- **Portability:** select supported Node.js and operating-system versions
-  after the upstream compatibility spike; publish and test that matrix.
+- **Operations:** provide deterministic ordering and serialization where
+  semantics do not specify an order, documented limits, clean lifecycle and
+  shutdown, and actionable diagnostics without corrupting CLI JSON or MCP
+  stdio.
+- **Portability:** document and test the supported Node.js and operating
+  system versions.
 
 ## Acceptance criteria for an initial implementation
 
@@ -84,12 +76,10 @@ user-supplied scripts; the latter is prohibited by default.
    atomic filesystem snapshot.
 4. Tests establish that vault content is not written, paths and symlinks cannot
    escape the authorized root, vault scripts are not executed, and the MCP
-   interface cannot select an arbitrary vault. Limits and cycles terminate
-   predictably.
+   interface cannot select an arbitrary vault. Resource limits are enforced.
 5. A clean checkout can reproduce installation, build, and tests using
    documented commands, with upstream sources and their license notices
    available as specified.
 
 Default limits are 100,000 directory entries, 10,000 Markdown files, 1 MiB
-per Markdown file, 100,000 edges, and 1,000 results. Detailed API shapes and
-commands are documented with the implementation.
+per Markdown file, 100,000 edges, and 1,000 results.
