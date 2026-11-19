@@ -95,6 +95,11 @@ The limit must be a positive safe integer no greater than `maxResults`.
 Exceeding the result limit does not fail the query: `data` contains the first
 results in deterministic order and `truncated` is `true`.
 
+`list` also accepts an optional `file` path to validate a current-file context.
+It must be an existing indexed Markdown file using a vault-relative POSIX path;
+it does not change `LIST FROM` results. The current query subset has no
+current-file-dependent syntax or relative-link resolution.
+
 ## Query direct relationships
 
 For each configured `edgeFields` entry, the API reads that field from each

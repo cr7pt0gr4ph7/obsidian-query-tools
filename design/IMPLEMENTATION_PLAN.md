@@ -16,11 +16,14 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
   CLI/MCP API usage.
 - Commander-based CLI and stdio MCP adapters that use the API and return
   bounded results.
+- Preliminary `obsidian-query query` command with `dataview`/`dql` aliases,
+  bounded inline/stdin input, API-validated file context, JSON/Markdown output,
+  and explicitly disabled JavaScript selectors.
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
 - Node.js 24 and 26 CI coverage; reproducible install, build, and test commands.
-- Upstream investigation and a non-production console test seam, documented
-  in the [research notes](notes/2026-11-19-upstream.md) and
+- Upstream investigation and the preliminary CLI boundary, documented in the
+  [research notes](notes/2026-11-19-upstream.md) and
   [console note](notes/2026-11-19-console-interface.md).
 
 ## Remaining work

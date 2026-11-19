@@ -106,8 +106,18 @@ function markdownValue(value: unknown): string {
 	);
 }
 
+function escapeMarkdown(value: string): string {
+	return value
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll("\\", "\\\\")
+		.replace(/([`*_{}[\]()#+.!|~-])/g, "\\$1")
+		.replace(/\r\n|\r|\n/g, "&#10;");
+}
+
 function markdown(data: unknown): string {
-	if (typeof data === "string") return `${data}\n`;
+	if (typeof data === "string") return `${escapeMarkdown(data)}\n`;
 	if (!Array.isArray(data)) return `${markdownValue(data)}\n`;
 	if (data.length === 0) return "\n";
 	if (
@@ -116,7 +126,7 @@ function markdown(data: unknown): string {
 				item === null || ["string", "number", "boolean"].includes(typeof item),
 		)
 	) {
-		return `${data.map((item) => `- ${markdownValue(item).replace(/\r?\n/g, " ")}`).join("\n")}\n`;
+		return `${data.map((item) => `- ${escapeMarkdown(markdownValue(item))}`).join("\n")}\n`;
 	}
 	if (
 		data.every(
@@ -136,8 +146,7 @@ function markdown(data: unknown): string {
 				"This result cannot be represented as a Markdown table.",
 			);
 		}
-		const cell = (value: unknown) =>
-			markdownValue(value).replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
+		const cell = (value: unknown) => escapeMarkdown(markdownValue(value));
 		const header = `| ${columns.map(cell).join(" | ")} |`;
 		const separator = `| ${columns.map(() => "---").join(" | ")} |`;
 		return `${[header, separator, ...records.map((record) => `| ${columns.map((column) => cell(record[column])).join(" | ")} |`)].join("\n")}\n`;

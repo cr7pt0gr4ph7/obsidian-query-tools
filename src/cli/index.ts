@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import { Command, CommanderError, Option } from "commander";
+import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { VaultQueryError, openVault } from "../api/index.js";
 import type { NeighborOptions, Vault } from "../api/index.js";
+import { runConsole } from "../console.js";
+import type { ConsoleRequest } from "../console.js";
+
+const version = createRequire(import.meta.url)("../../package.json").version;
 
 type CliCommand =
 	| { operation: "list"; query: string; limit?: number }
@@ -66,6 +71,7 @@ function createProgram(select: (command: CliCommand) => void): Command {
 	const program = new Command()
 		.name("obsidian-query-tools")
 		.description("Query a local Obsidian vault.")
+		.version(version, "-v, --version", "Output the installed version")
 		.requiredOption("--vault <directory>", "Select the local vault to query")
 		.option(
 			"--edge-field <field>",
@@ -79,6 +85,10 @@ function createProgram(select: (command: CliCommand) => void): Command {
 			writeOut: (text) => process.stdout.write(text),
 			writeErr: () => {},
 		});
+
+	program
+		.command("query [options]")
+		.description("Run a supported query; use query --help for its options.");
 
 	program
 		.command("list <query>")
@@ -181,6 +191,27 @@ function createProgram(select: (command: CliCommand) => void): Command {
 }
 
 export async function runCli(args: string[]): Promise<number> {
+	if (args[0] === "query") {
+		return runConsole(args, {
+			api: {
+				async query(request: ConsoleRequest) {
+					const vault = await openVault(request.vault);
+					try {
+						return vault.list(request.query, {
+							...(request.file === undefined ? {} : { file: request.file }),
+						});
+					} finally {
+						vault.close();
+					}
+				},
+			},
+			stdin: process.stdin,
+			stdout: process.stdout,
+			stderr: process.stderr,
+			version,
+		});
+	}
+
 	let selectedCommand: CliCommand | undefined;
 	const program = createProgram((command) => {
 		selectedCommand = command;
