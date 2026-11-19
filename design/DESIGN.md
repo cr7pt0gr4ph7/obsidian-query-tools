@@ -62,9 +62,9 @@ per Markdown file, 100,000 edges, and 1,000 results. Requests may lower the
 configured result limit. Excess results set `truncated: true`; build-limit
 exhaustion is an error.
 
-The CLI uses Commander for command and option parsing. Its `list` and graph
-commands continue to expose the shared API directly. The preliminary
-`obsidian-query query` interface adds `dataview`/`dql` selectors over the same
+The CLI uses Commander for command and option parsing. Its graph commands
+expose the shared API directly. The preliminary `obsidian-query query`
+interface uses `dataview`/`dql` selectors over the shared
 `Vault.list()` operation; only the project's `LIST FROM "<folder>"` subset is
 supported. It accepts inline or bounded UTF-8 stdin input, validates optional
 current-file context through the API, and defaults to JSON with optional

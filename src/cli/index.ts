@@ -9,9 +9,7 @@ import type { ConsoleRequest } from "../console.js";
 
 const version = createRequire(import.meta.url)("../../package.json").version;
 
-type CliCommand =
-	| { operation: "list"; query: string; limit?: number }
-	| { operation: "neighbors"; path: string; options: NeighborOptions };
+type CliCommand = { path: string; options: NeighborOptions };
 
 interface RootOptions {
 	vault?: string;
@@ -61,9 +59,6 @@ function serializeError(error: unknown): string {
 }
 
 async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
-	if (command.operation === "list") {
-		return vault.list(command.query, { limit: command.limit });
-	}
 	return vault.graph().neighbors(command.path, command.options);
 }
 
@@ -90,21 +85,6 @@ function createProgram(select: (command: CliCommand) => void): Command {
 		.command("query [options]")
 		.description("Run a supported query; use query --help for its options.");
 
-	program
-		.command("list <query>")
-		.description("Run a supported LIST query.")
-		.option("--limit <count>", "Lower the API's default result limit")
-		.action((query: string, options: LimitOptions) => {
-			const command: CliCommand = {
-				operation: "list",
-				query,
-			};
-			if (options.limit !== undefined) {
-				command.limit = positiveInteger(options.limit, "--limit");
-			}
-			select(command);
-		});
-
 	const neighbors = (path: string, options: NeighborCliOptions) => {
 		const neighborOptions: NeighborOptions = {};
 		if (options.direction !== undefined) {
@@ -116,7 +96,7 @@ function createProgram(select: (command: CliCommand) => void): Command {
 		if (options.limit !== undefined) {
 			neighborOptions.limit = positiveInteger(options.limit, "--limit");
 		}
-		select({ operation: "neighbors", path, options: neighborOptions });
+		select({ path, options: neighborOptions });
 	};
 
 	program
