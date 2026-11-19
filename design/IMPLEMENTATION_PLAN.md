@@ -35,6 +35,8 @@ implementation ready.
   fixture, excluding bundled plugin code, and test the supported folder form.
 - [x] Convert implementation and tests to TypeScript and expose generated
   JavaScript and type declarations via the package entry point.
+- [x] Organize the API, CLI, and MCP entrypoints under separate `src/`
+  directories and update generated entrypoint paths.
 - [x] Add a push-triggered GitHub Actions workflow for Node 24 and 26.
 - [x] Specify a proposed console query interface independently of the
   prototype, including output formats, vault and current-file selection, and

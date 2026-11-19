@@ -6,7 +6,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
 import type { TestContext } from "node:test";
-import { openVault, VaultQueryError } from "../dist/index.js";
+import { openVault, VaultQueryError } from "../dist/api/index.js";
 import { fileURLToPath } from "node:url";
 
 async function fixture(t: TestContext) {
@@ -186,7 +186,7 @@ test("unreadable Markdown causes an explicit vault read error", async t => {
     return;
   }
   await chmod(root, 0o755);
-  const moduleUrl = new URL("../dist/index.js", import.meta.url).href;
+  const moduleUrl = new URL("../dist/api/index.js", import.meta.url).href;
   const program = `
     import { openVault } from ${JSON.stringify(moduleUrl)};
     process.setgid(65534);
