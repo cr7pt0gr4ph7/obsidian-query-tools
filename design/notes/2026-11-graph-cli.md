@@ -1,9 +1,9 @@
-# Proposed graph CLI specification
+# Graph CLI specification
 
-Status: proposal for review. This document suggests a command-line interface
-for querying and exporting a configured vault graph. It does not claim that
-the current CLI or shared API implements the `graph` command, traversal, or
-graph export, and it does not claim Breadcrumbs compatibility.
+Status: partial CLI implementation. `graph neighbors` is supported as a thin
+adapter over the shared API. Traversal and graph export remain proposals
+because the shared API does not provide those operations. This does not claim
+Breadcrumbs compatibility.
 
 ## Goals and boundaries
 
@@ -25,11 +25,11 @@ implemented in the CLI.
 
 ```text
 obsidian-query-tools --vault <directory> graph neighbors <path>
-  --edge-field <field>... [--direction <incoming|outgoing>] [--type <type>...]
+  --edge-field <field>... [--direction <incoming|outgoing>] [--edge-type <type>...]
   [--limit <count>]
 
 obsidian-query-tools --vault <directory> graph traverse <path>
-  --edge-field <field>... [--direction <incoming|outgoing>] [--type <type>...]
+  --edge-field <field>... [--direction <incoming|outgoing>] [--edge-type <type>...]
   --max-depth <count> [--limit <count>]
 
 obsidian-query-tools --vault <directory> graph export
@@ -38,7 +38,7 @@ obsidian-query-tools --vault <directory> graph export
 
 `--edge-field` is specified after `graph <subcommand>` and may be repeated.
 The option chooses which frontmatter fields are indexed as typed edges; it
-does not redefine edge values or query semantics. `--type` filters the
+does not redefine edge values or query semantics. `--edge-type` filters the
 resulting edge types and is separate from `--edge-field`. The vault is
 explicitly selected with `--vault`. All paths in arguments and output are
 vault-relative; absolute paths and paths escaping the vault are rejected.
@@ -67,7 +67,7 @@ Example direct-neighbor command and output:
 
 ```sh
 obsidian-query-tools --vault ./vault graph neighbors Projects/Alpha.md \
-  --edge-field parent --direction outgoing --type parent
+  --edge-field parent --direction outgoing --edge-type parent
 ```
 
 ```json

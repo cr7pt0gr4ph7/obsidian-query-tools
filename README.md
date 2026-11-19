@@ -58,14 +58,19 @@ exit status 1.
 ```sh
 node dist/cli/index.js --vault /path/to/vault list 'LIST FROM "Tasks"'
 node dist/cli/index.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
+node dist/cli/index.js --vault /path/to/vault graph neighbors Tasks/example.md --edge-field parent
 ```
 
-| Option                | Purpose                                      |
-| --------------------- | -------------------------------------------- |
-| `--edge-field`        | Configure an edge field (repeatable)         |
-| `--type`              | Filter neighbors by edge type                |
-| `--direction incoming`| Select incoming edges                        |
-| `--limit`             | Lower the result limit                       |
+| Option                 | Purpose                              |
+| ---------------------- | ------------------------------------ |
+| `--edge-field`         | Configure an edge field (repeatable) |
+| `--edge-type`          | Filter neighbors by edge type        |
+| `--direction incoming` | Select incoming edges                |
+| `--limit`              | Lower the result limit               |
+
+`graph neighbors` is an alternative spelling for direct-neighbor queries and
+requires at least one `--edge-field`. Graph traversal and export are not
+implemented because the shared API does not yet provide those operations.
 
 ## MCP server (stdio)
 
