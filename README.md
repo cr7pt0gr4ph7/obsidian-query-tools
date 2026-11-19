@@ -81,6 +81,7 @@ carry the API result in `structuredContent` and as JSON text; failures have
 
 ## Documentation
 
+- [JavaScript API usage](docs/api-usage.md)
 - [Requirements](design/REQUIREMENTS.md)
 - [Components](design/COMPONENTS.md)
 - [Architecture and design decisions](design/DESIGN.md)
