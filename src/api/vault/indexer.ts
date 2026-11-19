@@ -4,9 +4,10 @@ import { lstat, open, opendir } from "node:fs/promises";
 import type { FileHandle } from "node:fs/promises";
 import path from "node:path";
 import { parseDocument } from "yaml";
-import { fail, VaultQueryError } from "./errors.js";
-import type { Config, Edge, VaultIndex } from "./types.js";
-import { validatePath } from "./validation.js";
+import { fail, VaultQueryError } from "../errors.js";
+import type { Edge, GraphIndex } from "../graph/types.js";
+import { validatePath } from "../validation.js";
+import type { Config, VaultIndex } from "./types.js";
 
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 const fdPath = (handle: FileHandle): string => `/proc/self/fd/${handle.fd}`;
@@ -277,5 +278,6 @@ export async function buildIndex(
 			compare(a.target, b.target) ||
 			compare(a.type, b.type),
 	);
-	return { graph: { files, edges } };
+	const graph: GraphIndex = { files, edges };
+	return { graph };
 }

@@ -7,11 +7,13 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 
 ## Implemented
 
-- Shared vault index and API for `LIST FROM "<folder>"` and direct edges from
-  configured frontmatter fields, with limits, refresh, and structured errors.
+- Shared vault index and API split across `vault/`, `graph/`, and `dataview/`
+  modules for `LIST FROM "<folder>"` and direct edges from configured
+  frontmatter fields, with limits, refresh, and structured errors.
 - Public `VaultGraph` interface for direct-neighbor queries, obtained via `Vault.graph()`.
 - Graph-specific limits, configuration, and index structures within the shared vault index.
-- Shared API split into focused internal modules with a stable public entrypoint.
+- Shared API domain modules with a stable public entrypoint and unchanged
+  CLI/MCP API usage.
 - CLI and stdio MCP adapters that use the API and return bounded results.
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
