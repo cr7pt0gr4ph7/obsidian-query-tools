@@ -9,6 +9,7 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 
 - Shared vault index and API for `LIST FROM "<folder>"` and direct edges from
   configured frontmatter fields, with limits, refresh, and structured errors.
+- Shared API split into focused internal modules with a stable public entrypoint.
 - CLI and stdio MCP adapters that use the API and return bounded results.
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
