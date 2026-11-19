@@ -2,39 +2,36 @@
 
 ## Current status
 
-This repository is a documentation-only design draft. There is no application,
-dependency setup, or project build, lint, or test command. The first
-implementation decision is gated on verifying whether the pinned upstream
-plugins can be reused outside Obsidian.
+The repository has a deliberately narrow standalone JavaScript API. It does
+not claim Dataview or Breadcrumbs parity. CLI and MCP are not implemented.
 
 ## Current
 
 - [x] Draft requirements, component boundaries, architecture, and upstream
   research notes.
-- [ ] Resolve the upstream integration feasibility questions and record
-  evidence, exact revisions, license handling, compatibility limits, and
-  recommended integration approach.
+- [x] Record exact candidate revisions, licenses, and source/build/runtime
+  smoke-test evidence in the upstream research notes.
+- [x] Review the official Obsidian API and extended typings as host-bridge
+  references; neither package supplies an Obsidian runtime.
+- [x] Renegotiate the first implementation as a project-defined subset, and
+  document its folder-query and direct-edge semantics without a parity claim.
+- [x] Review focused Dataview unit tests for query grammar and Markdown
+  parsing; use their cases as reference, not as an upstream oracle.
+- [x] Implement the shared JavaScript API, read-only vault index, direct
+  configured edges, resource limits, and lifecycle/refresh errors; add
+  focused fixture and filesystem-boundary tests.
+- [x] Add and document reproducible install and test commands.
 
 ## Next
 
-- [ ] Run a small compatibility spike for Dataview and Breadcrumbs separately,
-  then test their interoperation against representative fixtures and
-  same-revision Obsidian results.
-- [ ] Decide and document the initial supported query/graph subset, runtime
-  matrix, serialization contract, resource limits, and error policy.
-- [ ] Update requirements and design to reflect those decisions before
-  committing to an implementation approach.
+- [ ] Build CLI and MCP as thin clients of the shared API. Test their output
+  and errors against the same fixture and generation contract.
 
 ## Tentative future
 
-- [ ] Implement the shared JavaScript API, vault access, index lifecycle, and
-  upstream adapters with read-only and path-boundary safeguards.
-- [ ] Build the CLI and MCP server as thin interfaces over the shared API.
-- [ ] Add and document reproducible build, lint, and test commands; test
-  upstream parity, interface equivalence, refresh behavior, limits, and
-  security boundaries.
-- [ ] Publish a compatibility matrix and document unsupported behavior before
-  describing any plugin parity or release readiness.
+- [ ] Consider expanding query and relationship features only after
+  documenting their project-defined semantics and adding fixtures. Any future
+  upstream parity claim still requires oracle evidence at pinned revisions.
 
 Future steps are tentative and should be revised when the compatibility spike
 changes scope or technical decisions.

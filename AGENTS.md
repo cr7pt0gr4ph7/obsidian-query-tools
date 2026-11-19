@@ -1,7 +1,6 @@
 # Contributor guidance
 
-This repository currently contains a design draft, not an implemented
-application. Read [the requirements](design/REQUIREMENTS.md) and
+Read [the requirements](design/REQUIREMENTS.md) and
 [design](design/DESIGN.md) before making implementation decisions.
 Review [the implementation plan](design/IMPLEMENTATION_PLAN.md) for project
 status and planned work, and update it when implementation progress or
@@ -25,5 +24,4 @@ substantive decisions change.
   Create a new file for separate runs if necessary, except if the information
   fits suitably into the existing files.
 
-There are no project build, lint, or test commands yet. Add and document them
-when the implementation is introduced.
+Run `npm ci` to install dependencies and `npm test` for the current tests.

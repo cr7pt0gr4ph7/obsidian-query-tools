@@ -2,26 +2,21 @@
 
 ## Architectural approach
 
-The intended standalone process reads a selected Obsidian vault, constructs
+The standalone process reads a selected Obsidian vault, constructs
 an in-memory derived index, and serves requests through a JavaScript API.
 The CLI and MCP server are thin clients of that API. The index is not the
 source of truth and can be discarded and rebuilt. An Obsidian instance is not
-required in the target design; feasibility is an explicit release gate.
+required for the initial project-defined subset.
 
 Data flow:
 
-1. Configure and validate the vault root, resource limits, and supported
-   plugin settings. Establish the authorized filesystem boundary.
-2. Enumerate and read the vault; build metadata and link-resolution services
-   required by the pinned upstream code. Surface unreadable files and changes
-   observed during the build.
-3. Build Dataview's index and Breadcrumbs' graph in the dependency order
-   actually required by the chosen plugin revisions. Publish an index
-   generation only after its construction has completed according to the
-   documented error policy.
-4. Validate and execute a query against one published generation. Translate
-   upstream values and errors into the public result contract, including
-   diagnostics and any truncation.
+1. Configure and validate the vault root, resource limits, and explicit edge
+   fields. Establish the authorized filesystem boundary.
+2. Enumerate and read Markdown files; build a path index and configured
+   frontmatter edges, surfacing unreadable files and observed changes.
+3. Publish a generation only after construction completes successfully.
+4. Validate and execute a supported query against one published generation,
+   returning diagnostics and truncation metadata.
 5. CLI or MCP serializes that contract; closing the context releases
    resources. Refresh builds a replacement generation and makes it visible
    atomically to subsequent queries, without promising an atomic filesystem
@@ -57,17 +52,52 @@ No dependency, revision, or patch is selected by this draft. Track upstream
 versions and supported features in a compatibility matrix, and rerun
 differential tests when pins change.
 
+An initial source/build/runtime spike and follow-up reference review are
+recorded in [the research notes](notes/2026-11-19-upstream.md#runtime-spike--2026-11-19).
+The official Obsidian package contains API typings, not an Obsidian runtime;
+the extended typings likewise describe API types. They inform what a host
+bridge would need but do not make plugin code standalone.
+
+The user chose to proceed without an Obsidian oracle by narrowing the first
+implementation to project-defined semantics: `LIST FROM "<folder>"` returns
+vault-relative Markdown paths; direct edges come only from explicitly
+configured frontmatter fields containing vault-relative Markdown paths.
+Keywords are case-insensitive, following Dataview's parser tests, but folder
+sources must use this project's quoted path form. There is no arbitrary
+expression evaluation, DataviewJS, alias or wikilink resolution, Breadcrumbs
+inference, or transitive graph logic. Dataview unit tests are reference
+material for syntax and edge cases, not a parity oracle for this API.
+
 ## Interface contract
 
-The API owns a vault context and exposes lifecycle, query, refresh and close
-operations. Results carry a generation identifier, data, diagnostics and
-completion/truncation status. Failures carry stable categories and useful
-messages, without leaking unrelated filesystem contents. Specify exact
-schemas, cancellation, ownership, and ordering during implementation.
+The API is exported by `src/index.js`. `openVault(root, options)` creates a
+context; `list(query, { limit })` accepts only `LIST FROM "<folder>"`;
+`neighbors(path, { direction, types, limit })` returns direct
+`{ source, target, type }` edges; `refresh()` builds and publishes the next
+generation on success; and `close()` invalidates the context. A list result
+contains `{ generation, data, diagnostics, truncated }`, with `data` an array
+of relative paths. A neighbor result has the same envelope with edge objects
+in `data`. Errors are `VaultQueryError` instances with a stable `code` and
+optional relative `path`. Build errors abort the generation; no partial index
+is published. Results are ordered by POSIX path, then edge type.
 
-The CLI takes an explicit local vault and query input, outputs normalized JSON
+Frontmatter is YAML between opening and closing `---` lines. Only field names
+listed in `edgeFields` at vault open are interpreted. A field value must be a
+string or array of strings containing exact vault-root-relative Markdown
+paths, with an optional `.md` suffix. Unresolved targets or unsupported
+values fail the build. No note body, Obsidian settings, or plugin code is
+evaluated.
+
+Default limits are 100,000 visited directory entries, 10,000 Markdown files,
+1 MiB per Markdown file, 100,000 edges, and 1,000 results. A request may
+lower, but not raise, the configured result limit. Excess results are
+truncated with `truncated: true`; index-building limit exhaustion is an
+explicit error. Refresh leaves the previous generation available if building
+the replacement fails.
+
+The planned CLI takes an explicit local vault and query input, outputs normalized JSON
 to stdout, and reports diagnostics on stderr with documented exit codes.
-The MCP server initially targets stdio, with a vault bound by server startup
+The planned MCP server initially targets stdio, with a vault bound by server startup
 configuration rather than tool arguments. Tools expose declarative Dataview
 queries and bounded graph operations; their schemas specify inputs, filters,
 limits, normalized output, and errors. Protocol traffic alone goes to stdout.
@@ -83,10 +113,13 @@ is truncated, state that fact and do not imply completeness.
 
 ## Security and operational decisions
 
-- Canonicalize the configured root and enforce containment for every read,
-  including symlinks and vault links; reject escapes and filesystem special
-  files. Handle filesystem races as far as the platform allows and document
-  residual limitations. Do not follow links outside the authorized boundary.
+- Canonicalize the configured root and anchor reads to open directory
+  descriptors through Linux `/proc/self/fd`, using `O_NOFOLLOW`; reject
+  symlinks and special files. Other platforms or systems without usable procfs
+  are not supported. Metadata checks detect many changes during indexing,
+  but are not an atomic filesystem snapshot: a concurrently moved directory
+  may still be read through an already-open descriptor. Restrict write access
+  to the vault while indexing when that matters.
 - Treat Markdown, plugin settings, queries, and MCP input as untrusted. Never
   run DataviewJS, shell commands, or vault-provided scripts. Avoid network
   access and content-bearing logs by default. Read only; do not install or
@@ -104,16 +137,15 @@ is truncated, state that fact and do not imply completeness.
 
 ## Validation and release gates
 
-Create small synthetic vault fixtures covering frontmatter, inline fields,
-links, tags, missing values, config-driven typed relationships, inference,
-cycles, and malformed input. Capture expected outcomes from pinned upstream
-plugins in Obsidian and compare normalized values rather than UI markup.
-Test API/CLI/MCP equivalence, refresh behavior, boundary escapes, limits,
-and protocol-clean output. Record known differences, unsupported features,
-and fixture/oracle provenance.
+Create small synthetic vault fixtures for folder queries, configured edge
+fields, malformed frontmatter, unresolved targets, refresh, limits, and
+filesystem boundaries. The pinned Dataview parser and Markdown tests inform
+valid and invalid query cases, but do not establish parity for the
+project-defined executor. Test the API subset now; CLI/MCP equivalence and
+protocol-clean output are later gates.
 
-Before committing to the initial compatibility matrix, resolve the supported
-Node/OS range, query forms, plugin versions, serialization schema, limits,
-error codes, and strategy for inconsistent reads. If a required upstream
-feature cannot be reused without an impractical host bridge, explicitly
-renegotiate scope instead of presenting it as supported.
+The initial Node target is 24 or later on Linux with procfs; this
+implementation has been tested on Node 26 only. The first release has no
+plugin compatibility matrix because it makes no plugin-parity claim. Any
+expansion or parity claim must first specify the relevant upstream revisions,
+OS/runtime support, and oracle evidence.

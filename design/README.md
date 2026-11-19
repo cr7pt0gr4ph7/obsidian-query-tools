@@ -1,7 +1,6 @@
 # Design documentation
 
-These documents are an initial proposal, not a description of implemented
-behavior.
+These documents describe the current scope and implementation status.
 
 - [REQUIREMENTS.md](REQUIREMENTS.md): scope, observable requirements, and
   acceptance criteria.

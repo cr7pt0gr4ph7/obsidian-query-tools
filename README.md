@@ -1,16 +1,35 @@
 # Obsidian Query Tools
 
-An initial design draft for a Node.js application to query data in a local
-Obsidian vault. The proposed interfaces are a shared JavaScript API, a CLI
-built on that API, and an MCP server built on the same API. The design aims to
-reuse [Dataview](https://github.com/blacksmithgu/obsidian-dataview) and
-[Breadcrumbs](https://github.com/michaelpporter/breadcrumbs) code where
-feasible.
+Node.js tools for read-only queries over a local Obsidian vault. The shared
+JavaScript API is the source of behavior for the planned CLI and MCP
+interfaces.
 
-**Status: design draft only.** There is no implementation, installation
-process, or executable command yet. Standalone compatibility with either
-Obsidian plugin has not been established. The proposed default is read-only
-access to vault contents.
+**Status: initial implementation.** The supported subset is deliberately
+narrow and project-defined: `LIST FROM "<folder>"` returns vault-relative
+Markdown paths, and configured frontmatter fields provide direct typed graph
+edges. This is not a Dataview or Breadcrumbs parity claim. The API is
+read-only; CLI and MCP interfaces are planned.
+
+Requires Node.js 24 or later on Linux with procfs. Node 26 is the only
+runtime tested so far. Run `npm ci` to install dependencies and `npm test`
+to run the test suite.
+
+```js
+import { openVault } from "obsidian-query-tools";
+
+const vault = await openVault("/path/to/vault", { edgeFields: ["parent"] });
+console.log(vault.list('LIST FROM "Tasks"'));
+console.log(vault.neighbors("Tasks/example.md", { direction: "outgoing" }));
+await vault.refresh();
+vault.close();
+```
+
+`parent` values are exact vault-root-relative Markdown paths, or arrays of
+paths, with an optional `.md` suffix. Unresolved targets, wikilinks, invalid
+frontmatter, symlinks and special files fail explicitly. Requests return
+`{ generation, data, diagnostics, truncated }`; errors expose a `code`.
+Limits, error behavior, and filesystem race limitations are described in the
+[design](design/DESIGN.md).
 
 ## Documentation
 

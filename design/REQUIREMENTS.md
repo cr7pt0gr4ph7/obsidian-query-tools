@@ -1,45 +1,48 @@
 # Requirements
 
-Status: initial draft. **Must** denotes a target requirement, not an existing
-feature. Release scope and plugin compatibility remain subject to the
-feasibility work in [DESIGN.md](DESIGN.md).
+Status: initial implementation scope. **Must** denotes a target requirement,
+not necessarily an implemented feature. The initial subset is intentionally
+not a plugin-compatibility claim.
 
 ## Goal and terminology
 
 Provide a local Node.js library, CLI, and MCP server for querying an Obsidian
-vault using Dataview's data/query model and Breadcrumbs' relationship model.
+vault with a shared JavaScript API.
 An Obsidian “database” here means the vault's Markdown files, attachments,
 and relevant configuration, rather than a separate database server. An
 index is a derived, disposable representation of that content.
 
-The goal is to reuse upstream code unchanged wherever practical, not to
-independently reimplement both plugins by default. Exact compatibility is not
-assumed. The project must identify its supported upstream revisions and
-features and explicitly disclose differences and unsupported cases.
+Reuse upstream code unchanged where practical, but do not assume plugin
+compatibility. The initial subset below has project-defined behavior and does
+not rely on either plugin's broader semantics. Any later compatibility claim
+must identify exact upstream revisions and disclose differences and
+unsupported cases.
 
 ## Functional requirements
 
 | ID | Requirement |
 | --- | --- |
-| F1 | Open an explicitly selected local vault and build an index from its contents and relevant configuration. Do not require a running Obsidian instance for the intended standalone mode; validate its feasibility first. |
-| F2 | Expose a JavaScript API for vault lifecycle, Dataview-style queries, Breadcrumbs-style relationship queries, and structured results and errors. The API is the shared source of behavior for all interfaces. |
+| F1 | Open an explicitly selected local vault and build a bounded index from Markdown files and explicitly supplied edge-field configuration. Do not require a running Obsidian instance. |
+| F2 | Expose a JavaScript API for vault lifecycle, the supported folder query, direct typed-edge queries, and structured results and errors. The API is the shared source of behavior for all interfaces. |
 | F3 | Provide a Node.js CLI that selects a vault, performs supported queries through the API, writes machine-readable results to stdout and diagnostics to stderr, and returns a nonzero exit status for errors. |
 | F4 | Provide a Node.js MCP server that exposes supported read-only queries through the API, uses a standards-compliant MCP transport, and returns structured, bounded results or explicit errors. Stdio is the initial target. |
-| F5 | For the supported Dataview subset, interpret relevant frontmatter, inline fields, links, tags, file metadata, and query expressions as the pinned upstream version does. Identify the supported source and query forms in a compatibility matrix. |
-| F6 | For the supported Breadcrumbs subset, construct typed, directed relationships using the pinned plugin's configuration and inference rules; expose at least direct neighbors and bounded traversal with direction and relationship type filters. Document missing or unsupported rules. |
-| F7 | Preserve meaningful value types and relationship direction in the API; define a deterministic, JSON-safe representation for dates, links, missing values, errors, and other non-JSON values at the CLI/MCP boundary. Do not silently coerce unsupported values. |
+| F5 | Support only `LIST FROM "<folder>"` (case-insensitive keywords), returning sorted vault-relative Markdown paths. Reject all other query forms explicitly. This initial subset has project-defined behavior and makes no Dataview-parity claim. |
+| F6 | Build typed, directed edges from explicitly configured frontmatter fields whose values are vault-relative Markdown paths; expose direct neighbors with direction and field filters. Do not infer edges or apply Breadcrumbs transitive rules in the initial subset. |
+| F7 | Preserve relationship direction and field type. Return vault-relative POSIX paths and structured errors; reject unsupported field values rather than silently coercing them. |
 | F8 | Support an explicit refresh or reopen operation so clients can obtain an updated index after vault changes. A query observes one coherent index generation; concurrent file changes during indexing are detected or reported rather than silently presented as a guaranteed atomic filesystem snapshot. |
 | F9 | Return actionable errors for invalid vaults, configuration, queries, unsupported features, resource limits, and unreadable files. Partial results, if provided, must be explicitly marked with diagnostics. |
-| F10 | Supply configurable resource limits for indexing, traversal and result size; signal truncation or a limit error rather than silently returning incomplete results. |
+| F10 | Supply configurable resource limits for directory entries, Markdown files, file size, edge count, and results; signal truncation or a limit error rather than silently returning incomplete results. |
 
 ### Initial scope
 
-The first release targets local, read-only access to one selected vault at a
-time, Dataview declarative queries and Breadcrumbs graph queries, with
-machine-readable output. The precise supported query forms, configuration
-fields, Obsidian/plugin versions, Node.js versions and platform matrix must be
-determined by the compatibility spike. Full parity remains a longer-term goal,
-not a release claim.
+The first implementation targets local, read-only access to one selected
+vault at a time. Its intentionally narrow, project-defined subset is
+`LIST FROM "<folder>"` (paths only) and direct typed edges from configured
+frontmatter fields (direct neighbors only). Edge values are vault-root-relative
+Markdown paths, optionally supplied as arrays; aliases, wikilinks, inference,
+and transitive rules are excluded. It does not claim Dataview or Breadcrumbs
+parity. The initial runtime target is Node.js 24 or later on Linux with
+procfs; only Node.js 26 has been tested so far.
 
 Out of scope initially: vault mutation, Obsidian UI/rendering, arbitrary
 DataviewJS or other JavaScript embedded in a vault or query, remote vault
@@ -57,9 +60,10 @@ user-supplied scripts; the latter is prohibited by default.
   submodules, and adapters in that order of suitability, without presuming an
   npm package is standalone-compatible. Pin exact revisions and dependencies
   reproducibly; retain required license notices and document any patches.
-- **Correctness:** test representative fixtures against results captured from
-  the same pinned upstream plugins in Obsidian. Include negative,
-  unsupported-feature, security-boundary, and adapter parity cases.
+- **Correctness:** test the documented project-defined subset with
+  representative fixtures, including negative, unsupported-feature, and
+  security-boundary cases. Do not imply upstream parity; any future parity
+  claim requires same-revision Obsidian oracle evidence.
 - **Operational behavior:** provide deterministic serialization and ordering
   where query semantics do not specify an order, documented limits, clean
   lifecycle/shutdown, and actionable diagnostics without corrupting CLI JSON
@@ -69,10 +73,9 @@ user-supplied scripts; the latter is prohibited by default.
 
 ## Acceptance criteria for an initial implementation
 
-1. A documented, pinned compatibility matrix identifies the supported
-   Dataview queries and Breadcrumbs relationship/configuration semantics.
-   Representative fixtures agree with the corresponding upstream oracle, and
-   documented unsupported constructs produce explicit errors.
+1. A documented subset specification identifies the supported folder query
+   and configured frontmatter edge semantics, explicitly states that they are
+   not Dataview/Breadcrumbs parity, and unsupported constructs produce errors.
 2. The same fixture and query through the API, CLI and MCP yield equivalent
    normalized results, including errors and truncation metadata. CLI stdout
    is valid machine-readable output; MCP stdio remains protocol-clean.
@@ -87,5 +90,6 @@ user-supplied scripts; the latter is prohibited by default.
    documented commands, with upstream sources and their license notices
    available as specified.
 
-Detailed schemas, commands, query support, and thresholds must be decided
-before release; this draft does not prescribe names as if they already exist.
+Default limits are 100,000 directory entries, 10,000 Markdown files, 1 MiB
+per Markdown file, 100,000 edges, and 1,000 results. Detailed API shapes and
+commands are documented with the implementation.
