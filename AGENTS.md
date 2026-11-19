@@ -33,4 +33,5 @@ substantive decisions change.
 Run `npm ci` to install dependencies, `npm run build` to compile TypeScript,
 and `npm test` to build, type-check, and run the current tests.
 Use `npm run format` to reformat code with Biome's standard settings;
-`npm run format:check` checks formatting and is a required CI check.
+`npm run format:check` checks formatting and is a required CI check. Run
+`npm run format:check` whenever TypeScript files are changed.
