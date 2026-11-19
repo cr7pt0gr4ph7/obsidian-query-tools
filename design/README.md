@@ -9,4 +9,6 @@ behavior.
   dependencies.
 - [DESIGN.md](DESIGN.md): architecture, integration strategy, data flow,
   safety, and decisions still to be made.
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): current status and
+  current, next, and tentative future work.
 - [notes/](notes/): dated research notes and evidence for the draft.
