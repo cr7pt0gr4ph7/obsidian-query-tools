@@ -1,7 +1,7 @@
-# Proposed components
+# Components
 
-Dependencies flow from interfaces toward the shared core. These are logical
-boundaries, not yet packages.
+Dependencies flow from the interfaces to the shared API. These are logical
+boundaries, not separate packages.
 
 | Component | Responsibility | Depends on |
 | --- | --- | --- |
@@ -11,7 +11,7 @@ boundaries, not yet packages.
 | CLI | Parse user input, choose an authorized local vault, call the API, serialize results, and provide exit statuses and stderr diagnostics. | JavaScript API |
 | MCP server | Bind a configured vault at startup; validate tool inputs, apply limits, dispatch to the API, and serialize results/errors over MCP. | JavaScript API, MCP SDK/transport |
 
-## Boundaries
+## Constraints
 
 - The initial implementation does not load either upstream plugin and makes
   no parity claim. Dataview's tests are reference material for query syntax
@@ -23,12 +23,3 @@ boundaries, not yet packages.
   domain validation.
 - The API returns JSON-safe relative paths and edge objects, with shared
   generation, diagnostics, and truncation metadata.
-
-## Initial standalone slice
-
-The first implementation deliberately does not load either Obsidian plugin.
-The shared JavaScript API indexes Markdown paths and configured frontmatter
-edge fields. It supports only `LIST FROM "<folder>"` path results and direct
-neighbors. Its query and edge semantics are project-defined and must not be
-described as Dataview or Breadcrumbs parity. The CLI and MCP server are thin
-clients of this API.
