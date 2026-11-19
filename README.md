@@ -1,8 +1,7 @@
 # Obsidian Query Tools
 
-TypeScript-based Node.js tools for read-only queries over a local Obsidian
-vault. The compiled JavaScript API is the source of behavior for the CLI and
-MCP server; TypeScript declarations are provided alongside it.
+Read-only Node.js tools for querying a local Obsidian vault. The CLI and MCP
+server use the shared JavaScript API; TypeScript declarations are included.
 
 **Status: initial implementation.** The supported subset is deliberately
 narrow and project-defined: `LIST FROM "<folder>"` returns vault-relative

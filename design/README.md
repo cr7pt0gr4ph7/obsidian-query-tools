@@ -1,13 +1,14 @@
 # Design documentation
 
-These documents describe the current scope and implementation status.
+Requirements and design decisions describe the supported initial scope.
+Implementation status tracks the remaining work.
 
 - [REQUIREMENTS.md](REQUIREMENTS.md): scope, observable requirements, and
   acceptance criteria.
-- [COMPONENTS.md](COMPONENTS.md): proposed component responsibilities and
+- [COMPONENTS.md](COMPONENTS.md): logical component responsibilities and
   dependencies.
-- [DESIGN.md](DESIGN.md): architecture, integration strategy, data flow,
-  safety, and decisions still to be made.
-- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): current status and
-  current, next, and tentative future work.
-- [notes/](notes/): dated research notes and evidence for the draft.
+- [DESIGN.md](DESIGN.md): architecture, API contract, and safety decisions.
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): implemented scope and
+  remaining work.
+- [notes/](notes/): dated upstream research and the non-production console
+  test seam.
