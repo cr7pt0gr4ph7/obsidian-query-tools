@@ -1,13 +1,13 @@
 # Obsidian Query Tools
 
 Node.js tools for read-only queries over a local Obsidian vault. The shared
-JavaScript API is the source of behavior for the CLI and planned MCP server.
+JavaScript API is the source of behavior for the CLI and MCP server.
 
 **Status: initial implementation.** The supported subset is deliberately
 narrow and project-defined: `LIST FROM "<folder>"` returns vault-relative
 Markdown paths, and configured frontmatter fields provide direct typed graph
-edges. This is not a Dataview or Breadcrumbs parity claim. The API is
-read-only; an MCP interface is planned.
+edges. This is not a Dataview or Breadcrumbs parity claim. All interfaces
+are read-only.
 
 Requires Node.js 24 or later on Linux with procfs. Node 26 is the only
 runtime tested so far. Run `npm ci` to install dependencies and `npm test`
@@ -39,6 +39,14 @@ edges, and `--limit` to lower the result limit.
 node src/cli.js --vault /path/to/vault list 'LIST FROM "Tasks"'
 node src/cli.js --vault /path/to/vault --edge-field parent neighbors Tasks/example.md
 ```
+
+For MCP stdio, start
+`node src/mcp.js --vault /path/to/vault --edge-field parent`. The server
+exposes `list`, `neighbors`, and `refresh`, with the vault bound at startup;
+tool arguments cannot select a different vault. Successful tool results carry
+the API result in `structuredContent` and as JSON text; failures have
+`isError: true`. Any client authorized to use the server can read the exposed
+vault. Do not expose its stdio transport to untrusted clients.
 
 ## Documentation
 

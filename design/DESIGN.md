@@ -99,11 +99,13 @@ The CLI takes an explicit local vault and query input, outputs normalized JSON
 to stdout, and reports JSON errors on stderr with exit status 1. It exposes
 the shared API's `list` and `neighbors` operations without separate query
 semantics; results include their diagnostics in the JSON envelope.
-The planned MCP server initially targets stdio, with a vault bound by server startup
-configuration rather than tool arguments. Tools expose declarative Dataview
-queries and bounded graph operations; their schemas specify inputs, filters,
-limits, normalized output, and errors. Protocol traffic alone goes to stdout.
-Do not expose a generic filesystem tool or arbitrary script execution.
+The MCP server uses the official MCP SDK v2 over stdio, with a vault bound by
+server startup configuration rather than tool arguments. It exposes `list`,
+`neighbors`, and `refresh`, with strict schemas, bounded inputs, and
+structured results. Tool results include the API envelope as both
+`structuredContent` and JSON text; API failures return `isError` and a
+structured error. Protocol traffic alone goes to stdout. There is no generic
+filesystem tool or arbitrary script execution.
 
 Normalizing values requires a documented tagged JSON encoding where JSON
 alone is ambiguous, including links, dates/datetimes, missing versus null,
@@ -143,8 +145,8 @@ Create small synthetic vault fixtures for folder queries, configured edge
 fields, malformed frontmatter, unresolved targets, refresh, limits, and
 filesystem boundaries. The pinned Dataview parser and Markdown tests inform
 valid and invalid query cases, but do not establish parity for the
-project-defined executor. Test the API subset now; CLI/MCP equivalence and
-protocol-clean output are later gates.
+project-defined executor. Test the API subset and CLI/MCP equivalence,
+including protocol-clean output and vault selection boundaries.
 
 The initial Node target is 24 or later on Linux with procfs; this
 implementation has been tested on Node 26 only. The first release has no

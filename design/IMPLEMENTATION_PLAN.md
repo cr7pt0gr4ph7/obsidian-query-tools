@@ -2,8 +2,8 @@
 
 ## Current status
 
-The repository has a deliberately narrow standalone JavaScript API and CLI.
-It does not claim Dataview or Breadcrumbs parity. MCP is not implemented.
+The repository has a deliberately narrow standalone JavaScript API, CLI, and
+stdio MCP server. It does not claim Dataview or Breadcrumbs parity.
 
 ## Current
 
@@ -23,11 +23,13 @@ It does not claim Dataview or Breadcrumbs parity. MCP is not implemented.
 - [x] Add and document reproducible install and test commands.
 - [x] Implement the CLI as a thin client of the shared API, including
   machine-readable output, error reporting, and API-equivalence tests.
+- [x] Implement stdio MCP as a thin client of the shared API, with a
+  startup-bound vault, structured results, and SDK integration tests.
 
 ## Next
 
-- [ ] Build MCP as a thin client of the shared API. Test its output and
-  errors against the same fixture and generation contract.
+- [ ] Expand negative and filesystem-race coverage and verify the runtime
+  matrix before describing the initial implementation as release-ready.
 
 ## Tentative future
 
