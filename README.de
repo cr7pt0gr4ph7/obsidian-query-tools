@@ -1,0 +1,26 @@
+# Obsidian Query Tools
+
+Dieses Repository enthält einen ersten Entwurf für eine Node.js-Anwendung,
+die Daten aus einem lokalen Obsidian-Vault abfragt. Geplant sind eine
+JavaScript-API, eine darauf aufbauende CLI und ein MCP-Server. Die
+Abfragesemantik soll sich möglichst weitgehend an
+[Dataview](https://github.com/blacksmithgu/obsidian-dataview) und
+[Breadcrumbs](https://github.com/michaelpporter/breadcrumbs) orientieren;
+deren bestehender Code soll nach Möglichkeit unverändert wiederverwendet
+werden.
+
+**Status:** Nur Entwurf. Es gibt noch keine Implementierung, Installation,
+ausführbare Befehle oder zugesicherte Plugin-Kompatibilität. Insbesondere muss
+die Nutzung der Plugins außerhalb von Obsidian erst praktisch geprüft werden.
+Der Vault soll standardmäßig nur gelesen werden.
+
+## Dokumentation
+
+- [Übersicht des Designverzeichnisses](design/README.md)
+- [Anforderungen](design/REQUIREMENTS.md)
+- [Komponenten](design/COMPONENTS.md)
+- [Architektur und Entscheidungen](design/DESIGN.md)
+- [Hinweise für Mitwirkende und Agenten](AGENTS.md)
+
+Dieses Projekt steht unter der [MIT-Lizenz](LICENSE). Bei einer Einbindung von
+Upstream-Code sind dessen jeweilige Lizenzbedingungen zusätzlich zu beachten.
