@@ -1,0 +1,91 @@
+import { Command, CommanderError } from "commander";
+import { createRequire } from "node:module";
+import { VaultQueryError, openVault } from "../api/index.js";
+import type { Vault } from "../api/index.js";
+import { runConsole } from "../console.js";
+import type { ConsoleRequest } from "../console.js";
+import { createProgram } from "./commands/index.js";
+import type { CliCommand } from "./commands/index.js";
+
+const version = createRequire(import.meta.url)("../../package.json").version;
+
+function invalidArguments(message: string): never {
+	throw new VaultQueryError("INVALID_OPTIONS", message);
+}
+
+function serializeError(error: unknown): string {
+	if (error instanceof VaultQueryError) {
+		const detail: { code: string; message: string; path?: string } = {
+			code: error.code,
+			message: error.message,
+		};
+		if (error.path !== undefined) detail.path = error.path;
+		return JSON.stringify({ error: detail });
+	}
+	return JSON.stringify({
+		error: {
+			code: "INTERNAL_ERROR",
+			message: "An unexpected error occurred.",
+		},
+	});
+}
+
+async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
+	return vault.graph().neighbors(command.path, command.options);
+}
+
+/** Run the CLI with user arguments, writing results and diagnostics to process streams. */
+export async function runCli(args: string[]): Promise<number> {
+	if (args[0] === "query") {
+		return runConsole(args, {
+			api: {
+				async query(request: ConsoleRequest) {
+					const vault = await openVault(request.vault);
+					try {
+						return vault.list(request.query, {
+							...(request.file === undefined ? {} : { file: request.file }),
+						});
+					} finally {
+						vault.close();
+					}
+				},
+			},
+			stdin: process.stdin,
+			stdout: process.stdout,
+			stderr: process.stderr,
+			version,
+		});
+	}
+
+	let selectedCommand: CliCommand | undefined;
+	const program = createProgram(version, (command) => {
+		selectedCommand = command;
+	});
+
+	let vault: Vault | undefined;
+	try {
+		await program.parseAsync(args, { from: "user" });
+		if (selectedCommand === undefined) {
+			invalidArguments("Specify a supported operation.");
+		}
+		const options = program.opts<{ vault?: string; edgeField: string[] }>();
+		if (!options.vault) invalidArguments("--vault is required.");
+		vault = await openVault(options.vault, { edgeFields: options.edgeField });
+		const result = await execute(vault, selectedCommand);
+		process.stdout.write(`${JSON.stringify(result)}\n`);
+		return 0;
+	} catch (error) {
+		if (error instanceof CommanderError && error.exitCode === 0) return 0;
+		if (error instanceof CommanderError) {
+			const message = error.message.replace(/^error: /, "");
+			process.stderr.write(
+				`${serializeError(new VaultQueryError("INVALID_OPTIONS", message))}\n`,
+			);
+			return 1;
+		}
+		process.stderr.write(`${serializeError(error)}\n`);
+		return 1;
+	} finally {
+		vault?.close();
+	}
+}
