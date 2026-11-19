@@ -30,7 +30,9 @@ import { openVault } from "obsidian-query-tools";
 
 const vault = await openVault("/path/to/vault", { edgeFields: ["parent"] });
 console.log(vault.list('LIST FROM "Tasks"'));
-console.log(vault.graph().neighbors("Tasks/example.md", { direction: "outgoing" }));
+console.log(
+	vault.graph().neighbors("Tasks/example.md", { direction: "outgoing" }),
+);
 await vault.refresh();
 vault.close();
 ```
