@@ -2,6 +2,7 @@ export { VaultQueryError } from "./errors.js";
 export { openVault } from "./vault.js";
 export type {
 	Edge,
+	GraphLimits,
 	ListOptions,
 	NeighborOptions,
 	QueryResult,

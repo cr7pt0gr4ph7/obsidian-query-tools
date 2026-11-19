@@ -1,12 +1,13 @@
 import { fail } from "./errors.js";
 import type {
 	Config,
+	GraphLimits,
 	ListOptions,
 	VaultLimits,
 	VaultOptions,
 } from "./types.js";
 
-const defaults: VaultLimits = Object.freeze({
+const defaults: VaultLimits & GraphLimits = Object.freeze({
 	maxEntries: 100_000,
 	maxFiles: 10_000,
 	maxFileBytes: 1_048_576,
@@ -62,7 +63,11 @@ export function optionsForOpen(options: VaultOptions): Config {
 			fail("INVALID_OPTIONS", `Invalid limit: ${key}`);
 		}
 	}
-	return { edgeFields: [...edgeFields], limits: { ...defaults, ...limits } };
+	const { maxEdges, ...vaultLimits } = { ...defaults, ...limits };
+	return {
+		limits: vaultLimits,
+		graph: { edgeFields: [...edgeFields], limits: { maxEdges } },
+	};
 }
 
 export function requestLimit(

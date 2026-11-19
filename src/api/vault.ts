@@ -65,16 +65,16 @@ export async function openVault(
 			const direction = options.direction ?? "outgoing";
 			if (!["outgoing", "incoming"].includes(direction))
 				fail("INVALID_OPTIONS", "Invalid direction.");
-			const types = options.types ?? config.edgeFields;
+			const types = options.types ?? config.graph.edgeFields;
 			if (
 				!Array.isArray(types) ||
-				types.some((type) => !config.edgeFields.includes(type))
+				types.some((type) => !config.graph.edgeFields.includes(type))
 			) {
 				fail("INVALID_OPTIONS", "types must contain configured edge fields.");
 			}
-			if (!index.files.includes(node))
+			if (!index.graph.files.includes(node))
 				fail("NOT_FOUND", "Node is not an indexed Markdown file.", node);
-			const values = index.edges.filter(
+			const values = index.graph.edges.filter(
 				(edge) =>
 					edge[direction === "outgoing" ? "source" : "target"] === node &&
 					types.includes(edge.type),
@@ -98,7 +98,9 @@ export async function openVault(
 			const folder = validatePath(match[1], true);
 			return result(
 				generation,
-				index.files.filter((file) => !folder || file.startsWith(`${folder}/`)),
+				index.graph.files.filter(
+					(file) => !folder || file.startsWith(`${folder}/`),
+				),
 				limit,
 			);
 		},
