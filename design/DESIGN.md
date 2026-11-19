@@ -101,6 +101,9 @@ The CLI takes an explicit local vault and query input, outputs normalized JSON
 to stdout, and reports JSON errors on stderr with exit status 1. It exposes
 the shared API's `list` and `neighbors` operations without separate query
 semantics; results include their diagnostics in the JSON envelope.
+The [proposed console specification](notes/2026-11-19-console-interface.md)
+describes a future query interface independently of this prototype. It does
+not change the present subset or authorize JavaScript execution.
 The MCP server uses the official MCP SDK v2 over stdio, with a vault bound by
 server startup configuration rather than tool arguments. It exposes `list`,
 `neighbors`, and `refresh`, with strict schemas, bounded inputs, and

@@ -36,6 +36,10 @@ implementation ready.
 - [x] Convert implementation and tests to TypeScript and expose generated
   JavaScript and type declarations via the package entry point.
 - [x] Add a push-triggered GitHub Actions workflow for Node 24 and 26.
+- [x] Specify a proposed console query interface independently of the
+  prototype, including output formats, vault and current-file selection, and
+  a safety gate for requested JavaScript modes:
+  [console specification](notes/2026-11-19-console-interface.md).
 
 ## Next
 
@@ -43,6 +47,9 @@ implementation ready.
   filesystem-race coverage and documented residual limitations.
 - [ ] Obtain the user's explicit API-ready declaration before continuing CLI
   or MCP implementation.
+- [ ] Before enabling JavaScript query modes, obtain a separately approved
+  execution and authorization design that preserves the vault-script
+  prohibition and the project's privacy and read-only requirements.
 
 ## Tentative future
 
