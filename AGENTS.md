@@ -17,6 +17,8 @@ application. Read [the requirements](design/REQUIREMENTS.md) and
   versions and representative, non-sensitive fixtures. Do not claim parity
   without evidence.
 - Keep design documents in sync with substantive implementation decisions.
+- Store research and other project notes in `design/notes/` using filenames
+  that begin with `YYYY-MM-` (for example, `2026-11-upstream.md`).
 
 There are no project build, lint, or test commands yet. Add and document them
 when the implementation is introduced.
