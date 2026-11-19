@@ -24,14 +24,19 @@ licenses, and evidence against those revisions.
 
 ## Interface contract
 
-The TypeScript API in `src/api/` has a public `index.ts` entrypoint and
-internal modules for vault lifecycle and queries (`vault.ts`), index building
-(`indexer.ts`), validation (`validation.ts`), errors (`errors.ts`), and
-shared types (`types.ts`). It is exported as JavaScript and declarations
-from `dist/api/`. `openVault(root, options)` creates a context. `list(query,
-{ limit })` supports only `LIST FROM "<folder>"`; `graph()` returns a
-`VaultGraph` with `neighbors(path, { direction, types, limit })`, which returns
-direct `{ source, target, type }` edges. A graph obtained before refresh uses
+The TypeScript API in `src/api/` has a stable public `index.ts` entrypoint and
+domain modules under `vault/`, `graph/`, and `dataview/`. Vault lifecycle,
+index building, and open-option validation live under `vault/`; graph types
+and neighbor lookup live under `graph/`; the project-defined `LIST FROM`
+query and its options live under `dataview/`. Shared result types, path and
+request validation, and errors remain at the API root. The root entrypoint
+re-exports the public types and `openVault`; built JavaScript and declarations
+are emitted under `dist/api/`. `openVault(root, options)` creates a context.
+`list(query, { limit })` supports only `LIST FROM "<folder>"`; `graph()`
+returns a `VaultGraph` with `neighbors(path, { direction, types, limit })`,
+which returns direct `{ source, target, type }` edges. The dataview module
+implements only the project's narrow query subset and does not load or claim
+compatibility with the Dataview plugin. A graph obtained before refresh uses
 the current generation, and is invalidated when the vault closes.
 `refresh()` publishes a new generation on success; `close()` invalidates the
 context.

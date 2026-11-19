@@ -1,13 +1,11 @@
 export { VaultQueryError } from "./errors.js";
-export { openVault } from "./vault.js";
+export { openVault } from "./vault/vault.js";
+export type { ListOptions } from "./dataview/types.js";
 export type {
 	Edge,
 	GraphLimits,
-	ListOptions,
 	NeighborOptions,
-	QueryResult,
-	Vault,
 	VaultGraph,
-	VaultLimits,
-	VaultOptions,
-} from "./types.js";
+} from "./graph/types.js";
+export type { QueryResult } from "./types.js";
+export type { Vault, VaultLimits, VaultOptions } from "./vault/types.js";

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { pathToFileURL } from "node:url";
 import { VaultQueryError, openVault } from "../api/index.js";
-import type { NeighborOptions, Vault } from "../api/types.js";
+import type { NeighborOptions, Vault } from "../api/index.js";
 
 type Command =
 	| { operation: "list"; query: string; limit?: number }
