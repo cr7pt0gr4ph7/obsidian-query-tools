@@ -217,8 +217,8 @@ export async function buildIndex(
 				readEdges(
 					contents,
 					name,
-					config.edgeFields,
-					config.limits.maxEdges,
+					config.graph.edgeFields,
+					config.graph.limits.maxEdges,
 					edges,
 				);
 			} else fail("UNSAFE_PATH", "Special files are not allowed.", name);
@@ -277,5 +277,5 @@ export async function buildIndex(
 			compare(a.target, b.target) ||
 			compare(a.type, b.type),
 	);
-	return { files, edges };
+	return { graph: { files, edges } };
 }

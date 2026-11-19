@@ -2,13 +2,16 @@ export interface VaultLimits {
 	maxEntries: number;
 	maxFiles: number;
 	maxFileBytes: number;
-	maxEdges: number;
 	maxResults: number;
+}
+
+export interface GraphLimits {
+	maxEdges: number;
 }
 
 export interface VaultOptions {
 	edgeFields?: string[];
-	limits?: Partial<VaultLimits>;
+	limits?: Partial<VaultLimits & GraphLimits>;
 }
 
 export interface ListOptions {
@@ -44,12 +47,21 @@ export interface Vault {
 	close(): void;
 }
 
-export interface Config {
+export interface GraphConfig {
 	edgeFields: string[];
+	limits: GraphLimits;
+}
+
+export interface Config {
 	limits: VaultLimits;
+	graph: GraphConfig;
+}
+
+export interface GraphIndex {
+	files: string[];
+	edges: Edge[];
 }
 
 export interface VaultIndex {
-	files: string[];
-	edges: Edge[];
+	graph: GraphIndex;
 }
