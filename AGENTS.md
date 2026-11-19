@@ -23,6 +23,12 @@ substantive decisions change.
   that begin with `YYYY-MM-` (for example, `2026-11-upstream.md`).
   Create a new file for separate runs if necessary, except if the information
   fits suitably into the existing files.
+- Format commit messages (and PR titles) as `<type>: <Summary>`, where
+  `<type>` is a lowercase prefix (`feat`, `fix`, `docs`, `build`, `ci`,
+  `test`, `refactor`, `perf`, `style`, `chore`) followed by a colon and a
+  space, and the summary starts with a capital letter, uses the imperative
+  mood, and has no trailing period. Examples: `docs: Update the design notes`,
+  `build: Update the build scripts`.
 
 Run `npm ci` to install dependencies, `npm run build` to compile TypeScript,
 and `npm test` to build, type-check, and run the current tests.
