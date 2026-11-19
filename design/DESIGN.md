@@ -24,7 +24,10 @@ licenses, and evidence against those revisions.
 
 ## Interface contract
 
-The TypeScript API in `src/api/` is exported as JavaScript and declarations
+The TypeScript API in `src/api/` has a public `index.ts` entrypoint and
+internal modules for vault lifecycle and queries (`vault.ts`), index building
+(`indexer.ts`), validation (`validation.ts`), errors (`errors.ts`), and
+shared types (`types.ts`). It is exported as JavaScript and declarations
 from `dist/api/`. `openVault(root, options)` creates a context. `list(query,
 { limit })` supports only `LIST FROM "<folder>"`; `neighbors(path, { direction,
 types, limit })` returns direct `{ source, target, type }` edges. `refresh()`
