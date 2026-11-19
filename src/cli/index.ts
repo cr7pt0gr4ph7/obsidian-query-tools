@@ -170,6 +170,7 @@ function createProgram(select: (command: CliCommand) => void): Command {
 	return program;
 }
 
+/** Run the CLI with user arguments, writing results and diagnostics to process streams. */
 export async function runCli(args: string[]): Promise<number> {
 	if (args[0] === "query") {
 		return runConsole(args, {

@@ -1,11 +1,17 @@
+/** Structured error type raised by shared API operations. */
 export { VaultQueryError } from "./errors.js";
+/** Open a local vault and create the shared read-only query context. */
 export { openVault } from "./vault/vault.js";
+/** Options for folder-list queries. */
 export type { ListOptions } from "./dataview/list.js";
+/** Types for directed edges and direct-neighbor queries. */
 export type {
 	Edge,
 	GraphLimits,
 	NeighborOptions,
 	VaultGraph,
 } from "./graph/types.js";
+/** Standard result envelope returned by query operations. */
 export type { QueryResult } from "./utils/result.js";
+/** Vault lifecycle, open configuration, and resource-limit types. */
 export type { Vault, VaultLimits, VaultOptions } from "./vault/types.js";

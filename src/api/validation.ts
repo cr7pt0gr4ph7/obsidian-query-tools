@@ -1,6 +1,11 @@
 import { fail } from "./errors.js";
 import type { ListOptions } from "./dataview/list.js";
 
+/**
+ * Validate and return a vault-relative POSIX path.
+ * @param value Path to validate.
+ * @param allowEmpty Whether the empty path, representing the vault root, is allowed.
+ */
 export function validatePath(value: string, allowEmpty = false): string {
 	if (
 		typeof value !== "string" ||
@@ -17,6 +22,12 @@ export function validatePath(value: string, allowEmpty = false): string {
 	return value;
 }
 
+/**
+ * Validate result-limit options and return the effective limit.
+ * @param options Options object supplied to the query.
+ * @param max Maximum configured result count.
+ * @param keys Option names allowed by the caller.
+ */
 export function requestLimit(
 	options: ListOptions,
 	max: number,

@@ -10,6 +10,7 @@ const defaults: VaultLimits & GraphLimits = Object.freeze({
 	maxResults: 1_000,
 });
 
+/** Validate open options and combine caller settings with the default limits. */
 export function optionsForOpen(options: VaultOptions): Config {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
 		fail("INVALID_OPTIONS", "Options must be an object.");
