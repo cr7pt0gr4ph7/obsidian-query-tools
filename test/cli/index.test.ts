@@ -11,53 +11,148 @@ import { openVault } from "../../dist/api/index.js";
 const exec = promisify(execFile);
 const cli = fileURLToPath(new URL("../../dist/cli/index.js", import.meta.url));
 
-test("CLI results match the shared API and errors do not corrupt stdout", async t => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-test-"));
-  t.after(() => rm(root, { recursive: true, force: true }));
-  await writeFile(path.join(root, "a.md"), "---\nparent: b\n---\n");
-  await writeFile(path.join(root, "b.md"), "# b\n");
-  const vault = await openVault(root, { edgeFields: ["parent"] });
-  const common = [cli, "--vault", root, "--edge-field", "parent"];
-  const list = await exec(process.execPath, [...common, "list", 'LIST FROM ""', "--limit", "1"]);
-  assert.equal(list.stderr, "");
-  assert.deepEqual(JSON.parse(list.stdout), vault.list('LIST FROM ""', { limit: 1 }));
-  const neighbors = await exec(process.execPath, [...common, "neighbors", "b.md", "--direction", "incoming", "--edge-type", "parent"]);
-  assert.equal(neighbors.stderr, "");
-  assert.deepEqual(JSON.parse(neighbors.stdout), vault.graph().neighbors("b.md", { direction: "incoming", types: ["parent"] }));
-  await assert.rejects(exec(process.execPath, [...common, "neighbors", "b.md", "--type", "parent"]), error => {
-    assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
-    assert.ok(typeof error.stderr === "string");
-    assert.equal(error.stdout, "");
-    assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
-    return true;
-  });
-  const graphNeighbors = await exec(process.execPath, [
-    cli, "--vault", root, "graph", "neighbors", "b.md", "--edge-field", "parent",
-    "--direction", "incoming", "--edge-type", "parent",
-  ]);
-  assert.equal(graphNeighbors.stderr, "");
-  assert.deepEqual(JSON.parse(graphNeighbors.stdout), vault.graph().neighbors("b.md", { direction: "incoming", types: ["parent"] }));
-  await assert.rejects(exec(process.execPath, [...common, "list", "TASK FROM #tag"]), error => {
-    assert.ok(error instanceof Error && "code" in error && "stdout" in error && "stderr" in error);
-    assert.ok(typeof error.stderr === "string");
-    assert.equal(error.code, 1);
-    assert.equal(error.stdout, "");
-    assert.equal(JSON.parse(error.stderr).error.code, "INVALID_QUERY");
-    return true;
-  });
-  await assert.rejects(exec(process.execPath, [...common, "list", 'LIST FROM ""', "--limit", "1.5"]), error => {
-    assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
-    assert.ok(typeof error.stderr === "string");
-    assert.equal(error.stdout, "");
-    assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
-    return true;
-  });
-  await assert.rejects(exec(process.execPath, [...common, "graph", "traverse", "b.md"]), error => {
-    assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
-    assert.ok(typeof error.stderr === "string");
-    assert.equal(error.stdout, "");
-    assert.equal(JSON.parse(error.stderr).error.code, "UNSUPPORTED_FEATURE");
-    return true;
-  });
-  vault.close();
+test("CLI results match the shared API and errors do not corrupt stdout", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-test-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	const help = await exec(process.execPath, [cli, "--help"]);
+	assert.match(help.stdout, /Usage: obsidian-query-tools/);
+	assert.match(help.stdout, /list \[options\] <query>/);
+	assert.match(help.stdout, /neighbors \[options\] <path>/);
+	assert.equal(help.stderr, "");
+	await writeFile(path.join(root, "a.md"), "---\nparent: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const vault = await openVault(root, { edgeFields: ["parent"] });
+	const common = [cli, "--vault", root, "--edge-field", "parent"];
+	const list = await exec(process.execPath, [
+		...common,
+		"list",
+		'LIST FROM ""',
+		"--limit",
+		"1",
+	]);
+	assert.equal(list.stderr, "");
+	assert.deepEqual(
+		JSON.parse(list.stdout),
+		vault.list('LIST FROM ""', { limit: 1 }),
+	);
+	const neighbors = await exec(process.execPath, [
+		...common,
+		"neighbors",
+		"b.md",
+		"--direction",
+		"incoming",
+		"--edge-type",
+		"parent",
+	]);
+	assert.equal(neighbors.stderr, "");
+	assert.deepEqual(
+		JSON.parse(neighbors.stdout),
+		vault
+			.graph()
+			.neighbors("b.md", { direction: "incoming", types: ["parent"] }),
+	);
+	await assert.rejects(
+		exec(process.execPath, [
+			...common,
+			"neighbors",
+			"b.md",
+			"--type",
+			"parent",
+		]),
+		(error) => {
+			assert.ok(
+				error instanceof Error && "stdout" in error && "stderr" in error,
+			);
+			assert.ok(typeof error.stderr === "string");
+			assert.equal(error.stdout, "");
+			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+			return true;
+		},
+	);
+	await assert.rejects(
+		exec(process.execPath, [
+			...common,
+			"neighbors",
+			"b.md",
+			"--direction",
+			"both",
+		]),
+		(error) => {
+			assert.ok(
+				error instanceof Error && "stdout" in error && "stderr" in error,
+			);
+			assert.ok(typeof error.stderr === "string");
+			assert.equal(error.stdout, "");
+			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+			return true;
+		},
+	);
+	const graphNeighbors = await exec(process.execPath, [
+		cli,
+		"--vault",
+		root,
+		"graph",
+		"neighbors",
+		"b.md",
+		"--edge-field",
+		"parent",
+		"--direction",
+		"incoming",
+		"--edge-type",
+		"parent",
+	]);
+	assert.equal(graphNeighbors.stderr, "");
+	assert.deepEqual(
+		JSON.parse(graphNeighbors.stdout),
+		vault
+			.graph()
+			.neighbors("b.md", { direction: "incoming", types: ["parent"] }),
+	);
+	await assert.rejects(
+		exec(process.execPath, [...common, "list", "TASK FROM #tag"]),
+		(error) => {
+			assert.ok(
+				error instanceof Error &&
+					"code" in error &&
+					"stdout" in error &&
+					"stderr" in error,
+			);
+			assert.ok(typeof error.stderr === "string");
+			assert.equal(error.code, 1);
+			assert.equal(error.stdout, "");
+			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_QUERY");
+			return true;
+		},
+	);
+	await assert.rejects(
+		exec(process.execPath, [
+			...common,
+			"list",
+			'LIST FROM ""',
+			"--limit",
+			"1.5",
+		]),
+		(error) => {
+			assert.ok(
+				error instanceof Error && "stdout" in error && "stderr" in error,
+			);
+			assert.ok(typeof error.stderr === "string");
+			assert.equal(error.stdout, "");
+			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+			return true;
+		},
+	);
+	await assert.rejects(
+		exec(process.execPath, [...common, "graph", "traverse", "b.md"]),
+		(error) => {
+			assert.ok(
+				error instanceof Error && "stdout" in error && "stderr" in error,
+			);
+			assert.ok(typeof error.stderr === "string");
+			assert.equal(error.stdout, "");
+			assert.equal(JSON.parse(error.stderr).error.code, "UNSUPPORTED_FEATURE");
+			return true;
+		},
+	);
+	vault.close();
 });
