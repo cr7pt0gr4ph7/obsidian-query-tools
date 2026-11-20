@@ -43,14 +43,6 @@ export interface ISuggestOwner<T> {
 }
 
 /**
- * The state of a popover.
- * @public
- */
-export enum PopoverState {
-
-}
-
-/**
  * Base class for adding a type-ahead popover.
  * @public
  */

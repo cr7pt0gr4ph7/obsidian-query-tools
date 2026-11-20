@@ -345,9 +345,10 @@ export class Setting {
 	 * @public
 	 * @since 0.9.20
 	 */
-	// biome-ignore lint/suspicious/noThenProperty: This is intentionally a thenable for chaining purposes.
+	// biome-ignore lint/suspicious/noThenProperty: This is intended for chaining.
     then(cb: (setting: this) => unknown): this {
-		throw new Error("Method not implemented.");
+		cb(this);
+		return this;
 	}
 	/**
 	 * Remove all controls from the setting.
