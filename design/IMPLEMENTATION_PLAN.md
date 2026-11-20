@@ -30,15 +30,21 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - `VaultGraph.traverse()` and `export()` (json, csv, dot, mermaid, graphml)
   with CLI `graph traverse`/`graph export` and MCP `traverse`/`export` tools.
 
-- Graph analysis (`path`, `stats`, `nodes`, `cycles`) and opposite/implied
-  edges via `oppositeFields`.
+- Graph analysis (`path`, `siblings`, `stats`, `nodes`, `cycles`), opposite/implied
+  edges via `oppositeFields`, and opt-in wikilink edge values.
+- Subgraph export (`root`, `maxDepth`, `direction`), `describe` discovery
+  command, explicit `--config` files for CLI and MCP, and an
+  [agent usage guide](../docs/agent-usage.md).
 
 ## Remaining work
 
 - Breadcrumbs integration: pin an upstream revision, then define edge-field
   semantics (implied/opposite edges, transitive rules) as new scoped work with
   fixtures; current traversal is plain reachability only.
-- Optional list-style CLI command and CLI limit flags beyond `query --limit`.
+- Possible next steps: frontmatter-property queries (new query grammar),
+  inline `field:: value` edges, additional output formats (NDJSON), and
+  Breadcrumbs-style transitive rules, each needing design, fixtures and an
+  explicit non-parity statement first.
 
 - Expand filesystem-race coverage and document any newly identified limits.
 - Treat broader query or relationship semantics as new scope: define them,
