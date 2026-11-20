@@ -150,24 +150,32 @@ export abstract class PluginSettingTab extends SettingTab {
 	 * @param plugin The plugin.
 	 * @public
 	 */
-	constructor(app: App, plugin: Plugin);
+	constructor(app: App, plugin: Plugin) {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
-	getSettingDefinitions(): SettingDefinitionItem[];
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Reads from `this.plugin.settings`. Override to read from a different
 	 * data source.
 	 * @public
 	 * @since 1.13.0
 	 */
-	getControlValue(key: string): unknown;
+	getControlValue(key: string): unknown {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Mutates and persists `this.plugin.settings`. Override to write to a
 	 * different data source.
 	 * @public
 	 * @since 1.13.0
 	 */
-	setControlValue(key: string, value: unknown): void | Promise<void>;
+	setControlValue(key: string, value: unknown): void | Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 }

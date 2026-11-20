@@ -48,7 +48,9 @@ export class MetadataCache extends Events {
 	 * @public
 	 * @since 0.12.5
 	 */
-	getFirstLinkpathDest(linkpath: string, sourcePath: string): TFile | null;
+	getFirstLinkpathDest(linkpath: string, sourcePath: string): TFile | null {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the cached metadata for a file.
@@ -57,7 +59,9 @@ export class MetadataCache extends Events {
 	 * @public
 	 * @since 0.9.21
 	 */
-	getFileCache(file: TFile): CachedMetadata | null;
+	getFileCache(file: TFile): CachedMetadata | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the cached metadata for a path.
 	 * @param path The path of the file.
@@ -65,7 +69,9 @@ export class MetadataCache extends Events {
 	 * @public
 	 * @since 0.14.5
 	 */
-	getCache(path: string): CachedMetadata | null;
+	getCache(path: string): CachedMetadata | null {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Generates a linktext for a file.
@@ -81,7 +87,9 @@ export class MetadataCache extends Events {
 	 * ```
 	 * @public
 	 */
-	fileToLinktext(file: TFile, sourcePath: string, omitMdExtension?: boolean): string;
+	fileToLinktext(file: TFile, sourcePath: string, omitMdExtension?: boolean): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Contains all resolved links. This object maps each source file's path to an object of destination file paths with the link count.
@@ -121,7 +129,9 @@ export class MetadataCache extends Events {
 	 * Called when all files have been resolved. This will be fired each time files get modified after the initial load.
 	 * @public
 	 */
-	on(name: "resolved", callback: () => any, ctx?: any): EventRef;
+	on(name: "resolved", callback: () => any, ctx?: any): EventRef {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**

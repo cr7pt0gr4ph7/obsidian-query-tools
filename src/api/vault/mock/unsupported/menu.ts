@@ -42,7 +42,9 @@ export class Menu extends Component implements HistoryHandler {
 	/**
 	 * @public
 	 */
-	constructor();
+	constructor() {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Remove the space reserved for icons from the menu.

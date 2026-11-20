@@ -67,7 +67,9 @@ export class Notice {
 	 * ```
 	 * @public
 	 */
-	constructor(message: string | DocumentFragment, duration?: number);
+	constructor(message: string | DocumentFragment, duration?: number) {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Change the message of this notice.
 	 * @param message The message.
@@ -82,12 +84,16 @@ export class Notice {
 	 * @public
 	 * @since 0.9.7
 	 */
-	setMessage(message: string | DocumentFragment): this;
+	setMessage(message: string | DocumentFragment): this {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Hide the notice.
 	 * @public
 	 * @since 0.9.7
 	 */
-	hide(): void;
+	hide(): void {
+		throw new Error("Method not implemented.");
+	}
 }

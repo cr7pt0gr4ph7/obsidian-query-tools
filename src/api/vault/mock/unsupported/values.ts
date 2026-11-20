@@ -36,5 +36,7 @@ export class LinkValue extends StringValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static parseFromString(app: App, input: string, sourcePath: string): LinkValue | null;
+	static parseFromString(app: App, input: string, sourcePath: string): LinkValue | null {
+		throw new Error("Method not implemented.");
+	}
 }

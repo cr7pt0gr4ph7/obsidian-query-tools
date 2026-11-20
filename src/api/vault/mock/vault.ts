@@ -25,7 +25,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	getName(): string;
+	getName(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get a file inside the vault at the given path.
@@ -34,7 +36,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.5.7
 	 */
-	getFileByPath(path: string): TFile | null;
+	getFileByPath(path: string): TFile | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get a folder inside the vault at the given path.
 	 * @param path The path of the folder.
@@ -42,7 +46,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.5.7
 	 */
-	getFolderByPath(path: string): TFolder | null;
+	getFolderByPath(path: string): TFolder | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get a file or folder inside the vault at the given path. To check if the return type is
 	 * a file, use `instanceof TFile`. To check if it is a folder, use `instanceof TFolder`.
@@ -58,14 +64,18 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.11.11
 	 */
-	getAbstractFileByPath(path: string): TAbstractFile | null;
+	getAbstractFileByPath(path: string): TAbstractFile | null {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the root folder of the current vault.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getRoot(): TFolder;
+	getRoot(): TFolder {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a new plaintext file inside the vault.
@@ -76,7 +86,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	create(path: string, data: string, options?: DataWriteOptions): Promise<TFile>;
+	create(path: string, data: string, options?: DataWriteOptions): Promise<TFile> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a new binary file inside the vault.
 	 * @param path Vault absolute path for the new file, with extension.
@@ -86,7 +98,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	createBinary(path: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<TFile>;
+	createBinary(path: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<TFile> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a new folder inside the vault.
 	 * @param path Vault absolute path for the new folder.
@@ -94,7 +108,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.4.0
 	 */
-	createFolder(path: string): Promise<TFolder>;
+	createFolder(path: string): Promise<TFolder> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Read a plaintext file that is stored inside the vault, directly from disk.
 	 * Use this if you intend to modify the file content afterwards.
@@ -103,7 +119,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	read(file: TFile): Promise<string>;
+	read(file: TFile): Promise<string> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Read the content of a plaintext file stored inside the vault.
 	 * Use this if you only want to display the content to the user.
@@ -112,14 +130,18 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	cachedRead(file: TFile): Promise<string>;
+	cachedRead(file: TFile): Promise<string> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Read the content of a binary file stored inside the vault.
 	 * @param file The file.
 	 * @public
 	 * @since 0.9.7
 	 */
-	readBinary(file: TFile): Promise<ArrayBuffer>;
+	readBinary(file: TFile): Promise<ArrayBuffer> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Returns a URI for the browser engine to use, for example to embed an image.
@@ -127,7 +149,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	getResourcePath(file: TFile): string;
+	getResourcePath(file: TFile): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Deletes the file completely.
 	 * @param file The file or folder.
@@ -135,7 +159,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	delete(file: TAbstractFile, force?: boolean): Promise<void>;
+	delete(file: TAbstractFile, force?: boolean): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Tries to move to system trash. If that isn't successful/allowed, use local trash.
 	 * @param file The file or folder.
@@ -143,7 +169,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	trash(file: TAbstractFile, system: boolean): Promise<void>;
+	trash(file: TAbstractFile, system: boolean): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Rename or move a file. To ensure links are automatically renamed,
 	 * use {@link FileManager.renameFile} instead.
@@ -152,7 +180,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.11
 	 */
-	rename(file: TAbstractFile, newPath: string): Promise<void>;
+	rename(file: TAbstractFile, newPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Modify the contents of a plaintext file.
 	 * @param file The file.
@@ -161,7 +191,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	modify(file: TFile, data: string, options?: DataWriteOptions): Promise<void>;
+	modify(file: TFile, data: string, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Modify the contents of a binary file.
 	 * @param file The file.
@@ -170,7 +202,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	modifyBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>;
+	modifyBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Add text to the end of a plaintext file inside the vault.
 	 * @param file The file.
@@ -179,7 +213,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.13.0
 	 */
-	append(file: TFile, data: string, options?: DataWriteOptions): Promise<void>;
+	append(file: TFile, data: string, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Add data to the end of a binary file inside the vault.
 	 * @param file - The file
@@ -188,7 +224,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.12.3
 	 */
-	appendBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>;
+	appendBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Atomically read, modify, and save the contents of a note.
 	 * @param file The file.
@@ -204,7 +242,9 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.1.0
 	 */
-	process(file: TFile, fn: (data: string) => string, options?: DataWriteOptions): Promise<string>;
+	process(file: TFile, fn: (data: string) => string, options?: DataWriteOptions): Promise<string> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a copy of a file or folder.
 	 * @param file The file or folder.
@@ -212,20 +252,26 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.8.7
 	 */
-	copy<T extends TAbstractFile>(file: T, newPath: string): Promise<T>;
+	copy<T extends TAbstractFile>(file: T, newPath: string): Promise<T> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all files and folders in the vault.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getAllLoadedFiles(): TAbstractFile[];
+	getAllLoadedFiles(): TAbstractFile[] {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all folders in the vault.
 	 * @param includeRoot Whether to include the root folder (`/`).
 	 * @public
 	 * @since 1.6.6
 	 */
-	getAllFolders(includeRoot?: boolean): TFolder[];
+	getAllFolders(includeRoot?: boolean): TFolder[] {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Recursively iterate over a folder and all files and folders inside it.
@@ -234,19 +280,25 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	static recurseChildren(root: TFolder, cb: (file: TAbstractFile) => any): void;
+	static recurseChildren(root: TFolder, cb: (file: TAbstractFile) => any): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all Markdown files in the vault.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getMarkdownFiles(): TFile[];
+	getMarkdownFiles(): TFile[] {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all files in the vault.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getFiles(): TFile[];
+	getFiles(): TFile[] {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Called when a file is created.
@@ -273,5 +325,7 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	on(name: "rename", callback: (file: TAbstractFile, oldPath: string) => any, ctx?: any): EventRef;
+	on(name: "rename", callback: (file: TAbstractFile, oldPath: string) => any, ctx?: any): EventRef {
+		throw new Error("Method not implemented.");
+	}
 }

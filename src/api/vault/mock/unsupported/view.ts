@@ -60,20 +60,26 @@ export abstract class View extends Component {
 	 * @public
 	 * @since 0.9.7
 	 */
-	constructor(leaf: WorkspaceLeaf);
+	constructor(leaf: WorkspaceLeaf) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Called when the view is opened.
 	 * @public
 	 * @since 0.9.7
 	 */
-	protected onOpen(): Promise<void>;
+	protected onOpen(): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when the view is closed.
 	 * @public
 	 * @since 0.9.7
 	 */
-	protected onClose(): Promise<void>;
+	protected onClose(): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the type of the view.
 	 * @public
@@ -85,7 +91,9 @@ export abstract class View extends Component {
 	 * @public
 	 * @since 0.9.7
 	 */
-	getState(): Record<string, unknown>;
+	getState(): Record<string, unknown> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the state of the view.
 	 * @param state The state.
@@ -103,32 +111,42 @@ export abstract class View extends Component {
 	 * @public
 	 * @since 0.9.7
 	 */
-	setState(state: unknown, result: ViewStateResult): Promise<void>;
+	setState(state: unknown, result: ViewStateResult): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the ephemeral state of the view.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getEphemeralState(): Record<string, unknown>;
+	getEphemeralState(): Record<string, unknown> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the ephemeral state of the view.
 	 * @param state The ephemeral state.
 	 * @public
 	 * @since 0.9.7
 	 */
-	setEphemeralState(state: unknown): void;
+	setEphemeralState(state: unknown): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the icon of the view.
 	 * @public
 	 * @since 1.1.0
 	 */
-	getIcon(): IconName;
+	getIcon(): IconName {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when the size of this view is changed.
 	 * @public
 	 * @since 0.9.7
 	 */
-	onResize(): void;
+	onResize(): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the display text of the view.
 	 * @public
@@ -144,7 +162,9 @@ export abstract class View extends Component {
 	 * @public
 	 * @since 0.15.3
 	 */
-	onPaneMenu(menu: Menu, source: "more-options" | "tab-header" | string): void;
+	onPaneMenu(menu: Menu, source: "more-options" | "tab-header" | string): void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -213,7 +233,9 @@ export abstract class ItemView extends View {
 	 * @inheritDoc
 	 * @public
 	 */
-	constructor(leaf: WorkspaceLeaf);
+	constructor(leaf: WorkspaceLeaf) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Add an action to the item view.
@@ -223,7 +245,9 @@ export abstract class ItemView extends View {
 	 * @public
 	 * @since 1.1.0
 	 */
-	addAction(icon: IconName, title: string, callback: (evt: MouseEvent) => any): HTMLElement;
+	addAction(icon: IconName, title: string, callback: (evt: MouseEvent) => any): HTMLElement {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -251,49 +275,65 @@ export abstract class FileView extends ItemView {
 	 * @inheritDoc
 	 * @public
 	 */
-	constructor(leaf: WorkspaceLeaf);
+	constructor(leaf: WorkspaceLeaf) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	getDisplayText(): string;
+	getDisplayText(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	onload(): void;
+	onload(): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	getState(): Record<string, unknown>;
+	getState(): Record<string, unknown> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 * @since 0.9.7
 	 */
-	setState(state: any, result: ViewStateResult): Promise<void>;
+	setState(state: any, result: ViewStateResult): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Called when the file is loaded.
 	 * @param file The file.
 	 * @public
 	 */
-	onLoadFile(file: TFile): Promise<void>;
+	onLoadFile(file: TFile): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when the file is unloaded.
 	 * @param file The file.
 	 * @public
 	 */
-	onUnloadFile(file: TFile): Promise<void>;
+	onUnloadFile(file: TFile): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when the file is renamed.
 	 * @param file The file.
 	 * @public
 	 */
-	onRename(file: TFile): Promise<void>;
+	onRename(file: TFile): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Whether this file view can open a file with a specified extension.
@@ -301,7 +341,9 @@ export abstract class FileView extends ItemView {
 	 * @public
 	 * @since 0.9.7
 	 */
-	canAcceptExtension(extension: string): boolean;
+	canAcceptExtension(extension: string): boolean {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -337,7 +379,9 @@ export abstract class TextFileView extends EditableFileView {
 	 * @inheritDoc
 	 * @public
 	 */
-	constructor(leaf: WorkspaceLeaf);
+	constructor(leaf: WorkspaceLeaf) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Called when the file is unloaded. Saves any unsaved changes first.
@@ -345,14 +389,18 @@ export abstract class TextFileView extends EditableFileView {
 	 * @public
 	 * @since 0.10.12
 	 */
-	onUnloadFile(file: TFile): Promise<void>;
+	onUnloadFile(file: TFile): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when the file is loaded. Reads the file and passes its contents to {@link TextFileView.setViewData}.
 	 * @param file The file.
 	 * @public
 	 * @since 0.10.12
 	 */
-	onLoadFile(file: TFile): Promise<void>;
+	onLoadFile(file: TFile): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Save the file.
@@ -360,7 +408,9 @@ export abstract class TextFileView extends EditableFileView {
 	 * @public
 	 * @since 0.10.12
 	 */
-	save(clear?: boolean): Promise<void>;
+	save(clear?: boolean): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Gets the data from the editor. This will be called to save the editor contents to the file.
@@ -413,7 +463,7 @@ export interface LivePreviewStateType {
  * This is the editor for Obsidian Mobile as well as the WYSIWYG editor.
  * @public
  */
-export declare class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownFileInfo {
+export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownFileInfo {
 	/**
 	 * The app instance.
 	 * @public
@@ -430,49 +480,65 @@ export declare class MarkdownEditView implements MarkdownSubView, HoverParent, M
 	 * @param view The Markdown view.
 	 * @public
 	 */
-	constructor(view: MarkdownView);
+	constructor(view: MarkdownView) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Clear the content.
 	 * @public
 	 */
-	clear(): void;
+	clear(): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the Markdown content.
 	 * @public
 	 */
-	get(): string;
+	get(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the Markdown content.
 	 * @param data The content.
 	 * @param clear Whether to clear first.
 	 * @public
 	 */
-	set(data: string, clear: boolean): void;
+	set(data: string, clear: boolean): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * The file being edited.
 	 * @public
 	 */
-	get file(): TFile;
+	get file(): TFile {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the selected text.
 	 * @public
 	 */
-	getSelection(): string;
+	getSelection(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the scroll position.
 	 * @public
 	 */
-	getScroll(): number;
+	getScroll(): number {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Apply a scroll position.
 	 * @param scroll The scroll position.
 	 * @public
 	 */
-	applyScroll(scroll: number): void;
+	applyScroll(scroll: number): void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -517,14 +583,18 @@ export class MarkdownPreviewRenderer {
 	 * @public
 	 * @since 0.10.12
 	 */
-	static registerPostProcessor(postProcessor: MarkdownPostProcessor, sortOrder?: number): void;
+	static registerPostProcessor(postProcessor: MarkdownPostProcessor, sortOrder?: number): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Unregister a post processor.
 	 * @param postProcessor The post processor.
 	 * @public
 	 * @since 0.9.7
 	 */
-	static unregisterPostProcessor(postProcessor: MarkdownPostProcessor): void;
+	static unregisterPostProcessor(postProcessor: MarkdownPostProcessor): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a code block post processor.
@@ -536,62 +606,9 @@ export class MarkdownPreviewRenderer {
 	static createCodeBlockPostProcessor(
 		language: string,
 		handler: (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => Promise<any> | void,
-	): (el: HTMLElement, ctx: MarkdownPostProcessorContext) => void;
-}
-
-/**
- * The reading mode of a {@link MarkdownView}.
- * @public
- */
-export declare class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSubView, MarkdownPreviewEvents {
-	/**
-	 * The container element.
-	 * @public
-	 */
-	containerEl: HTMLElement;
-
-	/**
-	 * The file being previewed.
-	 * @public
-	 */
-	get file(): TFile;
-
-	/**
-	 * Get the Markdown content.
-	 * @public
-	 */
-	get(): string;
-	/**
-	 * Set the Markdown content.
-	 * @param data The content.
-	 * @param clear Whether to clear first.
-	 * @public
-	 */
-	set(data: string, clear: boolean): void;
-	/**
-	 * Clear the content.
-	 * @public
-	 */
-	clear(): void;
-
-	/**
-	 * Force the preview to rerender.
-	 * @param full Whether to rerender the entire preview or just the changed parts.
-	 * @public
-	 */
-	rerender(full?: boolean): void;
-
-	/**
-	 * Get the scroll position.
-	 * @public
-	 */
-	getScroll(): number;
-	/**
-	 * Apply a scroll position.
-	 * @param scroll The scroll position.
-	 * @public
-	 */
-	applyScroll(scroll: number): void;
+	): (el: HTMLElement, ctx: MarkdownPostProcessorContext) => void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -628,7 +645,9 @@ export abstract class MarkdownRenderer extends MarkdownRenderChild implements Ma
 	 * @deprecated - use {@link MarkdownRenderer.render}
 	 * @since 0.10.6
 	 */
-	static renderMarkdown(markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void>;
+	static renderMarkdown(markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Renders Markdown string to an HTML element.
 	 * @param app A reference to the app object.
@@ -638,7 +657,78 @@ export abstract class MarkdownRenderer extends MarkdownRenderChild implements Ma
 	 * @param component A parent component to manage the lifecycle of the rendered child components.
 	 * @public
 	 */
-	static render(app: App, markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void>;
+	static render(app: App, markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
+}
+
+/**
+ * The reading mode of a {@link MarkdownView}.
+ * @public
+ */
+export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSubView, MarkdownPreviewEvents {
+	/**
+	 * The container element.
+	 * @public
+	 */
+	containerEl: HTMLElement;
+
+	/**
+	 * The file being previewed.
+	 * @public
+	 */
+	get file(): TFile {
+		throw new Error("Method not implemented.");
+	}
+
+	/**
+	 * Get the Markdown content.
+	 * @public
+	 */
+	get(): string {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Set the Markdown content.
+	 * @param data The content.
+	 * @param clear Whether to clear first.
+	 * @public
+	 */
+	set(data: string, clear: boolean): void {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Clear the content.
+	 * @public
+	 */
+	clear(): void {
+		throw new Error("Method not implemented.");
+	}
+
+	/**
+	 * Force the preview to rerender.
+	 * @param full Whether to rerender the entire preview or just the changed parts.
+	 * @public
+	 */
+	rerender(full?: boolean): void {
+		throw new Error("Method not implemented.");
+	}
+
+	/**
+	 * Get the scroll position.
+	 * @public
+	 */
+	getScroll(): number {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Apply a scroll position.
+	 * @param scroll The scroll position.
+	 * @public
+	 */
+	applyScroll(scroll: number): void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -704,43 +794,57 @@ export class MarkdownView extends TextFileView implements MarkdownFileInfo {
 	 * @inheritDoc
 	 * @public
 	 */
-	constructor(leaf: WorkspaceLeaf);
+	constructor(leaf: WorkspaceLeaf) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	getViewType(): string;
+	getViewType(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the current mode of the Markdown view.
 	 * @public
 	 */
-	getMode(): MarkdownViewModeType;
+	getMode(): MarkdownViewModeType {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	getViewData(): string;
+	getViewData(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	clear(): void;
+	clear(): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	setViewData(data: string, clear: boolean): void;
+	setViewData(data: string, clear: boolean): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Show the search bar in the current mode.
 	 * @param replace Whether to also show the replace field.
 	 * @public
 	 */
-	showSearch(replace?: boolean): void;
+	showSearch(replace?: boolean): void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**

@@ -10,24 +10,32 @@ export class Tasks {
 	 * @public
 	 * @since 0.10.2
 	 */
-	add(callback: () => Promise<any>): void;
+	add(callback: () => Promise<any>): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Add a promise to wait for.
 	 * @param promise The promise.
 	 * @public
 	 * @since 0.10.2
 	 */
-	addPromise(promise: Promise<any>): void;
+	addPromise(promise: Promise<any>): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Check if there are no tasks.
 	 * @public
 	 * @since 0.10.2
 	 */
-	isEmpty(): boolean;
+	isEmpty(): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get a promise that resolves when all tasks have completed.
 	 * @public
 	 * @since 0.10.2
 	 */
-	promise(): Promise<any>;
+	promise(): Promise<any> {
+		throw new Error("Method not implemented.");
+	}
 }

@@ -74,7 +74,9 @@ export class App {
 	 * @public
 	 * @since 1.10.0
 	 */
-	isDarkMode(): boolean;
+	isDarkMode(): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Retrieve value from `localStorage` for this vault.
@@ -83,7 +85,9 @@ export class App {
 	 * @public
 	 * @since 1.8.7
 	 */
-	loadLocalStorage(key: string): any | null;
+	loadLocalStorage(key: string): any | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Save vault-specific value to `localStorage`. If data is `null`, the entry will be cleared.
 	 * @param key The key.
@@ -91,5 +95,7 @@ export class App {
 	 * @public
 	 * @since 1.8.7
 	 */
-	saveLocalStorage(key: string, data: unknown | null): void;
+	saveLocalStorage(key: string, data: unknown | null): void {
+		throw new Error("Method not implemented.");
+	}
 }

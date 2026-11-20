@@ -112,21 +112,27 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.11.0
 	 */
-	onLayoutReady(callback: () => any): void;
+	onLayoutReady(callback: () => any): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Change the layout of the workspace.
 	 * @param workspace The layout to apply, as returned by {@link Workspace.getLayout}.
 	 * @public
 	 * @since 0.9.7
 	 */
-	changeLayout(workspace: any): Promise<void>;
+	changeLayout(workspace: any): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the layout of the workspace.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getLayout(): Record<string, unknown>;
+	getLayout(): Record<string, unknown> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a leaf in a parent.
@@ -135,7 +141,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.9.11
 	 */
-	createLeafInParent(parent: WorkspaceSplit, index: number): WorkspaceLeaf;
+	createLeafInParent(parent: WorkspaceSplit, index: number): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a new leaf by splitting an existing leaf.
@@ -145,7 +153,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	createLeafBySplit(leaf: WorkspaceLeaf, direction?: SplitDirection, before?: boolean): WorkspaceLeaf;
+	createLeafBySplit(leaf: WorkspaceLeaf, direction?: SplitDirection, before?: boolean): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Split the active leaf.
 	 * @param direction The direction to split in.
@@ -153,7 +163,9 @@ export class Workspace extends Events {
 	 * @deprecated - You should use {@link Workspace.getLeaf|getLeaf(true)} instead which does the same thing.
 	 * @since 0.9.7
 	 */
-	splitActiveLeaf(direction?: SplitDirection): WorkspaceLeaf;
+	splitActiveLeaf(direction?: SplitDirection): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Duplicate a leaf.
@@ -172,13 +184,17 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 1.1.0
 	 */
-	duplicateLeaf(leaf: WorkspaceLeaf, leafType: PaneType | boolean, direction?: SplitDirection): Promise<WorkspaceLeaf>;
+	duplicateLeaf(leaf: WorkspaceLeaf, leafType: PaneType | boolean, direction?: SplitDirection): Promise<WorkspaceLeaf> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the unpinned leaf.
 	 * @public
 	 * @deprecated - You should use {@link Workspace.getLeaf|getLeaf(false)} instead which does the same thing.
 	 */
-	getUnpinnedLeaf(): WorkspaceLeaf;
+	getUnpinnedLeaf(): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Creates a new leaf in a leaf adjacent to the currently active leaf.
 	 * If direction is `'vertical'`, the leaf will appear to the right.
@@ -202,7 +218,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.16.0
 	 */
-	getLeaf(newLeaf?: PaneType | boolean): WorkspaceLeaf;
+	getLeaf(newLeaf?: PaneType | boolean): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Migrates this leaf to a new popout window.
@@ -213,7 +231,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.15.4
 	 */
-	moveLeafToPopout(leaf: WorkspaceLeaf, data?: WorkspaceWindowInitData): WorkspaceWindow;
+	moveLeafToPopout(leaf: WorkspaceLeaf, data?: WorkspaceWindowInitData): WorkspaceWindow {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Open a new popout window with a single new leaf and return that leaf.
@@ -222,7 +242,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.15.4
 	 */
-	openPopoutLeaf(data?: WorkspaceWindowInitData): WorkspaceLeaf;
+	openPopoutLeaf(data?: WorkspaceWindowInitData): WorkspaceLeaf {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Open a link text.
 	 * @param linktext The link text.
@@ -237,7 +259,9 @@ export class Workspace extends Events {
 		sourcePath: string,
 		newLeaf?: PaneType | boolean,
 		openViewState?: OpenViewState,
-	): Promise<void>;
+	): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Sets the active leaf.
 	 * @param leaf The leaf.
@@ -260,7 +284,9 @@ export class Workspace extends Events {
 	 * @deprecated - function signature changed. Use other form instead.
 	 * @public
 	 */
-	setActiveLeaf(leaf: WorkspaceLeaf, pushHistory: boolean, focus: boolean): void;
+	setActiveLeaf(leaf: WorkspaceLeaf, pushHistory: boolean, focus: boolean): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Retrieve a leaf by its id.
@@ -269,14 +295,18 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 1.5.1
 	 */
-	getLeafById(id: string): WorkspaceLeaf | null;
+	getLeafById(id: string): WorkspaceLeaf | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all leaves that belong to a group.
 	 * @param group The group ID.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getGroupLeaves(group: string): WorkspaceLeaf[];
+	getGroupLeaves(group: string): WorkspaceLeaf[] {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the most recently active leaf in a given workspace root. Useful for interacting with the leaf in the root split while a sidebar leaf might be active.
@@ -285,21 +315,27 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.15.4
 	 */
-	getMostRecentLeaf(root?: WorkspaceParent): WorkspaceLeaf | null;
+	getMostRecentLeaf(root?: WorkspaceParent): WorkspaceLeaf | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a new leaf inside the left sidebar.
 	 * @param split Whether to create the leaf in a new tab group instead of as a new tab in the existing one.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getLeftLeaf(split: boolean): WorkspaceLeaf | null;
+	getLeftLeaf(split: boolean): WorkspaceLeaf | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a new leaf inside the right sidebar.
 	 * @param split Whether to create the leaf in a new tab group instead of as a new tab in the existing one.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getRightLeaf(split: boolean): WorkspaceLeaf | null;
+	getRightLeaf(split: boolean): WorkspaceLeaf | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get side leaf or create one if one does not exist.
 	 * @param type The view type.
@@ -321,7 +357,9 @@ export class Workspace extends Events {
 			/** @public */
 			state?: any;
 		},
-	): Promise<WorkspaceLeaf>;
+	): Promise<WorkspaceLeaf> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the currently active view of a given type.
@@ -330,7 +368,9 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.9.16
 	 */
-	getActiveViewOfType<T extends View>(type: Constructor<T>): T | null;
+	getActiveViewOfType<T extends View>(type: Constructor<T>): T | null {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Returns the file for the current view if it's a `FileView`.
@@ -338,7 +378,9 @@ export class Workspace extends Events {
 	 * @returns The file, or `null` if there is none.
 	 * @public
 	 */
-	getActiveFile(): TFile | null;
+	getActiveFile(): TFile | null {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Iterate through all leaves in the main area of the workspace.
@@ -346,28 +388,36 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	iterateRootLeaves(callback: (leaf: WorkspaceLeaf) => any): void;
+	iterateRootLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Iterate through all leaves, including main area leaves, floating leaves, and sidebar leaves.
 	 * @param callback Called for each leaf.
 	 * @public
 	 * @since 0.9.7
 	 */
-	iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void;
+	iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get all leaves of a given type.
 	 * @param viewType The view type.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getLeavesOfType(viewType: string): WorkspaceLeaf[];
+	getLeavesOfType(viewType: string): WorkspaceLeaf[] {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Remove all leaves of the given type.
 	 * @param viewType The view type.
 	 * @public
 	 * @since 0.9.7
 	 */
-	detachLeavesOfType(viewType: string): void;
+	detachLeavesOfType(viewType: string): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Bring a given leaf to the foreground. If the leaf is in a sidebar, the sidebar will be uncollapsed.
@@ -376,13 +426,17 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 1.7.2
 	 */
-	revealLeaf(leaf: WorkspaceLeaf): Promise<void>;
+	revealLeaf(leaf: WorkspaceLeaf): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the filenames of the 10 most recently opened files.
 	 * @public
 	 * @since 0.9.7
 	 */
-	getLastOpenFiles(): string[];
+	getLastOpenFiles(): string[] {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Calling this function will update/reconfigure the options of all Markdown views.
@@ -390,14 +444,18 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.13.21
 	 */
-	updateOptions(): void;
+	updateOptions(): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Add a context menu to internal file links.
 	 * @public
 	 * @since 0.12.10
 	 */
-	handleLinkContextMenu(menu: Menu, linktext: string, sourcePath: string, leaf?: WorkspaceLeaf): boolean;
+	handleLinkContextMenu(menu: Menu, linktext: string, sourcePath: string, leaf?: WorkspaceLeaf): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Triggered when the active Markdown file is modified. React to file changes before they
@@ -532,7 +590,60 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.10.2
 	 */
-	on(name: "quit", callback: (tasks: Tasks) => any, ctx?: any): EventRef;
+	on(name: "quit", callback: (tasks: Tasks) => any, ctx?: any): EventRef {
+		throw new Error("Method not implemented.");
+	}
+} /**
+ * An item in the workspace layout, such as a leaf or a parent containing other items.
+ * @public
+ * @since 0.10.2
+ */
+export abstract class WorkspaceItem extends Events {
+	/**
+	 * The direct parent of the leaf.
+	 * @public
+	 * @since 1.6.6
+	 */
+	abstract parent: WorkspaceParent;
+
+	/**
+	 * Get the root container that this item is in.
+	 * @public
+	 * @since 0.10.2
+	 */
+	getRoot(): WorkspaceItem {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Get the root container parent item, which can be one of:
+	 * - {@link WorkspaceRoot}
+	 * - {@link WorkspaceWindow}
+	 * @public
+	 * @since 0.15.4
+	 */
+	getContainer(): WorkspaceContainer {
+		throw new Error("Method not implemented.");
+	}
+}
+
+/**
+ * A workspace item that contains other items.
+ * @public
+ * @since 0.9.7
+ */
+export abstract class WorkspaceParent extends WorkspaceItem {}
+
+/**
+ * A workspace item that lays out its children side by side, either horizontally or vertically.
+ * @public
+ * @since 0.9.7
+ */
+export class WorkspaceSplit extends WorkspaceParent {
+	/**
+	 * The parent of this split.
+	 * @public
+	 */
+	parent: WorkspaceParent;
 }
 
 /**
@@ -556,6 +667,45 @@ export abstract class WorkspaceContainer extends WorkspaceSplit {
 }
 
 /**
+ * A collapsible split on the left or right side of the workspace.
+ * @public
+ * @since 0.15.4
+ */
+export class WorkspaceSidedock extends WorkspaceSplit {
+	/**
+	 * Whether the sidedock is collapsed.
+	 * @public
+	 * @since 0.12.11
+	 */
+	collapsed: boolean;
+
+	/**
+	 * Expand the sidedock if it is collapsed, or collapse it otherwise.
+	 * @public
+	 * @since 0.12.11
+	 */
+	toggle(): void {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Collapse the sidedock.
+	 * @public
+	 * @since 0.12.11
+	 */
+	collapse(): void {
+		throw new Error("Method not implemented.");
+	}
+	/**
+	 * Expand the sidedock.
+	 * @public
+	 * @since 0.12.11
+	 */
+	expand(): void {
+		throw new Error("Method not implemented.");
+	}
+}
+
+/**
  * The workspace item that contains all popout windows.
  * @public
  * @since 0.15.2
@@ -570,32 +720,46 @@ export class WorkspaceFloating extends WorkspaceParent {
 }
 
 /**
- * An item in the workspace layout, such as a leaf or a parent containing other items.
+ * The mobile version of {@link WorkspaceSidedock}, shown as a drawer.
  * @public
- * @since 0.10.2
+ * @since 1.6.6
  */
-export abstract class WorkspaceItem extends Events {
+export class WorkspaceMobileDrawer extends WorkspaceParent {
 	/**
-	 * The direct parent of the leaf.
+	 * The parent of this drawer.
 	 * @public
-	 * @since 1.6.6
 	 */
-	abstract parent: WorkspaceParent;
+	parent: WorkspaceParent;
 
 	/**
-	 * Get the root container that this item is in.
+	 * Whether the mobile drawer is collapsed.
 	 * @public
-	 * @since 0.10.2
 	 */
-	getRoot(): WorkspaceItem;
+	collapsed: boolean;
+
 	/**
-	 * Get the root container parent item, which can be one of:
-	 * - {@link WorkspaceRoot}
-	 * - {@link WorkspaceWindow}
+	 * Expand the mobile drawer.
 	 * @public
-	 * @since 0.15.4
 	 */
-	getContainer(): WorkspaceContainer;
+	expand(): void {
+		throw new Error("Method not implemented.");
+	}
+
+	/**
+	 * Collapse the mobile drawer.
+	 * @public
+	 */
+	collapse(): void {
+		throw new Error("Method not implemented.");
+	}
+
+	/**
+	 * Expand the mobile drawer if it is collapsed, or collapse it otherwise.
+	 * @public
+	 */
+	toggle(): void {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -629,7 +793,7 @@ export interface OpenViewState {
  * A leaf in the workspace, which holds a single view.
  * @public
  */
-export declare class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
+export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	/**
 	 * The direct parent of the leaf.
 	 *
@@ -661,27 +825,35 @@ export declare class WorkspaceLeaf extends WorkspaceItem implements HoverParent 
 	 * @param openState Options for opening the file.
 	 * @public
 	 */
-	openFile(file: TFile, openState?: OpenViewState): Promise<void>;
+	openFile(file: TFile, openState?: OpenViewState): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Open a view in this leaf.
 	 * @param view The view.
 	 * @public
 	 */
-	open(view: View): Promise<View>;
+	open(view: View): Promise<View> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the view state of this leaf.
 	 * @public
 	 */
-	getViewState(): ViewState;
+	getViewState(): ViewState {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the view state of this leaf.
 	 * @param viewState The view state.
 	 * @param eState The ephemeral state.
 	 * @public
 	 */
-	setViewState(viewState: ViewState, eState?: any): Promise<void>;
+	setViewState(viewState: ViewState, eState?: any): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Returns `true` if this leaf is currently deferred because it is in the background.
 	 * A deferred leaf will have a DeferredView as its view, instead of the View that
@@ -689,36 +861,48 @@ export declare class WorkspaceLeaf extends WorkspaceItem implements HoverParent 
 	 * @since 1.7.2
 	 * @public
 	 */
-	get isDeferred(): boolean;
+	get isDeferred(): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * If this view is currently deferred, load it and await that it has fully loaded.
 	 * @since 1.7.2
 	 * @public
 	 */
-	loadIfDeferred(): Promise<void>;
+	loadIfDeferred(): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the ephemeral state of this leaf.
 	 * @public
 	 */
-	getEphemeralState(): any;
+	getEphemeralState(): any {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the ephemeral state of this leaf.
 	 * @param state The ephemeral state.
 	 * @public
 	 */
-	setEphemeralState(state: any): void;
+	setEphemeralState(state: any): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Toggle the pinned state of this leaf.
 	 * @public
 	 */
-	togglePinned(): void;
+	togglePinned(): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the pinned state of this leaf.
 	 * @param pinned `true` to pin, `false` to unpin.
 	 * @public
 	 */
-	setPinned(pinned: boolean): void;
+	setPinned(pinned: boolean): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Link this leaf with another leaf. Reuses `other`'s group, if it exists. When two {@link FileView} instances are linked, they keep their `file` in sync.
@@ -726,35 +910,47 @@ export declare class WorkspaceLeaf extends WorkspaceItem implements HoverParent 
 	 * @param other The other leaf.
 	 * @public
 	 */
-	setGroupMember(other: WorkspaceLeaf): void;
+	setGroupMember(other: WorkspaceLeaf): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Set the group of this leaf.
 	 * @param group The ID of the group, or `null` to remove the leaf from its group.
 	 * @public
 	 */
-	setGroup(group: string): void;
+	setGroup(group: string): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Close this leaf and remove it from the workspace.
 	 * @public
 	 */
-	detach(): void;
+	detach(): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the icon of this leaf.
 	 * @public
 	 */
-	getIcon(): IconName;
+	getIcon(): IconName {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the display text of this leaf.
 	 * @public
 	 */
-	getDisplayText(): string;
+	getDisplayText(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Called when the leaf is resized.
 	 * @public
 	 */
-	onResize(): void;
+	onResize(): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Triggered when the pinned state of the leaf changes.
@@ -765,52 +961,10 @@ export declare class WorkspaceLeaf extends WorkspaceItem implements HoverParent 
 	 * Triggered when the group of the leaf changes.
 	 * @public
 	 */
-	on(name: "group-change", callback: (group: string) => any, ctx?: any): EventRef;
+	on(name: "group-change", callback: (group: string) => any, ctx?: any): EventRef {
+		throw new Error("Method not implemented.");
+	}
 }
-
-/**
- * The mobile version of {@link WorkspaceSidedock}, shown as a drawer.
- * @public
- * @since 1.6.6
- */
-export class WorkspaceMobileDrawer extends WorkspaceParent {
-	/**
-	 * The parent of this drawer.
-	 * @public
-	 */
-	parent: WorkspaceParent;
-
-	/**
-	 * Whether the mobile drawer is collapsed.
-	 * @public
-	 */
-	collapsed: boolean;
-
-	/**
-	 * Expand the mobile drawer.
-	 * @public
-	 */
-	expand(): void;
-
-	/**
-	 * Collapse the mobile drawer.
-	 * @public
-	 */
-	collapse(): void;
-
-	/**
-	 * Expand the mobile drawer if it is collapsed, or collapse it otherwise.
-	 * @public
-	 */
-	toggle(): void;
-}
-
-/**
- * A workspace item that contains other items.
- * @public
- * @since 0.9.7
- */
-export abstract class WorkspaceParent extends WorkspaceItem {}
 
 /**
  * The ribbon, which shows action icons along the side of the workspace.
@@ -834,52 +988,6 @@ export class WorkspaceRoot extends WorkspaceContainer {
 	 * @public
 	 */
 	doc: Document;
-}
-
-/**
- * A collapsible split on the left or right side of the workspace.
- * @public
- * @since 0.15.4
- */
-export class WorkspaceSidedock extends WorkspaceSplit {
-	/**
-	 * Whether the sidedock is collapsed.
-	 * @public
-	 * @since 0.12.11
-	 */
-	collapsed: boolean;
-
-	/**
-	 * Expand the sidedock if it is collapsed, or collapse it otherwise.
-	 * @public
-	 * @since 0.12.11
-	 */
-	toggle(): void;
-	/**
-	 * Collapse the sidedock.
-	 * @public
-	 * @since 0.12.11
-	 */
-	collapse(): void;
-	/**
-	 * Expand the sidedock.
-	 * @public
-	 * @since 0.12.11
-	 */
-	expand(): void;
-}
-
-/**
- * A workspace item that lays out its children side by side, either horizontally or vertically.
- * @public
- * @since 0.9.7
- */
-export class WorkspaceSplit extends WorkspaceParent {
-	/**
-	 * The parent of this split.
-	 * @public
-	 */
-	parent: WorkspaceParent;
 }
 
 /**

@@ -383,7 +383,9 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	 * @public
 	 * @since 0.9.20
 	 */
-	getSuggestions(query: string): FuzzyMatch<T>[];
+	getSuggestions(query: string): FuzzyMatch<T>[] {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Render the suggestion.
 	 * @param item The match.
@@ -399,7 +401,9 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	 * @public
 	 * @since 0.9.20
 	 */
-	renderSuggestion(item: FuzzyMatch<T>, el: HTMLElement): void;
+	renderSuggestion(item: FuzzyMatch<T>, el: HTMLElement): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Called when a suggestion is chosen.
 	 * @param item The chosen match.
@@ -407,7 +411,9 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	 * @public
 	 * @since 0.9.20
 	 */
-	onChooseSuggestion(item: FuzzyMatch<T>, evt: MouseEvent | KeyboardEvent): void;
+	onChooseSuggestion(item: FuzzyMatch<T>, evt: MouseEvent | KeyboardEvent): void {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Get the items to be used in the fuzzy search.
 	 * @example

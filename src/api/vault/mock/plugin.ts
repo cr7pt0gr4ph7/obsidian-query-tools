@@ -105,7 +105,9 @@ export abstract class Plugin extends Component {
 	 * @public
 	 * @since 1.5.7
 	 */
-	onExternalSettingsChange?(): any;
+	onExternalSettingsChange?(): any {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**

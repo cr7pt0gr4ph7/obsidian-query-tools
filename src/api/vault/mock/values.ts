@@ -16,12 +16,16 @@ export abstract class Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static equals(a: Value | null, b: Value | null): boolean;
+	static equals(a: Value | null, b: Value | null): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	static looseEquals(a: Value | null, b: Value | null): boolean;
+	static looseEquals(a: Value | null, b: Value | null): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @public
@@ -37,19 +41,32 @@ export abstract class Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	equals(other: this): boolean;
+	equals(other: this): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	looseEquals(other: Value): boolean;
+	looseEquals(other: Value): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Render this value into the provided HTMLElement.
 	 * @public
 	 * @since 1.10.0
 	 */
-	renderTo(el: HTMLElement, ctx: RenderContext): void;
+	renderTo(el: HTMLElement, ctx: RenderContext): void {
+		throw new Error("Method not implemented.");
+	}
 }
+
+/**
+ * Base type for all non-null {@link Values}.
+ * @public
+ * @since 1.10.0
+ */
+export abstract class NotNullValue extends Value {}
 
 /**
  * Base type for {@link Values} which wrap a single primitive.
@@ -61,25 +78,24 @@ export abstract class PrimitiveValue<T> extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	constructor(value: T);
+	constructor(value: T) {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 }
-
-/**
- * Base type for all non-null {@link Values}.
- * @public
- * @since 1.10.0
- */
-export abstract class NotNullValue extends Value {}
 
 /**
  * {@link Value} which represents null.
@@ -92,12 +108,16 @@ export class NullValue extends Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @public
@@ -148,17 +168,23 @@ export class ObjectValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isEmpty(): boolean;
+	isEmpty(): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @returns the {@link Value} associated with the provided key, or {@link NullValue}.
@@ -166,15 +192,10 @@ export class ObjectValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	get(key: string): Value | null;
+	get(key: string): Value | null {
+		throw new Error("Method not implemented.");
+	}
 }
-
-/**
- * {@link Value} wrapping an external link.
- * @public
- * @since 1.10.0
- */
-export class UrlValue extends StringValue {}
 
 /**
  * {@link Value} wrapping a Date.
@@ -186,26 +207,34 @@ export class DateValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @returns a new DateValue with any time portion in this DateValue removed.
 	 * @public
 	 * @since 1.10.0
 	 */
-	dateOnly(): DateValue;
+	dateOnly(): DateValue {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @returns a new {@link RelativeDateValue} based on this DateValue.
 	 * @public
 	 * @since 1.10.0
 	 */
-	relative(): string;
+	relative(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create new DateValue from an input string.
@@ -220,7 +249,9 @@ export class DateValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static parseFromString(input: string): DateValue | null;
+	static parseFromString(input: string): DateValue | null {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -234,25 +265,33 @@ export class DurationValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Modifies the provided {@DateValue} by this duration.
 	 * @public
 	 * @since 1.10.0
 	 */
-	addToDate(value: DateValue, subtract?: boolean): DateValue;
+	addToDate(value: DateValue, subtract?: boolean): DateValue {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Convert this duration into milliseconds.
 	 * @public
 	 * @since 1.10.0
 	 */
-	getMilliseconds(): number;
+	getMilliseconds(): number {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a new DurationValue using an ISO 8601 duration.
@@ -260,13 +299,17 @@ export class DurationValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static parseFromString(input: string): DurationValue | null;
+	static parseFromString(input: string): DurationValue | null {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * Create a new DurationValue from milliseconds.
 	 * @public
 	 * @since 1.10.0
 	 */
-	static fromMilliseconds(milliseconds: number): DurationValue;
+	static fromMilliseconds(milliseconds: number): DurationValue {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -279,12 +322,16 @@ export class FileValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -305,44 +352,58 @@ export class ListValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	constructor(value: (unknown | Value)[]);
+	constructor(value: (unknown | Value)[]) {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @returns true if any elements in this list loosely equal the provided value.
 	 * @public
 	 * @since 1.10.0
 	 */
-	includes(value: Value): boolean;
+	includes(value: Value): boolean {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @returns the number of elements in this list.
 	 * @public
 	 * @since 1.10.0
 	 */
-	length(): number;
+	length(): number {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @returns the value at the provided index, or {@link NullValue}.
 	 * @public
 	 * @since 1.10.0
 	 */
-	get(index: number): Value;
+	get(index: number): Value {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @returns a new {@link ListValue} containing the elements from this ListValue and the provided ListValue.
 	 * @public
 	 * @since 1.10.0
 	 */
-	concat(other: ListValue): ListValue;
+	concat(other: ListValue): ListValue {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -355,12 +416,16 @@ export class RegExpValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	toString(): string;
+	toString(): string {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	isTruthy(): boolean;
+	isTruthy(): boolean {
+		throw new Error("Method not implemented.");
+	}
 }
 
 /**
@@ -385,6 +450,13 @@ export class StringValue extends PrimitiveValue<string> {
 }
 
 /**
+ * {@link Value} wrapping an external link.
+ * @public
+ * @since 1.10.0
+ */
+export class UrlValue extends StringValue {}
+
+/**
  * {@link Value} wrapping an Obsidian tag.
  * @public
  * @since 1.10.0
@@ -394,5 +466,7 @@ export class TagValue extends StringValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	constructor(value: string);
+	constructor(value: string) {
+		throw new Error("Method not implemented.");
+	}
 }
