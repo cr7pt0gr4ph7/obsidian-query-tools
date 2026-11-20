@@ -44,6 +44,16 @@ function validateTimeout(options: RunScriptOptions) {
 }
 
 /**
+ * Check if an error is a script timeout error.
+ * @param error The error to check.
+ * @returns True if the error is a script timeout error, false otherwise.
+ */
+function isTimeoutError(error: unknown) {
+	// WORKAROUND: Detect timeout error from the V8 runtime
+	return error instanceof Error && error.message === "Script execution timed out.";
+}
+
+/**
  * Evaluate caller-supplied JavaScript. This is NOT a security sandbox: `node:vm`
  * contexts can be escaped. Only run scripts the caller fully trusts.
  */
@@ -69,10 +79,7 @@ export async function runScript(
 			filename: "query-script.js",
 		});
 		const pending = script.runInContext(context, { timeout: timeoutMs });
-		const timeout = new Promise<never>((_, reject) => {
-			timer = setTimeout(() => reject(new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.")), timeoutMs);
-		});
-		const value: unknown = await Promise.race([pending, timeout]);
+		const value = await pending;
 		if (value === undefined) {
 			return [];
 		}
@@ -86,8 +93,7 @@ export async function runScript(
 		if (error instanceof VaultQueryError) {
 			throw error;
 		}
-		// WORKAROUND: Detect timeout error
-		if (error instanceof Error && error.message === "Script execution timed out.") {
+		if (isTimeoutError(error)) {
 			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.");
 		}
 		const name = error && typeof error === "object" && "name" in error ? String(error.name) : "Error";

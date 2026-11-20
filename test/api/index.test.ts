@@ -11,7 +11,8 @@ import type { GraphConfig } from "../../dist/api/graph/config.js";
 import type { GraphIndex } from "../../dist/api/graph/indexing.js";
 import type { GraphLimits, VaultGraph, VaultLimits, VaultOptions } from "../../dist/api/index.js";
 import { openVault, VaultQueryError } from "../../dist/api/index.js";
-import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
+import type { VaultIndex } from "../../dist/api/vault/indexer.js";
+import type { Config } from "../../dist/api/vault/types.js";
 import { optionsForOpen } from "../../dist/api/vault/validation.js";
 
 async function fixture(t: TestContext) {
@@ -26,7 +27,7 @@ async function fixture(t: TestContext) {
 
 const code = (expected: string) => (error: unknown) => {
 	assert.ok(error instanceof VaultQueryError);
-	assert.equal(error.code, expected);
+	assert.equal((error as VaultQueryError).code, expected);
 	return true;
 };
 

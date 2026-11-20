@@ -121,7 +121,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 					neighbors: (path, opts = {}) =>
 						neighbors(index.graph, at, config.graph, config.limits.maxResults, path, opts).data,
 				},
-				timeoutMs,
+				options,
 			);
 			return result(at, values, limit);
 		},
