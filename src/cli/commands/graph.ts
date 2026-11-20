@@ -17,7 +17,10 @@ function requireEdgeFields(
 	options: { edgeField?: string[] },
 ) {
 	const globalOptions = command.optsWithGlobals<RootOptions>();
-	if ([...globalOptions.edgeField, ...(options.edgeField ?? [])].length === 0)
+	if (
+		!globalOptions.config &&
+		[...globalOptions.edgeField, ...(options.edgeField ?? [])].length === 0
+	)
 		invalidArguments("Graph operations require at least one --edge-field.");
 }
 
@@ -55,7 +58,7 @@ export function registerGraphCommands(
 				...globalOptions.edgeField,
 				...(options.edgeField ?? []),
 			];
-			if (edgeFields.length === 0) {
+			if (!globalOptions.config && edgeFields.length === 0) {
 				invalidArguments(
 					"Use graph neighbors <path> with at least one --edge-field.",
 				);

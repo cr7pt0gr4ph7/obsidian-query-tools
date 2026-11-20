@@ -4,6 +4,7 @@ import { VaultQueryError, describe, openVault } from "../api/index.js";
 import type { Vault } from "../api/index.js";
 import { runConsole } from "../console.js";
 import type { ConsoleRequest } from "../console.js";
+import { loadConfig, mergeOptions } from "./config.js";
 import { createProgram } from "./commands/index.js";
 import type { CliCommand } from "./commands/index.js";
 
@@ -99,6 +100,7 @@ export async function runCli(args: string[]): Promise<number> {
 			edgeField: string[];
 			opposite: string[];
 			allowWikilinks?: boolean;
+			config?: string;
 		}>();
 		if (!options.vault) invalidArguments("--vault is required.");
 		const oppositeFields: Record<string, string> = {};
@@ -108,11 +110,15 @@ export async function runCli(args: string[]): Promise<number> {
 				invalidArguments("--opposite expects <field:type>.");
 			oppositeFields[pair.slice(0, at)] = pair.slice(at + 1);
 		}
-		vault = await openVault(options.vault, {
+		const fileOptions = options.config ? await loadConfig(options.config) : {};
+		const merged = mergeOptions(fileOptions, {
 			edgeFields: options.edgeField,
 			oppositeFields,
 			allowWikilinks: options.allowWikilinks === true,
 		});
+		if (!merged.edgeFields?.length)
+			invalidArguments("Specify at least one edge field.");
+		vault = await openVault(options.vault, merged);
 		const result = await execute(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);
 		return 0;

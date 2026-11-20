@@ -310,3 +310,36 @@ test("describe prints capabilities without a vault", async () => {
 		"graphml",
 	]);
 });
+
+test("--config supplies options and rejects unsafe or unknown keys", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-cfg-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: '[[b]]'\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const good = path.join(os.tmpdir(), `cfg-${process.pid}.json`);
+	const bad = path.join(os.tmpdir(), `cfg-bad-${process.pid}.json`);
+	t.after(() => rm(good, { force: true }));
+	t.after(() => rm(bad, { force: true }));
+	await writeFile(
+		good,
+		JSON.stringify({
+			edgeFields: ["up"],
+			allowWikilinks: true,
+			oppositeFields: { up: "down" },
+		}),
+	);
+	await writeFile(bad, JSON.stringify({ unsafeJavaScript: true }));
+	const run = (config: string) =>
+		spawnSync(
+			process.execPath,
+			[cli, "--vault", root, "--config", config, "graph", "stats"],
+			{ encoding: "utf8" },
+		);
+	const ok = run(good);
+	assert.equal(ok.status, 0, ok.stderr);
+	assert.equal(JSON.parse(ok.stdout).edgeCount, 2);
+	const rejected = run(bad);
+	assert.equal(rejected.status, 1);
+	assert.match(JSON.parse(rejected.stderr).error.message, /unsafeJavaScript/);
+	assert.equal(run(path.join(root, "missing.json")).status, 1);
+});

@@ -51,6 +51,7 @@ The optional `oppositeFields` open option (CLI/MCP `--opposite field:type`)
 adds a Breadcrumbs-inspired implied reverse edge, flagged `implied: true`,
 for each configured edge unless the same edge is declared; implied edges count
 toward the edge limit. This is project-defined behavior, not Breadcrumbs parity.
+The CLI accepts an explicit `--config <file>` (JSON, at most 64 KiB, keys `edgeFields`, `oppositeFields`, `allowWikilinks`, `limits`); it is never read from the vault and cannot enable unsafe JavaScript.
 `describe()` and `obsidian-query-tools describe` print a vault-free JSON summary of operations, formats, limits and error codes for agent discovery.
 `refresh()` publishes a new generation on success; `close()` invalidates the
 context.
