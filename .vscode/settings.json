@@ -1,5 +1,9 @@
 {
 	"json.schemaDownload.trustedDomains": {
 		"https://biomejs.dev": true
+	},
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
 	}
 }

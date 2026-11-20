@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import {
 	chmod,
-	mkdtemp,
 	mkdir,
+	mkdtemp,
 	readFile,
 	rm,
 	symlink,
@@ -11,21 +11,21 @@ import {
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { promisify } from "node:util";
-import test from "node:test";
 import type { TestContext } from "node:test";
-import { openVault, VaultQueryError } from "../../dist/api/index.js";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
+import type { GraphConfig } from "../../dist/api/graph/config.js";
+import type { GraphIndex } from "../../dist/api/graph/indexing.js";
 import type {
 	GraphLimits,
 	VaultGraph,
 	VaultLimits,
 	VaultOptions,
 } from "../../dist/api/index.js";
+import { openVault, VaultQueryError } from "../../dist/api/index.js";
 import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
-import type { GraphConfig } from "../../dist/api/graph/config.js";
-import type { GraphIndex } from "../../dist/api/graph/indexing.js";
 import { optionsForOpen } from "../../dist/api/vault/validation.js";
-import { fileURLToPath } from "node:url";
 
 async function fixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));

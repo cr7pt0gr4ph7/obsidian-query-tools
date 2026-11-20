@@ -1,10 +1,10 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
-import { result, type QueryResult } from "../utils/result.js";
-import { requestLimit } from "../utils/validation.js";
 import { validatePath } from "../utils/paths.js";
+import { type QueryResult, result } from "../utils/result.js";
+import { requestLimit } from "../utils/validation.js";
+import { edgeTypes, type GraphConfig } from "./config.js";
 import type { Edge, NeighborOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
-import { edgeTypes, type GraphConfig } from "./config.js";
 
 /**
  * Return direct edges incident to a node, filtered by direction and field type.

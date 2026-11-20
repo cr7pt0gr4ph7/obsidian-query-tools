@@ -1,9 +1,9 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
-import { edgeTypes, type GraphConfig } from "./config.js";
 import { requireNode } from "./analysis.js";
-import { traverse } from "./traverse.js";
+import { edgeTypes, type GraphConfig } from "./config.js";
 import type { ExportFormat, ExportOptions, GraphExport } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
+import { traverse } from "./traverse.js";
 
 /** Graph export formats in documentation order. */
 export const exportFormats: readonly ExportFormat[] = [

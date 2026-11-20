@@ -1,5 +1,5 @@
-import type { QueryResult } from "../utils/result.js";
 import type { ListOptions } from "../dataview/list.js";
+import type { QueryResult } from "../utils/result.js";
 
 /** Filters for a direct-neighbor query. */
 export interface NeighborOptions extends ListOptions {

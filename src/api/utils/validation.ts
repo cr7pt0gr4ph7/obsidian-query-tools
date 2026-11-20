@@ -1,5 +1,5 @@
-import { ErrorCode as EC, VaultQueryError } from "./errors.js";
 import type { ListOptions } from "../dataview/list.js";
+import { ErrorCode as EC, VaultQueryError } from "./errors.js";
 
 /**
  * Validate result-limit options and return the effective limit.

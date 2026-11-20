@@ -1,12 +1,12 @@
-import { constants } from "node:fs";
 import type { Stats } from "node:fs";
-import { lstat, open, opendir } from "node:fs/promises";
+import { constants } from "node:fs";
 import type { FileHandle } from "node:fs/promises";
+import { lstat, open, opendir } from "node:fs/promises";
 import path from "node:path";
 import { parseDocument } from "yaml";
-import { VaultQueryError } from "../utils/errors.js";
 import type { Edge } from "../graph/graph.js";
 import type { GraphIndex } from "../graph/indexing.js";
+import { VaultQueryError } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import type { Config, VaultIndex } from "./types.js";
 
@@ -151,10 +151,9 @@ function readEdges(
 		for (const target of targets) {
 			let link: string | undefined;
 			if (wikilinks && typeof target === "string") {
-				const match =
-					/^\[\[([^[\]|#]+)(?:#[^[\]|]*)?(?:\|[^[\]]*)?\]\]$/.exec(
-						target.trim(),
-					);
+				const match = /^\[\[([^[\]|#]+)(?:#[^[\]|]*)?(?:\|[^[\]]*)?\]\]$/.exec(
+					target.trim(),
+				);
 				if (match) link = match[1].trim();
 			}
 			if (

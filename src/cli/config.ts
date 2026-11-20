@@ -1,6 +1,6 @@
 import { readFile, stat } from "node:fs/promises";
-import { VaultQueryError } from "../api/index.js";
 import type { VaultOptions } from "../api/index.js";
+import { VaultQueryError } from "../api/index.js";
 
 const maxConfigBytes = 65_536;
 const allowedKeys = [

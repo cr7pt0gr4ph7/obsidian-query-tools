@@ -1,9 +1,5 @@
 import { lstat, realpath } from "node:fs/promises";
-import { fail, VaultQueryError } from "../utils/errors.js";
-import { runScript } from "../script/run.js";
-import { result } from "../utils/result.js";
 import { list } from "../dataview/list.js";
-import { exportGraph } from "../graph/export.js";
 import {
 	findCycles,
 	findSiblings,
@@ -11,13 +7,17 @@ import {
 	listNodes,
 	shortestPath,
 } from "../graph/analysis.js";
-import { traverse } from "../graph/traverse.js";
-import { neighbors } from "../graph/neighbors.js";
-import { requestLimit } from "../utils/validation.js";
-import { validatePath } from "../utils/paths.js";
+import { exportGraph } from "../graph/export.js";
 import type { VaultGraph } from "../graph/graph.js";
-import type { Vault, VaultOptions } from "./types.js";
+import { neighbors } from "../graph/neighbors.js";
+import { traverse } from "../graph/traverse.js";
+import { runScript } from "../script/run.js";
+import { fail, VaultQueryError } from "../utils/errors.js";
+import { validatePath } from "../utils/paths.js";
+import { result } from "../utils/result.js";
+import { requestLimit } from "../utils/validation.js";
 import { buildIndex } from "./indexer.js";
+import type { Vault, VaultOptions } from "./types.js";
 import { optionsForOpen } from "./validation.js";
 
 /**

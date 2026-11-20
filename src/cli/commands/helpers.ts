@@ -1,5 +1,5 @@
-import { VaultQueryError } from "../../api/index.js";
 import type { NeighborOptions } from "../../api/index.js";
+import { VaultQueryError } from "../../api/index.js";
 import type { CliCommandSelector, NeighborCliOptions } from "./types.js";
 
 export function positiveInteger(value: string, option: string): number {

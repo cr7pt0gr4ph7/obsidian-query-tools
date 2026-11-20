@@ -1,12 +1,12 @@
-import { CommanderError } from "commander";
 import { createRequire } from "node:module";
-import { VaultQueryError, describe, openVault } from "../api/index.js";
+import { CommanderError } from "commander";
 import type { Vault } from "../api/index.js";
-import { runConsole } from "../console.js";
+import { describe, openVault, VaultQueryError } from "../api/index.js";
 import type { ConsoleRequest } from "../console.js";
-import { loadConfig, mergeOptions } from "./config.js";
-import { createProgram } from "./commands/index.js";
+import { runConsole } from "../console.js";
 import type { CliCommand } from "./commands/index.js";
+import { createProgram } from "./commands/index.js";
+import { loadConfig, mergeOptions } from "./config.js";
 
 const version = createRequire(import.meta.url)("../../package.json").version;
 

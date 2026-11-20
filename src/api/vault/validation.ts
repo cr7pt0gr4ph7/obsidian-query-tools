@@ -1,5 +1,5 @@
-import { VaultQueryError, ErrorCode as EC } from "../utils/errors.js";
 import type { GraphLimits } from "../graph/config.js";
+import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import type { Config, VaultLimits, VaultOptions } from "./types.js";
 
 export const defaultLimits: VaultLimits & GraphLimits = Object.freeze({
