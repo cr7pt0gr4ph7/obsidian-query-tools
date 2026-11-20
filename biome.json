@@ -4,12 +4,12 @@
 		"includes": ["**", "!dist"]
 	},
 	"formatter": {
-		"lineWidth": 80
+		"lineWidth": 120
 	},
 	"linter": {
 		"rules": {
 			"style": {
-				"useBlockStatements": "off"
+				"useBlockStatements": "warn"
 			}
 		}
 	}

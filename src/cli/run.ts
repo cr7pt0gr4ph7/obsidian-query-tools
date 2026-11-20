@@ -21,7 +21,9 @@ function serializeError(error: unknown): string {
 			code: error.code,
 			message: error.message,
 		};
-		if (error.path !== undefined) detail.path = error.path;
+		if (error.path !== undefined) {
+			detail.path = error.path;
+		}
 		return JSON.stringify({ error: detail });
 	}
 	return JSON.stringify({
@@ -32,10 +34,7 @@ function serializeError(error: unknown): string {
 	});
 }
 
-async function executeGraphCommand(
-	vault: Vault,
-	command: CliCommand,
-): Promise<unknown> {
+async function executeGraphCommand(vault: Vault, command: CliCommand): Promise<unknown> {
 	const graph = vault.graph();
 	switch (command.operation) {
 		case "neighbors":
@@ -108,38 +107,40 @@ export async function runCli(args: string[]): Promise<number> {
 			allowWikilinks?: boolean;
 			config?: string;
 		}>();
-		if (!options.vault) invalidArguments("--vault is required.");
+		if (!options.vault) {
+			invalidArguments("--vault is required.");
+		}
 		const oppositeFields: Record<string, string> = {};
 		for (const pair of options.opposite) {
 			const at = pair.indexOf(":");
-			if (at < 1 || at === pair.length - 1)
+			if (at < 1 || at === pair.length - 1) {
 				invalidArguments("--opposite expects <field:type>.");
+			}
 			oppositeFields[pair.slice(0, at)] = pair.slice(at + 1);
 		}
 		const fileOptions = options.config ? await loadConfig(options.config) : {};
 		const merged = mergeOptions(fileOptions, {
 			edgeFields: [
 				...options.edgeField,
-				...(selectedCommand.operation === "neighbors"
-					? (selectedCommand.edgeFields ?? [])
-					: []),
+				...(selectedCommand.operation === "neighbors" ? (selectedCommand.edgeFields ?? []) : []),
 			],
 			oppositeFields,
 			allowWikilinks: options.allowWikilinks === true,
 		});
-		if (!merged.edgeFields?.length)
+		if (!merged.edgeFields?.length) {
 			invalidArguments("Specify at least one edge field.");
+		}
 		vault = await openVault(options.vault, merged);
 		const result = await executeGraphCommand(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);
 		return 0;
 	} catch (error) {
-		if (error instanceof CommanderError && error.exitCode === 0) return 0;
+		if (error instanceof CommanderError && error.exitCode === 0) {
+			return 0;
+		}
 		if (error instanceof CommanderError) {
 			const message = error.message.replace(/^error: /, "");
-			process.stderr.write(
-				`${serializeError(new VaultQueryError(ErrorCode.INVALID_OPTIONS, message))}\n`,
-			);
+			process.stderr.write(`${serializeError(new VaultQueryError(ErrorCode.INVALID_OPTIONS, message))}\n`);
 			return 1;
 		}
 		process.stderr.write(`${serializeError(error)}\n`);

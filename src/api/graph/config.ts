@@ -18,7 +18,5 @@ export interface GraphConfig {
 
 /** Every edge type that can appear: configured fields plus implied opposite types. */
 export function edgeTypes(config: GraphConfig): string[] {
-	return [
-		...new Set([...config.edgeFields, ...Object.values(config.opposites)]),
-	];
+	return [...new Set([...config.edgeFields, ...Object.values(config.opposites)])];
 }

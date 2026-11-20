@@ -24,8 +24,10 @@
 		"test": "npm run build && tsc -p tsconfig.test.json && node --test test/api/*.test.ts test/cli/*.test.ts test/console.test.ts test/mcp/*.test.ts",
 		"lint": "biome lint --write .",
 		"lint:check": "biome lint .",
+		"lint:fix:unsafe": "biome lint --write .",
 		"lint:fix": "biome lint --unsafe --write .",
 		"fix": "biome check --write .",
+		"fix:unsafe": "biome check --unsafe --write .",
 		"check": "biome check ."
 	},
 	"dependencies": {

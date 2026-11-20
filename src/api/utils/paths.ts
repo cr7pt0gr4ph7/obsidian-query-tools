@@ -15,10 +15,7 @@ export function validatePath(value: string, allowEmpty = false): string {
 		/^[a-z]:/i.test(value) ||
 		value?.split("/").some((part) => !part || part === "." || part === "..")
 	) {
-		throw new VaultQueryError(
-			ErrorCode.INVALID_PATH,
-			"Expected a vault-relative POSIX path.",
-		);
+		throw new VaultQueryError(ErrorCode.INVALID_PATH, "Expected a vault-relative POSIX path.");
 	}
 	return value;
 }

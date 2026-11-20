@@ -1,5 +1,3 @@
-import { INTERNAL_ERROR } from "@modelcontextprotocol/server";
-
 /** An actionable error raised by the shared vault-query API. */
 export class VaultQueryError extends Error {
 	/** Stable machine-readable error category. */
@@ -17,7 +15,9 @@ export class VaultQueryError extends Error {
 		super(message);
 		this.name = "VaultQueryError";
 		this.code = code;
-		if (relativePath !== undefined) this.path = relativePath;
+		if (relativePath !== undefined) {
+			this.path = relativePath;
+		}
 	}
 }
 

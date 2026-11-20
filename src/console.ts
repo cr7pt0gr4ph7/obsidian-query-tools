@@ -95,44 +95,31 @@ function parse(arguments_: string[]) {
 	}
 }
 
-async function readStdin(
-	input: AsyncIterable<Uint8Array> | undefined,
-): Promise<string> {
-	if (!input)
+async function readStdin(input: AsyncIterable<Uint8Array> | undefined): Promise<string> {
+	if (!input) {
 		throw new ConsoleError("INVALID_INPUT", "No stdin input is available.");
+	}
 	const chunks: Uint8Array[] = [];
 	let length = 0;
 	for await (const chunk of input) {
 		length += chunk.byteLength;
-		if (length > maxQueryBytes)
-			throw new ConsoleError(
-				"LIMIT_EXCEEDED",
-				"Query input exceeds the 1 MiB limit.",
-			);
+		if (length > maxQueryBytes) {
+			throw new ConsoleError("LIMIT_EXCEEDED", "Query input exceeds the 1 MiB limit.");
+		}
 		chunks.push(chunk);
 	}
 	try {
-		return new TextDecoder("utf-8", { fatal: true }).decode(
-			Buffer.concat(chunks),
-		);
+		return new TextDecoder("utf-8", { fatal: true }).decode(Buffer.concat(chunks));
 	} catch {
 		throw new ConsoleError("INVALID_INPUT", "Stdin must contain valid UTF-8.");
 	}
 }
 
 function markdownValue(value: unknown): string {
-	if (
-		value === null ||
-		typeof value === "string" ||
-		typeof value === "number" ||
-		typeof value === "boolean"
-	) {
+	if (value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
 		return String(value ?? "");
 	}
-	throw new ConsoleError(
-		"UNSUPPORTED_FORMAT",
-		"This result cannot be represented as Markdown.",
-	);
+	throw new ConsoleError("UNSUPPORTED_FORMAT", "This result cannot be represented as Markdown.");
 }
 
 function escapeMarkdown(value: string): string {
@@ -146,92 +133,61 @@ function escapeMarkdown(value: string): string {
 }
 
 function markdown(data: unknown): string {
-	if (typeof data === "string") return `${escapeMarkdown(data)}\n`;
-	if (!Array.isArray(data)) return `${markdownValue(data)}\n`;
-	if (data.length === 0) return "\n";
-	if (
-		data.every(
-			(item) =>
-				item === null || ["string", "number", "boolean"].includes(typeof item),
-		)
-	) {
+	if (typeof data === "string") {
+		return `${escapeMarkdown(data)}\n`;
+	}
+	if (!Array.isArray(data)) {
+		return `${markdownValue(data)}\n`;
+	}
+	if (data.length === 0) {
+		return "\n";
+	}
+	if (data.every((item) => item === null || ["string", "number", "boolean"].includes(typeof item))) {
 		return `${data.map((item) => `- ${escapeMarkdown(markdownValue(item))}`).join("\n")}\n`;
 	}
-	if (
-		data.every(
-			(item) =>
-				item !== null && typeof item === "object" && !Array.isArray(item),
-		)
-	) {
+	if (data.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))) {
 		const records = data as Record<string, unknown>[];
 		const columns = Object.keys(records[0]);
-		if (
-			records.some(
-				(record) => Object.keys(record).join("\0") !== columns.join("\0"),
-			)
-		) {
-			throw new ConsoleError(
-				"UNSUPPORTED_FORMAT",
-				"This result cannot be represented as a Markdown table.",
-			);
+		if (records.some((record) => Object.keys(record).join("\0") !== columns.join("\0"))) {
+			throw new ConsoleError("UNSUPPORTED_FORMAT", "This result cannot be represented as a Markdown table.");
 		}
 		const cell = (value: unknown) => escapeMarkdown(markdownValue(value));
 		const header = `| ${columns.map(cell).join(" | ")} |`;
 		const separator = `| ${columns.map(() => "---").join(" | ")} |`;
 		return `${[header, separator, ...records.map((record) => `| ${columns.map((column) => cell(record[column])).join(" | ")} |`)].join("\n")}\n`;
 	}
-	throw new ConsoleError(
-		"UNSUPPORTED_FORMAT",
-		"This result cannot be represented as Markdown.",
-	);
+	throw new ConsoleError("UNSUPPORTED_FORMAT", "This result cannot be represented as Markdown.");
 }
 
-function outputError(
-	stderr: ConsoleDependencies["stderr"],
-	error: unknown,
-	query?: string,
-): number {
+function outputError(stderr: ConsoleDependencies["stderr"], error: unknown, query?: string): number {
 	const code =
 		error instanceof ConsoleError
 			? error.code
-			: error &&
-					typeof error === "object" &&
-					"code" in error &&
-					typeof error.code === "string"
+			: error && typeof error === "object" && "code" in error && typeof error.code === "string"
 				? error.code
 				: "INTERNAL_ERROR";
-	let message =
-		error instanceof Error && error.message
-			? error.message
-			: "Unexpected internal error.";
-	if (query) message = message.replaceAll(query, "[query]");
+	let message = error instanceof Error && error.message ? error.message : "Unexpected internal error.";
+	if (query) {
+		message = message.replaceAll(query, "[query]");
+	}
 	stderr.write(`${code}: ${message}\n`);
 	return 1;
 }
 
 /** Parse, execute, and format one console query command. */
-export async function runConsole(
-	arguments_: string[],
-	dependencies: ConsoleDependencies,
-): Promise<number> {
+export async function runConsole(arguments_: string[], dependencies: ConsoleDependencies): Promise<number> {
 	let source: string | undefined;
 	try {
 		const { values, positionals } = parse(arguments_);
 		if (values.help) {
-			if (
-				positionals.length > 1 ||
-				(positionals.length === 1 && positionals[0] !== "query")
-			) {
+			if (positionals.length > 1 || (positionals.length === 1 && positionals[0] !== "query")) {
 				throw new ConsoleError("INVALID_OPTIONS", "Invalid command.");
 			}
 			dependencies.stdout.write(help);
 			return 0;
 		}
 		if (values.version) {
-			if (
-				positionals.length > 1 ||
-				(positionals.length === 1 && positionals[0] !== "query")
-			) {
+			if (positionals.length > 1 || (positionals.length === 1 && positionals[0] !== "query")) {
 				throw new ConsoleError("INVALID_OPTIONS", "Invalid command.");
 			}
 			dependencies.stdout.write(`${dependencies.version ?? "0.0.0"}\n`);
@@ -240,46 +196,29 @@ export async function runConsole(
 		if (positionals.length !== 1 || positionals[0] !== "query") {
 			throw new ConsoleError("INVALID_OPTIONS", "Expected the query command.");
 		}
-		if (!values.vault)
+		if (!values.vault) {
 			throw new ConsoleError("INVALID_OPTIONS", "--vault is required.");
-		if (
-			typeof values.type !== "string" ||
-			!modes.includes(values.type as ConsoleMode)
-		) {
-			throw new ConsoleError(
-				"INVALID_OPTIONS",
-				"A supported --type is required.",
-			);
 		}
-		if (
-			values.format !== undefined &&
-			values.format !== "json" &&
-			values.format !== "markdown"
-		) {
+		if (typeof values.type !== "string" || !modes.includes(values.type as ConsoleMode)) {
+			throw new ConsoleError("INVALID_OPTIONS", "A supported --type is required.");
+		}
+		if (values.format !== undefined && values.format !== "json" && values.format !== "markdown") {
 			throw new ConsoleError("INVALID_OPTIONS", "Unsupported output format.");
 		}
 		if (values.file !== undefined && !values.file) {
-			throw new ConsoleError(
-				"INVALID_OPTIONS",
-				"--file must be a nonempty vault-relative path.",
-			);
+			throw new ConsoleError("INVALID_OPTIONS", "--file must be a nonempty vault-relative path.");
 		}
 		const hasQuery = values.query !== undefined;
 		const hasStdin = values.stdin === true;
 		if (hasQuery === hasStdin) {
-			throw new ConsoleError(
-				"INVALID_OPTIONS",
-				"Supply exactly one of --query or --stdin.",
-			);
+			throw new ConsoleError("INVALID_OPTIONS", "Supply exactly one of --query or --stdin.");
 		}
 		source = hasQuery ? values.query! : await readStdin(dependencies.stdin);
-		if (!source.trim())
+		if (!source.trim()) {
 			throw new ConsoleError("INVALID_INPUT", "Query input must not be empty.");
+		}
 		if (Buffer.byteLength(source, "utf8") > maxQueryBytes) {
-			throw new ConsoleError(
-				"LIMIT_EXCEEDED",
-				"Query input exceeds the 1 MiB limit.",
-			);
+			throw new ConsoleError("LIMIT_EXCEEDED", "Query input exceeds the 1 MiB limit.");
 		}
 
 		const javascript = values.type === "dataviewjs" || values.type === "dqljs";
@@ -289,14 +228,8 @@ export async function runConsole(
 				"JavaScript query modes are disabled; pass --unsafe-allow-js to run trusted scripts.",
 			);
 		}
-		if (
-			values.limit !== undefined &&
-			!/^[1-9][0-9]{0,15}$/.test(values.limit)
-		) {
-			throw new ConsoleError(
-				"INVALID_OPTIONS",
-				"--limit must be a positive integer.",
-			);
+		if (values.limit !== undefined && !/^[1-9][0-9]{0,15}$/.test(values.limit)) {
+			throw new ConsoleError("INVALID_OPTIONS", "--limit must be a positive integer.");
 		}
 		const result = await dependencies.api.query({
 			vault: values.vault,
@@ -312,19 +245,17 @@ export async function runConsole(
 				data: result.data,
 				diagnostics: result.diagnostics,
 				truncated: result.truncated,
-				...(result.generation === undefined
-					? {}
-					: { generation: result.generation }),
+				...(result.generation === undefined ? {} : { generation: result.generation }),
 			};
 			dependencies.stdout.write(`${JSON.stringify(envelope)}\n`);
 		} else {
 			const output = markdown(result.data);
 			if (result.diagnostics.length) {
-				dependencies.stderr.write(
-					`${result.diagnostics.map((item) => `${item.code}: ${item.message}`).join("\n")}\n`,
-				);
+				dependencies.stderr.write(`${result.diagnostics.map((item) => `${item.code}: ${item.message}`).join("\n")}\n`);
 			}
-			if (result.truncated) dependencies.stderr.write("Result truncated.\n");
+			if (result.truncated) {
+				dependencies.stderr.write("Result truncated.\n");
+			}
 			dependencies.stdout.write(output);
 		}
 		return 0;

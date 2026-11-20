@@ -20,43 +20,30 @@ export function traverse(
 	node: string,
 	options: TraverseOptions = {},
 ): QueryResult<Edge> {
-	const limit = requestLimit(options, maxResults, [
-		"limit",
-		"direction",
-		"types",
-		"maxDepth",
-	]);
+	const limit = requestLimit(options, maxResults, ["limit", "direction", "types", "maxDepth"]);
 	validatePath(node);
 	const direction = options.direction ?? "outgoing";
-	if (!["outgoing", "incoming"].includes(direction))
+	if (!["outgoing", "incoming"].includes(direction)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
+	}
 	const types = options.types ?? edgeTypes(config);
-	if (
-		!Array.isArray(types) ||
-		types.some((type) => !edgeTypes(config).includes(type))
-	)
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"types must contain configured edge fields.",
-		);
+	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+	}
 	const maxDepth = options.maxDepth ?? maxDepthLimit;
-	if (
-		!Number.isSafeInteger(maxDepth) ||
-		maxDepth < 1 ||
-		maxDepth > maxDepthLimit
-	)
+	if (!Number.isSafeInteger(maxDepth) || maxDepth < 1 || maxDepth > maxDepthLimit) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid maxDepth.");
-	if (!index.files.includes(node))
-		throw new VaultQueryError(
-			EC.NOT_FOUND,
-			"Node is not an indexed Markdown file.",
-			node,
-		);
+	}
+	if (!index.files.includes(node)) {
+		throw new VaultQueryError(EC.NOT_FOUND, "Node is not an indexed Markdown file.", node);
+	}
 	const from = direction === "outgoing" ? "source" : "target";
 	const to = direction === "outgoing" ? "target" : "source";
 	const byNode = new Map<string, Edge[]>();
 	for (const edge of index.edges) {
-		if (!types.includes(edge.type)) continue;
+		if (!types.includes(edge.type)) {
+			continue;
+		}
 		const list = byNode.get(edge[from]) ?? [];
 		list.push(edge);
 		byNode.set(edge[from], list);

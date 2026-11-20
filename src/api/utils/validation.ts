@@ -7,17 +7,15 @@ import { ErrorCode as EC, VaultQueryError } from "./errors.js";
  * @param max Maximum configured result count.
  * @param keys Option names allowed by the caller.
  */
-export function requestLimit(
-	options: ListOptions,
-	max: number,
-	keys: string[],
-): number {
-	if (!options || typeof options !== "object" || Array.isArray(options))
+export function requestLimit(options: ListOptions, max: number, keys: string[]): number {
+	if (!options || typeof options !== "object" || Array.isArray(options)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Options must be an object.");
+	}
 	validateOptions(options, keys as (keyof ListOptions)[]);
 	const limit = options.limit ?? max;
-	if (!Number.isSafeInteger(limit) || limit < 1 || limit > max)
+	if (!Number.isSafeInteger(limit) || limit < 1 || limit > max) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid result limit.");
+	}
 	return limit;
 }
 

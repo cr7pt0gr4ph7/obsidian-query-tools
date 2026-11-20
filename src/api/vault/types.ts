@@ -50,10 +50,7 @@ export interface Vault {
 	 * Fails with `UNSUPPORTED_FEATURE` unless opened with `unsafeJavaScript: true`.
 	 * @param source Async function body; its returned value is the result.
 	 */
-	script(
-		source: string,
-		options?: ScriptOptions,
-	): Promise<QueryResult<unknown>>;
+	script(source: string, options?: ScriptOptions): Promise<QueryResult<unknown>>;
 	/** Obtain a graph view that follows the vault's current generation and closes with the vault. */
 	graph(): VaultGraph;
 	/** Build and publish a replacement index, returning its new generation number. */

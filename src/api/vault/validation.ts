@@ -16,34 +16,15 @@ export function optionsForOpen(options: VaultOptions): Config {
 		throw new VaultQueryError("INVALID_OPTIONS", "Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
-		if (
-			![
-				"edgeFields",
-				"oppositeFields",
-				"allowWikilinks",
-				"limits",
-				"unsafeJavaScript",
-			].includes(key)
-		)
+		if (!["edgeFields", "oppositeFields", "allowWikilinks", "limits", "unsafeJavaScript"].includes(key)) {
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
+		}
 	}
-	if (
-		options.unsafeJavaScript !== undefined &&
-		typeof options.unsafeJavaScript !== "boolean"
-	) {
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"unsafeJavaScript must be a boolean.",
-		);
+	if (options.unsafeJavaScript !== undefined && typeof options.unsafeJavaScript !== "boolean") {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "unsafeJavaScript must be a boolean.");
 	}
-	if (
-		options.allowWikilinks !== undefined &&
-		typeof options.allowWikilinks !== "boolean"
-	) {
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"allowWikilinks must be a boolean.",
-		);
+	if (options.allowWikilinks !== undefined && typeof options.allowWikilinks !== "boolean") {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "allowWikilinks must be a boolean.");
 	}
 	const edgeFields = options.edgeFields ?? [];
 	if (
@@ -51,17 +32,11 @@ export function optionsForOpen(options: VaultOptions): Config {
 		edgeFields.some((x) => typeof x !== "string" || !x.trim()) ||
 		new Set(edgeFields).size !== edgeFields.length
 	) {
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"edgeFields must be an array of unique nonempty strings.",
-		);
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "edgeFields must be an array of unique nonempty strings.");
 	}
 	const opposites = options.oppositeFields ?? {};
 	if (!opposites || typeof opposites !== "object" || Array.isArray(opposites)) {
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"oppositeFields must be an object.",
-		);
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "oppositeFields must be an object.");
 	}
 	const reverse = Object.values(opposites);
 	if (
@@ -84,11 +59,7 @@ export function optionsForOpen(options: VaultOptions): Config {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "limits must be an object.");
 	}
 	for (const [key, value] of Object.entries(limits)) {
-		if (
-			!Object.hasOwn(defaultLimits, key) ||
-			!Number.isSafeInteger(value) ||
-			value < 1
-		) {
+		if (!Object.hasOwn(defaultLimits, key) || !Number.isSafeInteger(value) || value < 1) {
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Invalid limit: ${key}`);
 		}
 	}

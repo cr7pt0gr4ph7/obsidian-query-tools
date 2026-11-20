@@ -42,24 +42,16 @@ function parseMcpServerArgs() {
 			},
 		});
 	} catch {
-		throw new VaultQueryError(
-			"INVALID_OPTIONS",
-			"Invalid MCP server arguments.",
-		);
+		throw new VaultQueryError("INVALID_OPTIONS", "Invalid MCP server arguments.");
 	}
 }
 
 async function main() {
 	const parsed = parseMcpServerArgs();
 	if (!parsed.values.vault) {
-		throw new VaultQueryError(
-			"INVALID_OPTIONS",
-			"Expected --vault <path> at server startup.",
-		);
+		throw new VaultQueryError("INVALID_OPTIONS", "Expected --vault <path> at server startup.");
 	}
-	const fileOptions = parsed.values.config
-		? await loadConfig(parsed.values.config)
-		: {};
+	const fileOptions = parsed.values.config ? await loadConfig(parsed.values.config) : {};
 	const vault = await openVault(
 		parsed.values.vault,
 		mergeOptions(fileOptions, {
@@ -68,11 +60,9 @@ async function main() {
 			oppositeFields: Object.fromEntries(
 				(parsed.values.opposite ?? []).map((pair) => {
 					const at = pair.indexOf(":");
-					if (at < 1 || at === pair.length - 1)
-						throw new VaultQueryError(
-							"INVALID_OPTIONS",
-							"--opposite expects <field:type>.",
-						);
+					if (at < 1 || at === pair.length - 1) {
+						throw new VaultQueryError("INVALID_OPTIONS", "--opposite expects <field:type>.");
+					}
 					return [pair.slice(0, at), pair.slice(at + 1)];
 				}),
 			),
@@ -96,8 +86,7 @@ async function main() {
 	server.registerTool(
 		"neighbors",
 		{
-			description:
-				"Get direct typed edges for an indexed vault-relative Markdown path.",
+			description: "Get direct typed edges for an indexed vault-relative Markdown path.",
 			inputSchema: z.strictObject({
 				path: z.string().max(4096),
 				direction: z.enum(["incoming", "outgoing"]).optional(),
@@ -112,8 +101,7 @@ async function main() {
 	server.registerTool(
 		"traverse",
 		{
-			description:
-				"Breadth-first walk of typed edges reachable from an indexed Markdown path.",
+			description: "Breadth-first walk of typed edges reachable from an indexed Markdown path.",
 			inputSchema: z.strictObject({
 				path: z.string().max(4096),
 				direction: z.enum(["incoming", "outgoing"]).optional(),
@@ -123,14 +111,12 @@ async function main() {
 			}),
 			annotations,
 		},
-		async ({ path, ...options }) =>
-			handle(() => vault.graph().traverse(path, options)),
+		async ({ path, ...options }) => handle(() => vault.graph().traverse(path, options)),
 	);
 	server.registerTool(
 		"path",
 		{
-			description:
-				"Find the shortest typed-edge path between two indexed Markdown paths.",
+			description: "Find the shortest typed-edge path between two indexed Markdown paths.",
 			inputSchema: z.strictObject({
 				from: z.string().max(4096),
 				to: z.string().max(4096),
@@ -140,14 +126,12 @@ async function main() {
 			}),
 			annotations,
 		},
-		async ({ from, to, ...options }) =>
-			handle(() => vault.graph().path(from, to, options)),
+		async ({ from, to, ...options }) => handle(() => vault.graph().path(from, to, options)),
 	);
 	server.registerTool(
 		"siblings",
 		{
-			description:
-				"Find notes that share a typed-edge target (parent) with an indexed Markdown path.",
+			description: "Find notes that share a typed-edge target (parent) with an indexed Markdown path.",
 			inputSchema: z.strictObject({
 				path: z.string().max(4096),
 				types: z.array(z.string().max(256)).max(100).optional(),
@@ -155,14 +139,12 @@ async function main() {
 			}),
 			annotations,
 		},
-		async ({ path, ...options }) =>
-			handle(() => vault.graph().siblings(path, options)),
+		async ({ path, ...options }) => handle(() => vault.graph().siblings(path, options)),
 	);
 	server.registerTool(
 		"cycles",
 		{
-			description:
-				"Find groups of notes that can reach each other via typed edges.",
+			description: "Find groups of notes that can reach each other via typed edges.",
 			inputSchema: z.strictObject({
 				types: z.array(z.string().max(256)).max(100).optional(),
 				limit,
@@ -174,8 +156,7 @@ async function main() {
 	server.registerTool(
 		"nodes",
 		{
-			description:
-				"List Markdown paths, optionally only graph sources, sinks, or isolated nodes.",
+			description: "List Markdown paths, optionally only graph sources, sinks, or isolated nodes.",
 			inputSchema: z.strictObject({
 				role: z.enum(["all", "sources", "sinks", "isolated"]).optional(),
 				types: z.array(z.string().max(256)).max(100).optional(),
@@ -188,8 +169,7 @@ async function main() {
 	server.registerTool(
 		"stats",
 		{
-			description:
-				"Count nodes, edges, per-type edges, sources, sinks and isolated nodes.",
+			description: "Count nodes, edges, per-type edges, sources, sinks and isolated nodes.",
 			inputSchema: z.strictObject({
 				types: z.array(z.string().max(256)).max(100).optional(),
 			}),
@@ -200,8 +180,7 @@ async function main() {
 	server.registerTool(
 		"export",
 		{
-			description:
-				"Serialize the whole graph as json, csv, dot, mermaid, or graphml.",
+			description: "Serialize the whole graph as json, csv, dot, mermaid, or graphml.",
 			inputSchema: z.strictObject({
 				format: z.enum(["json", "csv", "dot", "mermaid", "graphml"]).optional(),
 				types: z.array(z.string().max(256)).max(100).optional(),
@@ -216,8 +195,7 @@ async function main() {
 	server.registerTool(
 		"refresh",
 		{
-			description:
-				"Rebuild the bound vault index and return its new generation.",
+			description: "Rebuild the bound vault index and return its new generation.",
 			inputSchema: z.strictObject({}),
 			annotations,
 		},

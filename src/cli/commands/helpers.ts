@@ -4,17 +4,11 @@ import type { CliCommandSelector, NeighborCliOptions } from "./types.js";
 
 export function positiveInteger(value: string, option: string): number {
 	if (!/^[0-9]+$/.test(value)) {
-		throw new VaultQueryError(
-			"INVALID_OPTIONS",
-			`${option} must be a positive integer.`,
-		);
+		throw new VaultQueryError("INVALID_OPTIONS", `${option} must be a positive integer.`);
 	}
 	const parsed = Number(value);
 	if (!Number.isSafeInteger(parsed) || parsed < 1) {
-		throw new VaultQueryError(
-			"INVALID_OPTIONS",
-			`${option} must be a positive integer.`,
-		);
+		throw new VaultQueryError("INVALID_OPTIONS", `${option} must be a positive integer.`);
 	}
 	return parsed;
 }

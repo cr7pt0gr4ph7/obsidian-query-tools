@@ -6,28 +6,16 @@ import type { GraphIndex } from "./indexing.js";
 import { traverse } from "./traverse.js";
 
 /** Graph export formats in documentation order. */
-export const exportFormats: readonly ExportFormat[] = [
-	"json",
-	"csv",
-	"dot",
-	"mermaid",
-	"graphml",
-];
+export const exportFormats: readonly ExportFormat[] = ["json", "csv", "dot", "mermaid", "graphml"];
 
-const quote = (value: string) =>
-	`"${value.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+const quote = (value: string) => `"${value.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
 const xml = (value: string) =>
-	value
-		.replaceAll("&", "&amp;")
-		.replaceAll("<", "&lt;")
-		.replaceAll(">", "&gt;")
-		.replaceAll('"', "&quot;");
+	value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 const csv = (value: string) => {
 	const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
 	return /[",\r\n]/.test(safe) ? `"${safe.replaceAll('"', '""')}"` : safe;
 };
-const mermaidLabel = (value: string) =>
-	value.replaceAll('"', "#quot;").replaceAll(/[\r\n]/g, " ");
+const mermaidLabel = (value: string) => value.replaceAll('"', "#quot;").replaceAll(/[\r\n]/g, " ");
 
 /** Serialize the graph (all files as nodes, selected edges) deterministically. */
 export function exportGraph(
@@ -36,52 +24,42 @@ export function exportGraph(
 	config: GraphConfig,
 	options: ExportOptions = {},
 ): GraphExport {
-	if (!options || typeof options !== "object" || Array.isArray(options))
+	if (!options || typeof options !== "object" || Array.isArray(options)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Options must be an object.");
-	for (const key of Object.keys(options))
-		if (!["format", "types", "root", "maxDepth", "direction"].includes(key))
+	}
+	for (const key of Object.keys(options)) {
+		if (!["format", "types", "root", "maxDepth", "direction"].includes(key)) {
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
+		}
+	}
 	const format = options.format ?? "json";
-	if (!exportFormats.includes(format))
+	if (!exportFormats.includes(format)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Unsupported export format.");
+	}
 	const types = options.types ?? edgeTypes(config);
-	if (
-		!Array.isArray(types) ||
-		types.some((type) => !edgeTypes(config).includes(type))
-	)
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"types must contain configured edge fields.",
-		);
+	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+	}
 	let edges = index.edges.filter((edge) => types.includes(edge.type));
 	let files = index.files;
 	if (options.root === undefined) {
-		if (options.maxDepth !== undefined || options.direction !== undefined)
-			throw new VaultQueryError(
-				EC.INVALID_OPTIONS,
-				"maxDepth and direction require root.",
-			);
+		if (options.maxDepth !== undefined || options.direction !== undefined) {
+			throw new VaultQueryError(EC.INVALID_OPTIONS, "maxDepth and direction require root.");
+		}
 	} else {
 		requireNode(index, options.root);
 		const direction = options.direction ?? "both";
-		if (!["outgoing", "incoming", "both"].includes(direction))
+		if (!["outgoing", "incoming", "both"].includes(direction)) {
 			throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
-		const directions =
-			direction === "both" ? (["outgoing", "incoming"] as const) : [direction];
+		}
+		const directions = direction === "both" ? (["outgoing", "incoming"] as const) : [direction];
 		const keep = new Set([options.root]);
 		for (const each of directions) {
-			const walked = traverse(
-				index,
-				generation,
-				config,
-				Number.MAX_SAFE_INTEGER,
-				options.root,
-				{
-					direction: each,
-					types,
-					maxDepth: options.maxDepth ?? 1,
-				},
-			);
+			const walked = traverse(index, generation, config, Number.MAX_SAFE_INTEGER, options.root, {
+				direction: each,
+				types,
+				maxDepth: options.maxDepth ?? 1,
+			});
 			for (const edge of walked.data) {
 				keep.add(edge.source);
 				keep.add(edge.target);
@@ -103,10 +81,7 @@ export function exportGraph(
 			content = `${[
 				"digraph vault {",
 				...files.map((f) => `  ${id.get(f)} [label=${quote(f)}];`),
-				...edges.map(
-					(e) =>
-						`  ${id.get(e.source)} -> ${id.get(e.target)} [label=${quote(e.type)}];`,
-				),
+				...edges.map((e) => `  ${id.get(e.source)} -> ${id.get(e.target)} [label=${quote(e.type)}];`),
 				"}",
 			].join("\n")}\n`;
 			break;
@@ -114,10 +89,7 @@ export function exportGraph(
 			content = `${[
 				"flowchart LR",
 				...files.map((f) => `  ${id.get(f)}["${mermaidLabel(f)}"]`),
-				...edges.map(
-					(e) =>
-						`  ${id.get(e.source)} -->|"${mermaidLabel(e.type)}"| ${id.get(e.target)}`,
-				),
+				...edges.map((e) => `  ${id.get(e.source)} -->|"${mermaidLabel(e.type)}"| ${id.get(e.target)}`),
 			].join("\n")}\n`;
 			break;
 		case "graphml":
@@ -127,10 +99,7 @@ export function exportGraph(
 				'  <key id="path" for="node" attr.name="path" attr.type="string"/>',
 				'  <key id="type" for="edge" attr.name="type" attr.type="string"/>',
 				'  <graph id="vault" edgedefault="directed">',
-				...files.map(
-					(f) =>
-						`    <node id="${id.get(f)}"><data key="path">${xml(f)}</data></node>`,
-				),
+				...files.map((f) => `    <node id="${id.get(f)}"><data key="path">${xml(f)}</data></node>`),
 				...edges.map(
 					(e, i) =>
 						`    <edge id="e${i}" source="${id.get(e.source)}" target="${id.get(e.target)}"><data key="type">${xml(e.type)}</data></edge>`,

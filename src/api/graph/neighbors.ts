@@ -23,37 +23,21 @@ export function neighbors(
 	node: string,
 	options: NeighborOptions = {},
 ): QueryResult<Edge> {
-	const limit = requestLimit(options, maxResults, [
-		"limit",
-		"direction",
-		"types",
-	]);
+	const limit = requestLimit(options, maxResults, ["limit", "direction", "types"]);
 	validatePath(node);
 	const direction = options.direction ?? "outgoing";
 	if (!["outgoing", "incoming"].includes(direction)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
 	}
 	const types = options.types ?? edgeTypes(config);
-	if (
-		!Array.isArray(types) ||
-		types.some((type) => !edgeTypes(config).includes(type))
-	) {
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"types must contain configured edge fields.",
-		);
+	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
 	}
 	if (!index.files.includes(node)) {
-		throw new VaultQueryError(
-			EC.NOT_FOUND,
-			"Node is not an indexed Markdown file.",
-			node,
-		);
+		throw new VaultQueryError(EC.NOT_FOUND, "Node is not an indexed Markdown file.", node);
 	}
 	const values = index.edges.filter(
-		(edge) =>
-			edge[direction === "outgoing" ? "source" : "target"] === node &&
-			types.includes(edge.type),
+		(edge) => edge[direction === "outgoing" ? "source" : "target"] === node && types.includes(edge.type),
 	);
 	return result(
 		generation,

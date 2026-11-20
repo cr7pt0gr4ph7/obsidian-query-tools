@@ -2,18 +2,12 @@ import { type Command, Option } from "commander";
 import { createNeighborAction } from "./helpers.js";
 import type { CliCommandSelector } from "./types.js";
 
-export function registerNeighborsCommand(
-	program: Command,
-	select: CliCommandSelector,
-): void {
+export function registerNeighborsCommand(program: Command, select: CliCommandSelector): void {
 	program
 		.command("neighbors <path>")
 		.description("Query direct graph neighbors.")
 		.addOption(
-			new Option(
-				"--direction <direction>",
-				"Select incoming or outgoing neighbors",
-			).choices(["incoming", "outgoing"]),
+			new Option("--direction <direction>", "Select incoming or outgoing neighbors").choices(["incoming", "outgoing"]),
 		)
 		.option(
 			"--edge-type <type>",

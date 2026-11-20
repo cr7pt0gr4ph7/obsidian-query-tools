@@ -16,11 +16,7 @@ export interface QueryResult<T> {
  * @param values All matching values before applying the result limit.
  * @param limit Maximum number of values to return.
  */
-export function result<T>(
-	generation: number,
-	values: T[],
-	limit: number,
-): QueryResult<T> {
+export function result<T>(generation: number, values: T[], limit: number): QueryResult<T> {
 	return {
 		generation,
 		data: values.slice(0, limit),

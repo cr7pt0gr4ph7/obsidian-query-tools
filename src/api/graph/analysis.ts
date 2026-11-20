@@ -3,38 +3,22 @@ import { validatePath } from "../utils/paths.js";
 import { type QueryResult, result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
 import { edgeTypes, type GraphConfig } from "./config.js";
-import type {
-	CyclesOptions,
-	Edge,
-	GraphStats,
-	NodesOptions,
-	PathOptions,
-	Sibling,
-	SiblingsOptions,
-} from "./graph.js";
+import type { CyclesOptions, Edge, GraphStats, NodesOptions, PathOptions, Sibling, SiblingsOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
 	const selected = types ?? edgeTypes(config);
-	if (
-		!Array.isArray(selected) ||
-		selected.some((type) => !edgeTypes(config).includes(type))
-	)
-		throw new VaultQueryError(
-			EC.INVALID_OPTIONS,
-			"types must contain configured edge fields.",
-		);
+	if (!Array.isArray(selected) || selected.some((type) => !edgeTypes(config).includes(type))) {
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+	}
 	return selected;
 }
 
 export function requireNode(index: GraphIndex, node: string): void {
 	validatePath(node);
-	if (!index.files.includes(node))
-		throw new VaultQueryError(
-			EC.NOT_FOUND,
-			"Node is not an indexed Markdown file.",
-			node,
-		);
+	if (!index.files.includes(node)) {
+		throw new VaultQueryError(EC.NOT_FOUND, "Node is not an indexed Markdown file.", node);
+	}
 }
 
 /** Shortest outgoing (or incoming) edge path between two nodes; empty data when unreachable. */
@@ -47,14 +31,11 @@ export function shortestPath(
 	to: string,
 	options: PathOptions = {},
 ): QueryResult<Edge> {
-	const limit = requestLimit(options, maxResults, [
-		"limit",
-		"direction",
-		"types",
-	]);
+	const limit = requestLimit(options, maxResults, ["limit", "direction", "types"]);
 	const direction = options.direction ?? "outgoing";
-	if (!["outgoing", "incoming"].includes(direction))
+	if (!["outgoing", "incoming"].includes(direction)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
+	}
 	const types = selectTypes(config, options.types);
 	requireNode(index, from);
 	requireNode(index, to);
@@ -62,7 +43,9 @@ export function shortestPath(
 	const other = direction === "outgoing" ? "target" : "source";
 	const adjacency = new Map<string, Edge[]>();
 	for (const edge of index.edges) {
-		if (!types.includes(edge.type)) continue;
+		if (!types.includes(edge.type)) {
+			continue;
+		}
 		const list = adjacency.get(edge[key]) ?? [];
 		list.push(edge);
 		adjacency.set(edge[key], list);
@@ -72,7 +55,9 @@ export function shortestPath(
 	const queue = [from];
 	for (let i = 0; i < queue.length && !seen.has(to); i++) {
 		for (const edge of adjacency.get(queue[i]) ?? []) {
-			if (seen.has(edge[other])) continue;
+			if (seen.has(edge[other])) {
+				continue;
+			}
 			seen.add(edge[other]);
 			via.set(edge[other], edge);
 			queue.push(edge[other]);
@@ -88,16 +73,13 @@ export function shortestPath(
 }
 
 /** Summary counts for the selected edge types. */
-export function graphStats(
-	index: GraphIndex,
-	generation: number,
-	config: GraphConfig,
-	types?: string[],
-): GraphStats {
+export function graphStats(index: GraphIndex, generation: number, config: GraphConfig, types?: string[]): GraphStats {
 	const selected = selectTypes(config, types);
 	const edges = index.edges.filter((edge) => selected.includes(edge.type));
 	const edgesByType: Record<string, number> = {};
-	for (const type of [...selected].sort()) edgesByType[type] = 0;
+	for (const type of [...selected].sort()) {
+		edgesByType[type] = 0;
+	}
 	const out = new Set<string>();
 	const into = new Set<string>();
 	for (const edge of edges) {
@@ -111,9 +93,13 @@ export function graphStats(
 	for (const file of index.files) {
 		const hasOut = out.has(file);
 		const hasIn = into.has(file);
-		if (!hasOut && !hasIn) isolated++;
-		else if (hasOut && !hasIn) sources++;
-		else if (!hasOut && hasIn) sinks++;
+		if (!hasOut && !hasIn) {
+			isolated++;
+		} else if (hasOut && !hasIn) {
+			sources++;
+		} else if (!hasOut && hasIn) {
+			sinks++;
+		}
 	}
 	return {
 		generation,
@@ -145,13 +131,16 @@ export function listNodes(
 ): QueryResult<string> {
 	const limit = requestLimit(options, maxResults, ["limit", "types", "role"]);
 	const role = options.role ?? "all";
-	if (!roles.includes(role))
+	if (!roles.includes(role)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid node role.");
+	}
 	const types = selectTypes(config, options.types);
 	const out = new Set<string>();
 	const into = new Set<string>();
 	for (const edge of index.edges) {
-		if (!types.includes(edge.type)) continue;
+		if (!types.includes(edge.type)) {
+			continue;
+		}
 		out.add(edge.source);
 		into.add(edge.target);
 	}
@@ -185,8 +174,12 @@ export function findCycles(
 	const adjacency = new Map<string, string[]>();
 	const selfLoops = new Set<string>();
 	for (const edge of index.edges) {
-		if (!types.includes(edge.type)) continue;
-		if (edge.source === edge.target) selfLoops.add(edge.source);
+		if (!types.includes(edge.type)) {
+			continue;
+		}
+		if (edge.source === edge.target) {
+			selfLoops.add(edge.source);
+		}
 		const list = adjacency.get(edge.source) ?? [];
 		list.push(edge.target);
 		adjacency.set(edge.source, list);
@@ -198,7 +191,9 @@ export function findCycles(
 	const groups: string[][] = [];
 	let counter = 0;
 	for (const start of index.files) {
-		if (order.has(start)) continue;
+		if (order.has(start)) {
+			continue;
+		}
 		const work: [string, number][] = [[start, 0]];
 		order.set(start, counter);
 		low.set(start, counter++);
@@ -234,8 +229,9 @@ export function findCycles(
 					onStack.delete(member);
 					group.push(member);
 				} while (member !== node);
-				if (group.length > 1 || selfLoops.has(group[0]))
+				if (group.length > 1 || selfLoops.has(group[0])) {
 					groups.push(group.sort());
+				}
 			}
 		}
 	}
@@ -255,22 +251,17 @@ export function findSiblings(
 	const limit = requestLimit(options, maxResults, ["limit", "types"]);
 	const types = selectTypes(config, options.types);
 	requireNode(index, node);
-	const parents = index.edges.filter(
-		(edge) => edge.source === node && types.includes(edge.type),
-	);
+	const parents = index.edges.filter((edge) => edge.source === node && types.includes(edge.type));
 	const values: Sibling[] = [];
 	for (const parent of parents) {
 		for (const edge of index.edges) {
-			if (
-				edge.target === parent.target &&
-				edge.type === parent.type &&
-				edge.source !== node
-			)
+			if (edge.target === parent.target && edge.type === parent.type && edge.source !== node) {
 				values.push({
 					node: edge.source,
 					parent: parent.target,
 					type: parent.type,
 				});
+			}
 		}
 	}
 	values.sort(

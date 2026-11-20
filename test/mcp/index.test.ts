@@ -9,9 +9,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { openVault } from "../../dist/api/index.js";
 
 function record(value: unknown): Record<string, unknown> {
-	assert.ok(
-		value !== null && typeof value === "object" && !Array.isArray(value),
-	);
+	assert.ok(value !== null && typeof value === "object" && !Array.isArray(value));
 	return Object.fromEntries(Object.entries(value));
 }
 
@@ -22,9 +20,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const vault = await openVault(root, { edgeFields: ["parent"] });
 	const client = new Client({ name: "test-client", version: "1.0.0" });
-	const server = fileURLToPath(
-		new URL("../../dist/mcp/index.js", import.meta.url),
-	);
+	const server = fileURLToPath(new URL("../../dist/mcp/index.js", import.meta.url));
 	const transport = new StdioClientTransport({
 		command: process.execPath,
 		args: [server, "--vault", root, "--edge-field", "parent"],
@@ -55,39 +51,29 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 			arguments: { format: "csv" },
 		});
 		assert.equal(exported.isError, undefined);
-		assert.equal(
-			(exported.structuredContent as { format: string }).format,
-			"csv",
-		);
+		assert.equal((exported.structuredContent as { format: string }).format, "csv");
 		const listed = await client.callTool({
 			name: "list",
 			arguments: { query: 'LIST FROM ""', limit: 1 },
 		});
-		assert.deepEqual(
-			listed.structuredContent,
-			vault.list('LIST FROM ""', { limit: 1 }),
-		);
+		assert.deepEqual(listed.structuredContent, vault.list('LIST FROM ""', { limit: 1 }));
 		const text = listed.content[0];
 		assert.equal(text.type, "text");
-		if (text.type !== "text") throw new Error("Expected text content.");
+		if (text.type !== "text") {
+			throw new Error("Expected text content.");
+		}
 		assert.deepEqual(JSON.parse(text.text), listed.structuredContent);
 		const edges = await client.callTool({
 			name: "neighbors",
 			arguments: { path: "b.md", direction: "incoming" },
 		});
-		assert.deepEqual(
-			edges.structuredContent,
-			vault.graph().neighbors("b.md", { direction: "incoming" }),
-		);
+		assert.deepEqual(edges.structuredContent, vault.graph().neighbors("b.md", { direction: "incoming" }));
 		const bad = await client.callTool({
 			name: "list",
 			arguments: { query: "TASK FROM #tag" },
 		});
 		assert.equal(bad.isError, true);
-		assert.equal(
-			record(record(bad.structuredContent).error).code,
-			"INVALID_QUERY",
-		);
+		assert.equal(record(record(bad.structuredContent).error).code, "INVALID_QUERY");
 		const arbitraryVault = await client.callTool({
 			name: "list",
 			arguments: { query: 'LIST FROM ""', vault: "/" },
@@ -99,10 +85,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 			arguments: {},
 		});
 		assert.equal(failedRefresh.isError, true);
-		assert.equal(
-			record(record(failedRefresh.structuredContent).error).code,
-			"UNRESOLVED_EDGE",
-		);
+		assert.equal(record(record(failedRefresh.structuredContent).error).code, "UNRESOLVED_EDGE");
 		const preserved = await client.callTool({
 			name: "list",
 			arguments: { query: 'LIST FROM ""' },
@@ -116,11 +99,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 			name: "list",
 			arguments: { query: 'LIST FROM ""' },
 		});
-		assert.deepEqual(record(after.structuredContent).data, [
-			"a.md",
-			"b.md",
-			"c.md",
-		]);
+		assert.deepEqual(record(after.structuredContent).data, ["a.md", "b.md", "c.md"]);
 		assert.equal(record(after.structuredContent).generation, 2);
 	} finally {
 		await client.close();
@@ -136,20 +115,11 @@ test("MCP server reads startup options from --config", async (t) => {
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const config = path.join(root, "..", `mcp-cfg-${process.pid}.json`);
 	t.after(() => rm(config, { force: true }));
-	await writeFile(
-		config,
-		JSON.stringify({ edgeFields: ["up"], oppositeFields: { up: "down" } }),
-	);
+	await writeFile(config, JSON.stringify({ edgeFields: ["up"], oppositeFields: { up: "down" } }));
 	const client = new Client({ name: "test-client", version: "1.0.0" });
 	const transport = new StdioClientTransport({
 		command: process.execPath,
-		args: [
-			fileURLToPath(new URL("../../dist/mcp/index.js", import.meta.url)),
-			"--vault",
-			root,
-			"--config",
-			config,
-		],
+		args: [fileURLToPath(new URL("../../dist/mcp/index.js", import.meta.url)), "--vault", root, "--config", config],
 		stderr: "pipe",
 	});
 	try {

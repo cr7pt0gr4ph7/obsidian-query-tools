@@ -49,14 +49,10 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			file: "a.md",
 		}),
 	);
-	const stdinQuery = spawnSync(
-		process.execPath,
-		[cli, "query", "--vault", root, "--type", "dql", "--stdin"],
-		{
-			input: 'LIST FROM ""\n',
-			encoding: "utf8",
-		},
-	);
+	const stdinQuery = spawnSync(process.execPath, [cli, "query", "--vault", root, "--type", "dql", "--stdin"], {
+		input: 'LIST FROM ""\n',
+		encoding: "utf8",
+	});
 	assert.equal(stdinQuery.status, 0, stdinQuery.stderr);
 	assert.deepEqual(JSON.parse(stdinQuery.stdout), vault.list('LIST FROM ""\n'));
 	const markdown = await exec(process.execPath, [
@@ -71,10 +67,7 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 		"--format",
 		"markdown",
 	]);
-	assert.equal(
-		markdown.stderr,
-		"NON_ATOMIC_SNAPSHOT: The filesystem may change during indexing.\n",
-	);
+	assert.equal(markdown.stderr, "NON_ATOMIC_SNAPSHOT: The filesystem may change during indexing.\n");
 	assert.equal(markdown.stdout, "- a\\.md\n- b\\.md\n");
 	const neighbors = await exec(process.execPath, [
 		...common,
@@ -88,46 +81,22 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	assert.equal(neighbors.stderr, "");
 	assert.deepEqual(
 		JSON.parse(neighbors.stdout),
-		vault
-			.graph()
-			.neighbors("b.md", { direction: "incoming", types: ["parent"] }),
+		vault.graph().neighbors("b.md", { direction: "incoming", types: ["parent"] }),
 	);
-	await assert.rejects(
-		exec(process.execPath, [
-			...common,
-			"neighbors",
-			"b.md",
-			"--type",
-			"parent",
-		]),
-		(error) => {
-			assert.ok(
-				error instanceof Error && "stdout" in error && "stderr" in error,
-			);
-			assert.ok(typeof error.stderr === "string");
-			assert.equal(error.stdout, "");
-			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
-			return true;
-		},
-	);
-	await assert.rejects(
-		exec(process.execPath, [
-			...common,
-			"neighbors",
-			"b.md",
-			"--direction",
-			"both",
-		]),
-		(error) => {
-			assert.ok(
-				error instanceof Error && "stdout" in error && "stderr" in error,
-			);
-			assert.ok(typeof error.stderr === "string");
-			assert.equal(error.stdout, "");
-			assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
-			return true;
-		},
-	);
+	await assert.rejects(exec(process.execPath, [...common, "neighbors", "b.md", "--type", "parent"]), (error) => {
+		assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
+		assert.ok(typeof error.stderr === "string");
+		assert.equal(error.stdout, "");
+		assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+		return true;
+	});
+	await assert.rejects(exec(process.execPath, [...common, "neighbors", "b.md", "--direction", "both"]), (error) => {
+		assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
+		assert.ok(typeof error.stderr === "string");
+		assert.equal(error.stdout, "");
+		assert.equal(JSON.parse(error.stderr).error.code, "INVALID_OPTIONS");
+		return true;
+	});
 	const graphNeighbors = await exec(process.execPath, [
 		cli,
 		"--vault",
@@ -145,28 +114,12 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	assert.equal(graphNeighbors.stderr, "");
 	assert.deepEqual(
 		JSON.parse(graphNeighbors.stdout),
-		vault
-			.graph()
-			.neighbors("b.md", { direction: "incoming", types: ["parent"] }),
+		vault.graph().neighbors("b.md", { direction: "incoming", types: ["parent"] }),
 	);
 	await assert.rejects(
-		exec(process.execPath, [
-			cli,
-			"query",
-			"--vault",
-			root,
-			"--type",
-			"dql",
-			"--query",
-			"TASK FROM #tag",
-		]),
+		exec(process.execPath, [cli, "query", "--vault", root, "--type", "dql", "--query", "TASK FROM #tag"]),
 		(error) => {
-			assert.ok(
-				error instanceof Error &&
-					"code" in error &&
-					"stdout" in error &&
-					"stderr" in error,
-			);
+			assert.ok(error instanceof Error && "code" in error && "stdout" in error && "stderr" in error);
 			assert.ok(typeof error.stderr === "string");
 			assert.equal(error.code, 1);
 			assert.equal(error.stdout, "");
@@ -188,53 +141,28 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			"yaml",
 		]),
 		(error) => {
-			assert.ok(
-				error instanceof Error && "stdout" in error && "stderr" in error,
-			);
+			assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
 			assert.ok(typeof error.stderr === "string");
 			assert.equal(error.stdout, "");
 			assert.match(error.stderr, /^INVALID_OPTIONS:/);
 			return true;
 		},
 	);
-	await assert.rejects(
-		exec(process.execPath, [...common, "list", 'LIST FROM ""']),
-		(error) => {
-			assert.ok(
-				error instanceof Error && "stdout" in error && "stderr" in error,
-			);
-			assert.equal(error.stdout, "");
-			assert.match(String(error.stderr), /unknown command 'list'/i);
-			return true;
-		},
-	);
-	const traversed = await exec(process.execPath, [
-		...common,
-		"graph",
-		"traverse",
-		"a.md",
-		"--max-depth",
-		"2",
-	]);
-	assert.deepEqual(
-		JSON.parse(traversed.stdout),
-		vault.graph().traverse("a.md", { maxDepth: 2 }),
-	);
+	await assert.rejects(exec(process.execPath, [...common, "list", 'LIST FROM ""']), (error) => {
+		assert.ok(error instanceof Error && "stdout" in error && "stderr" in error);
+		assert.equal(error.stdout, "");
+		assert.match(String(error.stderr), /unknown command 'list'/i);
+		return true;
+	});
+	const traversed = await exec(process.execPath, [...common, "graph", "traverse", "a.md", "--max-depth", "2"]);
+	assert.deepEqual(JSON.parse(traversed.stdout), vault.graph().traverse("a.md", { maxDepth: 2 }));
 	for (const format of ["json", "csv", "dot", "mermaid", "graphml"]) {
-		const exported = await exec(process.execPath, [
-			...common,
-			"graph",
-			"export",
-			"--format",
-			format,
-		]);
+		const exported = await exec(process.execPath, [...common, "graph", "export", "--format", format]);
 		const expected = vault.graph().export({ format: format as "json" });
 		assert.deepEqual(JSON.parse(exported.stdout), expected);
 		assert.ok(expected.content.length > 0);
 	}
-	await assert.rejects(
-		exec(process.execPath, [...common, "graph", "export", "--format", "pdf"]),
-	);
+	await assert.rejects(exec(process.execPath, [...common, "graph", "export", "--format", "pdf"]));
 	vault.close();
 });
 
@@ -244,33 +172,24 @@ test("unsafe JavaScript runs only with the explicit flag", async (t) => {
 	await writeFile(path.join(root, "a.md"), "# a\n");
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const base = [cli, "query", "--vault", root, "--type", "dataviewjs"];
-	const script =
-		"return dv.list('LIST FROM \"\"').map((p) => p.toUpperCase());";
+	const script = "return dv.list('LIST FROM \"\"').map((p) => p.toUpperCase());";
 	const denied = spawnSync(process.execPath, [...base, "--query", script], {
 		encoding: "utf8",
 	});
 	assert.equal(denied.status, 1);
 	assert.equal(denied.stdout, "");
 	assert.match(denied.stderr, /^UNSUPPORTED_FEATURE:/);
-	const ok = spawnSync(
-		process.execPath,
-		[...base, "--unsafe-allow-js", "--query", script, "--limit", "1"],
-		{
-			encoding: "utf8",
-		},
-	);
+	const ok = spawnSync(process.execPath, [...base, "--unsafe-allow-js", "--query", script, "--limit", "1"], {
+		encoding: "utf8",
+	});
 	assert.equal(ok.status, 0, ok.stderr);
 	const out = JSON.parse(ok.stdout);
 	assert.deepEqual(out.data, ["A.MD"]);
 	assert.equal(out.truncated, true);
-	const loop = spawnSync(
-		process.execPath,
-		[...base, "--unsafe-allow-js", "--query", "while (true) {}"],
-		{
-			encoding: "utf8",
-			timeout: 20000,
-		},
-	);
+	const loop = spawnSync(process.execPath, [...base, "--unsafe-allow-js", "--query", "while (true) {}"], {
+		encoding: "utf8",
+		timeout: 20000,
+	});
 	assert.equal(loop.status, 1);
 	assert.match(loop.stderr, /^INVALID_QUERY|LIMIT_EXCEEDED/);
 });
@@ -281,23 +200,10 @@ test("--opposite adds implied edges in the CLI", async (t) => {
 	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
 	await writeFile(path.join(root, "b.md"), "# b\n");
 	const run = (...extra: string[]) =>
-		spawnSync(
-			process.execPath,
-			[cli, "--vault", root, "--edge-field", "up", ...extra],
-			{ encoding: "utf8" },
-		);
-	const ok = run(
-		"--opposite",
-		"up:down",
-		"neighbors",
-		"b.md",
-		"--edge-type",
-		"down",
-	);
+		spawnSync(process.execPath, [cli, "--vault", root, "--edge-field", "up", ...extra], { encoding: "utf8" });
+	const ok = run("--opposite", "up:down", "neighbors", "b.md", "--edge-type", "down");
 	assert.equal(ok.status, 0, ok.stderr);
-	assert.deepEqual(JSON.parse(ok.stdout).data, [
-		{ source: "b.md", target: "a.md", type: "down", implied: true },
-	]);
+	assert.deepEqual(JSON.parse(ok.stdout).data, [{ source: "b.md", target: "a.md", type: "down", implied: true }]);
 	const bad = run("--opposite", "nocolon", "neighbors", "b.md");
 	assert.equal(bad.status, 1);
 	assert.equal(JSON.parse(bad.stderr).error.code, "INVALID_OPTIONS");
@@ -310,13 +216,7 @@ test("describe prints capabilities without a vault", async () => {
 	assert.ok(d.operations.some((o: { name: string }) => o.name === "cycles"));
 	assert.equal(d.defaultLimits.maxResults, 1000);
 	assert.ok(d.errorCodes.includes("UNRESOLVED_EDGE"));
-	assert.deepEqual(d.exportFormats, [
-		"json",
-		"csv",
-		"dot",
-		"mermaid",
-		"graphml",
-	]);
+	assert.deepEqual(d.exportFormats, ["json", "csv", "dot", "mermaid", "graphml"]);
 });
 
 test("--config supplies options and rejects unsafe or unknown keys", async (t) => {
@@ -338,11 +238,7 @@ test("--config supplies options and rejects unsafe or unknown keys", async (t) =
 	);
 	await writeFile(bad, JSON.stringify({ unsafeJavaScript: true }));
 	const run = (config: string) =>
-		spawnSync(
-			process.execPath,
-			[cli, "--vault", root, "--config", config, "graph", "stats"],
-			{ encoding: "utf8" },
-		);
+		spawnSync(process.execPath, [cli, "--vault", root, "--config", config, "graph", "stats"], { encoding: "utf8" });
 	const ok = run(good);
 	assert.equal(ok.status, 0, ok.stderr);
 	assert.equal(JSON.parse(ok.stdout).edgeCount, 2);
@@ -357,13 +253,9 @@ test("graph neighbors accepts its own --edge-field", async (t) => {
 	t.after(() => rm(root, { recursive: true, force: true }));
 	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
 	await writeFile(path.join(root, "b.md"), "# b\n");
-	const out = spawnSync(
-		process.execPath,
-		[cli, "--vault", root, "graph", "neighbors", "a.md", "--edge-field", "up"],
-		{
-			encoding: "utf8",
-		},
-	);
+	const out = spawnSync(process.execPath, [cli, "--vault", root, "graph", "neighbors", "a.md", "--edge-field", "up"], {
+		encoding: "utf8",
+	});
 	assert.equal(out.status, 0, out.stderr);
 	assert.equal(JSON.parse(out.stdout).data[0].target, "b.md");
 });

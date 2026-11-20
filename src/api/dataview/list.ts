@@ -17,28 +17,15 @@ export interface ListOptions {
  * @param query Query text; other query forms are rejected.
  * @param limit Maximum number of paths to return.
  */
-export function list(
-	files: readonly string[],
-	generation: number,
-	query: string,
-	limit: number,
-): QueryResult<string> {
+export function list(files: readonly string[], generation: number, query: string, limit: number): QueryResult<string> {
 	if (typeof query !== "string") {
-		throw new VaultQueryError(
-			EC.INVALID_QUERY,
-			'Expected LIST FROM "<folder>".',
-		);
+		throw new VaultQueryError(EC.INVALID_QUERY, 'Expected LIST FROM "<folder>".');
 	}
 	const match = /^\s*list\s+from\s+"([^"]*)"\s*$/i.exec(query);
 	if (!match) {
-		throw new VaultQueryError(
-			EC.INVALID_QUERY,
-			'Only LIST FROM "<folder>" is supported.',
-		);
+		throw new VaultQueryError(EC.INVALID_QUERY, 'Only LIST FROM "<folder>" is supported.');
 	}
 	const folder = validatePath(match[1], true);
-	const values = files.filter(
-		(file) => !folder || file.startsWith(`${folder}/`),
-	);
+	const values = files.filter((file) => !folder || file.startsWith(`${folder}/`));
 	return result(generation, values, limit);
 }

@@ -5,10 +5,7 @@ import type { CliCommandSelector } from "./types.js";
 
 export type { CliCommand } from "./types.js";
 
-export function createProgram(
-	version: string,
-	select: CliCommandSelector,
-): Command {
+export function createProgram(version: string, select: CliCommandSelector): Command {
 	const program = new Command()
 		.name("obsidian-query-tools")
 		.description("Query a local Obsidian vault.")
@@ -20,14 +17,8 @@ export function createProgram(
 			(value: string, previous: string[]) => [...previous, value],
 			[],
 		)
-		.option(
-			"--config <file>",
-			"Read edgeFields, oppositeFields, allowWikilinks and limits from a JSON file",
-		)
-		.option(
-			"--allow-wikilinks",
-			"Accept [[wikilink]] edge values, resolved by path or unique basename",
-		)
+		.option("--config <file>", "Read edgeFields, oppositeFields, allowWikilinks and limits from a JSON file")
+		.option("--allow-wikilinks", "Accept [[wikilink]] edge values, resolved by path or unique basename")
 		.option(
 			"--opposite <field:type>",
 			"Imply a reverse edge of <type> for every <field> edge (repeatable)",
@@ -41,13 +32,9 @@ export function createProgram(
 			writeErr: () => {},
 		});
 
-	program
-		.command("describe")
-		.description("Print supported operations, limits and error codes as JSON.");
+	program.command("describe").description("Print supported operations, limits and error codes as JSON.");
 
-	program
-		.command("query [options]")
-		.description("Run a supported query; use query --help for its options.");
+	program.command("query [options]").description("Run a supported query; use query --help for its options.");
 
 	registerNeighborsCommand(program, select);
 	registerGraphCommands(program, select);

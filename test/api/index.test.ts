@@ -1,14 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import {
-	chmod,
-	mkdir,
-	mkdtemp,
-	readFile,
-	rm,
-	symlink,
-	writeFile,
-} from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { TestContext } from "node:test";
@@ -17,12 +9,7 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import type { GraphConfig } from "../../dist/api/graph/config.js";
 import type { GraphIndex } from "../../dist/api/graph/indexing.js";
-import type {
-	GraphLimits,
-	VaultGraph,
-	VaultLimits,
-	VaultOptions,
-} from "../../dist/api/index.js";
+import type { GraphLimits, VaultGraph, VaultLimits, VaultOptions } from "../../dist/api/index.js";
 import { openVault, VaultQueryError } from "../../dist/api/index.js";
 import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
 import { optionsForOpen } from "../../dist/api/vault/validation.js";
@@ -31,14 +18,8 @@ async function fixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
 	t.after(() => rm(root, { recursive: true, force: true }));
 	await mkdir(path.join(root, "Tasks", "nested"), { recursive: true });
-	await writeFile(
-		path.join(root, "Tasks", "a.md"),
-		"---\nparent: root\n---\nstatus:: open\n",
-	);
-	await writeFile(
-		path.join(root, "Tasks", "nested", "b.md"),
-		"---\nparent: [root.md, Tasks/a.md]\n---\n",
-	);
+	await writeFile(path.join(root, "Tasks", "a.md"), "---\nparent: root\n---\nstatus:: open\n");
+	await writeFile(path.join(root, "Tasks", "nested", "b.md"), "---\nparent: [root.md, Tasks/a.md]\n---\n");
 	await writeFile(path.join(root, "root.md"), "# Root\n");
 	return root;
 }
@@ -50,23 +31,11 @@ const code = (expected: string) => (error: unknown) => {
 };
 
 type Assert<T extends true> = T;
-type Equal<A, B> =
-	(<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
-		? true
-		: false;
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type GraphLimitKeys = Assert<Equal<keyof GraphLimits, "maxEdges">>;
-type VaultLimitKeys = Assert<
-	Equal<
-		keyof VaultLimits,
-		"maxEntries" | "maxFiles" | "maxFileBytes" | "maxResults"
-	>
->;
-type GraphConfigKeys = Assert<
-	Equal<keyof GraphConfig, "edgeFields" | "wikilinks" | "opposites" | "limits">
->;
-type ConfigKeys = Assert<
-	Equal<keyof Config, "graph" | "limits" | "unsafeJavaScript">
->;
+type VaultLimitKeys = Assert<Equal<keyof VaultLimits, "maxEntries" | "maxFiles" | "maxFileBytes" | "maxResults">>;
+type GraphConfigKeys = Assert<Equal<keyof GraphConfig, "edgeFields" | "wikilinks" | "opposites" | "limits">>;
+type ConfigKeys = Assert<Equal<keyof Config, "graph" | "limits" | "unsafeJavaScript">>;
 type GraphIndexKeys = Assert<Equal<keyof GraphIndex, "files" | "edges">>;
 type VaultIndexKeys = Assert<Equal<keyof VaultIndex, "graph">>;
 
@@ -91,24 +60,14 @@ test("graph options are separated from vault limits without changing open option
 	assert.equal(vault.graph().neighbors("Tasks/nested/b.md").data.length, 2);
 	assert.equal(vault.list('LIST FROM ""').data.length, 3);
 	vault.close();
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 2 } }),
-		code("LIMIT_EXCEEDED"),
-	);
-	await assert.rejects(
-		openVault(root, { limits: { maxEdges: 0 } }),
-		code("INVALID_OPTIONS"),
-	);
+	await assert.rejects(openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 2 } }), code("LIMIT_EXCEEDED"));
+	await assert.rejects(openVault(root, { limits: { maxEdges: 0 } }), code("INVALID_OPTIONS"));
 });
 
 test("vault errors only expose a path when one is supplied", () => {
 	const withoutPath = new VaultQueryError("INVALID_QUERY", "Invalid query.");
 	assert.equal(Object.hasOwn(withoutPath, "path"), false);
-	const withPath = new VaultQueryError(
-		"UNSAFE_PATH",
-		"Unsafe path.",
-		"note.md",
-	);
+	const withPath = new VaultQueryError("UNSAFE_PATH", "Unsafe path.", "note.md");
 	assert.equal(withPath.path, "note.md");
 });
 
@@ -122,43 +81,25 @@ test("folder query and configured directed edges share an index", async (t) => {
 	assert.equal(listed.generation, 1);
 	assert.equal(listed.truncated, false);
 	assert.equal(listed.diagnostics[0].code, "NON_ATOMIC_SNAPSHOT");
-	assert.deepEqual(vault.list('LIST FROM ""', { limit: 1 }).data, [
-		"Tasks/a.md",
-	]);
+	assert.deepEqual(vault.list('LIST FROM ""', { limit: 1 }).data, ["Tasks/a.md"]);
 	assert.equal(vault.list('LIST FROM ""', { limit: 1 }).truncated, true);
 	assert.deepEqual(graph.neighbors("Tasks/nested/b.md").data, [
 		{ source: "Tasks/nested/b.md", target: "Tasks/a.md", type: "parent" },
 		{ source: "Tasks/nested/b.md", target: "root.md", type: "parent" },
 	]);
-	assert.equal(
-		vault.graph().neighbors("root.md", { direction: "incoming" }).data.length,
-		2,
-	);
-	assert.deepEqual(
-		vault.graph().neighbors("root.md", { direction: "incoming", types: [] })
-			.data,
-		[],
-	);
-	assert.equal(
-		await readFile(path.join(root, "Tasks", "a.md"), "utf8"),
-		before,
-	);
+	assert.equal(vault.graph().neighbors("root.md", { direction: "incoming" }).data.length, 2);
+	assert.deepEqual(vault.graph().neighbors("root.md", { direction: "incoming", types: [] }).data, []);
+	assert.equal(await readFile(path.join(root, "Tasks", "a.md"), "utf8"), before);
 	vault.close();
 	assert.throws(() => vault.list('LIST FROM ""'), code("VAULT_CLOSED"));
 	assert.throws(() => vault.graph(), code("VAULT_CLOSED"));
-	assert.throws(
-		() => graph.neighbors("Tasks/nested/b.md"),
-		code("VAULT_CLOSED"),
-	);
+	assert.throws(() => graph.neighbors("Tasks/nested/b.md"), code("VAULT_CLOSED"));
 });
 
 test("current-file context must identify an indexed Markdown file", async (t) => {
 	const root = await fixture(t);
 	const vault = await openVault(root);
-	assert.deepEqual(
-		vault.list('LIST FROM "Tasks"', { file: "Tasks/a.md" }).data,
-		["Tasks/a.md", "Tasks/nested/b.md"],
-	);
+	assert.deepEqual(vault.list('LIST FROM "Tasks"', { file: "Tasks/a.md" }).data, ["Tasks/a.md", "Tasks/nested/b.md"]);
 	for (const file of ["/outside.md", "../root.md", "root.txt", "missing.md"]) {
 		assert.throws(
 			() => vault.list('LIST FROM ""', { file }),
@@ -203,115 +144,52 @@ test("Dataview-inspired unsupported syntax is rejected rather than approximated"
 		'TABLE FROM "Tasks"',
 		'LIST FROM "Tasks" OR #games',
 		'LIST FROM "Tasks',
-	])
+	]) {
 		assert.throws(() => vault.list(query), code("INVALID_QUERY"));
-	assert.throws(
-		() => vault.list('LIST FROM "../outside"'),
-		code("INVALID_PATH"),
-	);
-	assert.throws(
-		() => vault.graph().neighbors("../root.md"),
-		code("INVALID_PATH"),
-	);
+	}
+	assert.throws(() => vault.list('LIST FROM "../outside"'), code("INVALID_PATH"));
+	assert.throws(() => vault.graph().neighbors("../root.md"), code("INVALID_PATH"));
 	const invalidDirection: Parameters<VaultGraph["neighbors"]>[1] = {
 		// @ts-expect-error Exercise validation of an invalid JavaScript caller.
 		direction: "both",
 	};
-	assert.throws(
-		() => vault.graph().neighbors("root.md", invalidDirection),
-		code("INVALID_OPTIONS"),
-	);
-	assert.throws(
-		() => vault.list('LIST FROM ""', { limit: 1001 }),
-		code("INVALID_OPTIONS"),
-	);
+	assert.throws(() => vault.graph().neighbors("root.md", invalidDirection), code("INVALID_OPTIONS"));
+	assert.throws(() => vault.list('LIST FROM ""', { limit: 1001 }), code("INVALID_OPTIONS"));
 });
 
 test("refresh publishes additions, modifications and deletions atomically on success", async (t) => {
 	const root = await fixture(t);
 	const vault = await openVault(root, { edgeFields: ["parent"] });
 	const graph = vault.graph();
-	await writeFile(
-		path.join(root, "Tasks", "a.md"),
-		"---\nparent: missing\n---\n",
-	);
+	await writeFile(path.join(root, "Tasks", "a.md"), "---\nparent: missing\n---\n");
 	await assert.rejects(vault.refresh(), code("UNRESOLVED_EDGE"));
 	assert.equal(vault.list('LIST FROM ""').generation, 1);
-	assert.equal(
-		graph.neighbors("root.md", { direction: "incoming" }).data.length,
-		2,
-	);
-	await writeFile(
-		path.join(root, "Tasks", "a.md"),
-		"---\nparent: Tasks/nested/b\n---\n",
-	);
+	assert.equal(graph.neighbors("root.md", { direction: "incoming" }).data.length, 2);
+	await writeFile(path.join(root, "Tasks", "a.md"), "---\nparent: Tasks/nested/b\n---\n");
 	await rm(path.join(root, "root.md"));
 	await writeFile(path.join(root, "Tasks", "nested", "b.md"), "# no edges\n");
 	await writeFile(path.join(root, "new.md"), "# new\n");
 	assert.equal(await vault.refresh(), 2);
-	assert.deepEqual(vault.list('LIST FROM ""').data, [
-		"Tasks/a.md",
-		"Tasks/nested/b.md",
-		"new.md",
-	]);
-	assert.equal(
-		graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).generation,
-		2,
-	);
-	assert.equal(
-		graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).data.length,
-		1,
-	);
+	assert.deepEqual(vault.list('LIST FROM ""').data, ["Tasks/a.md", "Tasks/nested/b.md", "new.md"]);
+	assert.equal(graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).generation, 2);
+	assert.equal(graph.neighbors("Tasks/nested/b.md", { direction: "incoming" }).data.length, 1);
 	assert.throws(() => vault.graph().neighbors("root.md"), code("NOT_FOUND"));
 });
 
 test("malformed fields, limits and symlinks fail explicitly", async (t) => {
 	const root = await fixture(t);
-	await assert.rejects(
-		openVault(root, { limits: { maxFiles: 2 } }),
-		code("LIMIT_EXCEEDED"),
-	);
-	await assert.rejects(
-		openVault(root, { limits: { maxEntries: 1 } }),
-		code("LIMIT_EXCEEDED"),
-	);
-	await assert.rejects(
-		openVault(root, { limits: { maxFileBytes: 2 } }),
-		code("LIMIT_EXCEEDED"),
-	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 1 } }),
-		code("LIMIT_EXCEEDED"),
-	);
-	await writeFile(
-		path.join(root, "root.md"),
-		"---\nparent: '[[Tasks/a]]'\n---\n",
-	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"] }),
-		code("INVALID_EDGE"),
-	);
-	await writeFile(
-		path.join(root, "root.md"),
-		"---\nparent: [unterminated\n---\n",
-	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"] }),
-		code("INVALID_FRONTMATTER"),
-	);
+	await assert.rejects(openVault(root, { limits: { maxFiles: 2 } }), code("LIMIT_EXCEEDED"));
+	await assert.rejects(openVault(root, { limits: { maxEntries: 1 } }), code("LIMIT_EXCEEDED"));
+	await assert.rejects(openVault(root, { limits: { maxFileBytes: 2 } }), code("LIMIT_EXCEEDED"));
+	await assert.rejects(openVault(root, { edgeFields: ["parent"], limits: { maxEdges: 1 } }), code("LIMIT_EXCEEDED"));
+	await writeFile(path.join(root, "root.md"), "---\nparent: '[[Tasks/a]]'\n---\n");
+	await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_EDGE"));
+	await writeFile(path.join(root, "root.md"), "---\nparent: [unterminated\n---\n");
+	await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
 	await writeFile(path.join(root, "root.md"), "---\nparent: !custom b\n---\n");
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"] }),
-		code("INVALID_FRONTMATTER"),
-	);
-	await writeFile(
-		path.join(root, "root.md"),
-		"---\nparent: &link b\nother: *link\n---\n",
-	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent"] }),
-		code("INVALID_FRONTMATTER"),
-	);
+	await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
+	await writeFile(path.join(root, "root.md"), "---\nparent: &link b\nother: *link\n---\n");
+	await assert.rejects(openVault(root, { edgeFields: ["parent"] }), code("INVALID_FRONTMATTER"));
 	await writeFile(path.join(root, "root.md"), "# root\n");
 	await symlink(os.tmpdir(), path.join(root, "outside"));
 	await assert.rejects(openVault(root), code("UNSAFE_PATH"));
@@ -336,18 +214,9 @@ test("rejects invalid configuration and does not execute note JavaScript", async
 	const root = await fixture(t);
 	// @ts-expect-error Exercise validation of an invalid JavaScript caller.
 	const invalidOptions: VaultOptions = { limits: { toString: 1 } };
-	await assert.rejects(
-		openVault(root, invalidOptions),
-		code("INVALID_OPTIONS"),
-	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["parent", "parent"] }),
-		code("INVALID_OPTIONS"),
-	);
-	await writeFile(
-		path.join(root, "script.md"),
-		"```dataviewjs\nthrow new Error('executed');\n```\n",
-	);
+	await assert.rejects(openVault(root, invalidOptions), code("INVALID_OPTIONS"));
+	await assert.rejects(openVault(root, { edgeFields: ["parent", "parent"] }), code("INVALID_OPTIONS"));
+	await writeFile(path.join(root, "script.md"), "```dataviewjs\nthrow new Error('executed');\n```\n");
 	const vault = await openVault(root);
 	assert.ok(vault.list('LIST FROM ""').data.includes("script.md"));
 });
@@ -396,12 +265,7 @@ test("unreadable Markdown causes an explicit vault read error", async (t) => {
       process.stdout.write(error.code);
     }
   `;
-	const { stdout } = await promisify(execFile)(process.execPath, [
-		"--input-type=module",
-		"-e",
-		program,
-		root,
-	]);
+	const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", program, root]);
 	assert.equal(stdout, "VAULT_READ_ERROR");
 });
 
@@ -428,9 +292,7 @@ test("script() is disabled unless unsafeJavaScript is set", async (t) => {
 		edgeFields: ["parent"],
 		unsafeJavaScript: true,
 	});
-	const r = await vault.script(
-		"return dv.neighbors('a.md').map((e) => e.target);",
-	);
+	const r = await vault.script("return dv.neighbors('a.md').map((e) => e.target);");
 	assert.deepEqual(r.data, ["b.md"]);
 	await assert.rejects(vault.script("throw new Error('x')"), {
 		code: "INVALID_QUERY",
@@ -451,25 +313,13 @@ test("traverse walks reachability and export serializes escaped formats", async 
 		["a.md>b.md", "b.md>c.md", "c.md>a.md"],
 	);
 	assert.equal(g.traverse("a.md", { maxDepth: 1 }).data.length, 1);
-	assert.deepEqual(
-		g.traverse("a.md", { direction: "incoming", maxDepth: 1 }).data[0].source,
-		"c.md",
-	);
-	assert.throws(
-		() => g.traverse("a.md", { maxDepth: 0 }),
-		code("INVALID_OPTIONS"),
-	);
-	assert.throws(
-		() => g.export({ format: "pdf" as "json" }),
-		code("INVALID_OPTIONS"),
-	);
+	assert.deepEqual(g.traverse("a.md", { direction: "incoming", maxDepth: 1 }).data[0].source, "c.md");
+	assert.throws(() => g.traverse("a.md", { maxDepth: 0 }), code("INVALID_OPTIONS"));
+	assert.throws(() => g.export({ format: "pdf" as "json" }), code("INVALID_OPTIONS"));
 	assert.match(g.export({ format: "dot" }).content, /n0 -> n1 \[label="up"\]/);
 	assert.match(g.export({ format: "graphml" }).content, /d&quot;&amp;&lt;\.md/);
 	assert.match(g.export({ format: "mermaid" }).content, /d#quot;&<\.md/);
-	assert.equal(
-		g.export({ format: "csv" }).content.split("\r\n")[0],
-		"source,target,type",
-	);
+	assert.equal(g.export({ format: "csv" }).content.split("\r\n")[0], "source,target,type");
 	assert.equal(g.export().edgeCount, 3);
 });
 
@@ -488,10 +338,7 @@ test("path returns the shortest edge chain or nothing", async (t) => {
 	);
 	assert.deepEqual(g.path("a.md", "e.md").data, []);
 	assert.deepEqual(g.path("a.md", "a.md").data, []);
-	assert.equal(
-		g.path("d.md", "a.md", { direction: "incoming" }).data.length,
-		2,
-	);
+	assert.equal(g.path("d.md", "a.md", { direction: "incoming" }).data.length, 2);
 	assert.throws(() => g.path("a.md", "x.md"), code("NOT_FOUND"));
 });
 
@@ -504,10 +351,7 @@ test("stats counts nodes, edges and node roles", async (t) => {
 	await writeFile(path.join(root, "d.md"), "# d\n");
 	const g = (await openVault(root, { edgeFields: ["up", "see"] })).graph();
 	const s = g.stats();
-	assert.deepEqual(
-		[s.nodeCount, s.edgeCount, s.sources, s.sinks, s.isolated],
-		[4, 2, 1, 2, 1],
-	);
+	assert.deepEqual([s.nodeCount, s.edgeCount, s.sources, s.sinks, s.isolated], [4, 2, 1, 2, 1]);
 	assert.deepEqual(s.edgesByType, { see: 1, up: 1 });
 	assert.equal(g.stats({ types: ["up"] }).isolated, 2);
 });
@@ -556,10 +400,7 @@ test("opposite fields add flagged implied edges within limits", async (t) => {
 	]);
 	assert.equal(g.neighbors("a.md").data[0].implied, undefined);
 	assert.equal(g.stats().edgeCount, 5);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["up"], oppositeFields: { x: "y" } }),
-		code("INVALID_OPTIONS"),
-	);
+	await assert.rejects(openVault(root, { edgeFields: ["up"], oppositeFields: { x: "y" } }), code("INVALID_OPTIONS"));
 	await assert.rejects(
 		openVault(root, {
 			edgeFields: ["up"],
@@ -574,10 +415,7 @@ test("wikilink edge values resolve by path or unique basename when enabled", asy
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-wiki-"));
 	t.after(() => rm(root, { recursive: true, force: true }));
 	await mkdir(path.join(root, "dir"));
-	await writeFile(
-		path.join(root, "a.md"),
-		"---\nup: ['[[Target|alias]]', '[[dir/Deep#Heading]]']\n---\n",
-	);
+	await writeFile(path.join(root, "a.md"), "---\nup: ['[[Target|alias]]', '[[dir/Deep#Heading]]']\n---\n");
 	await writeFile(path.join(root, "dir", "Target.md"), "# t\n");
 	await writeFile(path.join(root, "dir", "Deep.md"), "# d\n");
 	const vault = await openVault(root, {
@@ -591,16 +429,10 @@ test("wikilink edge values resolve by path or unique basename when enabled", asy
 			.data.map((e) => e.target),
 		["dir/Deep.md", "dir/Target.md"],
 	);
-	await assert.rejects(
-		openVault(root, { edgeFields: ["up"] }),
-		code("INVALID_EDGE"),
-	);
+	await assert.rejects(openVault(root, { edgeFields: ["up"] }), code("INVALID_EDGE"));
 	await writeFile(path.join(root, "Target.md"), "# t2\n");
 	await writeFile(path.join(root, "a.md"), "---\nup: '[[target]]'\n---\n");
-	await assert.rejects(
-		openVault(root, { edgeFields: ["up"], allowWikilinks: true }),
-		code("INVALID_EDGE"),
-	);
+	await assert.rejects(openVault(root, { edgeFields: ["up"], allowWikilinks: true }), code("INVALID_EDGE"));
 });
 
 test("export can be limited to a subgraph around a root", async (t) => {
@@ -629,9 +461,7 @@ test("siblings share a target through the same edge type", async (t) => {
 	await writeFile(path.join(root, "p.md"), "# p\n");
 	await writeFile(path.join(root, "q.md"), "# q\n");
 	const g = (await openVault(root, { edgeFields: ["up", "see"] })).graph();
-	assert.deepEqual(g.siblings("a.md").data, [
-		{ node: "b.md", parent: "p.md", type: "up" },
-	]);
+	assert.deepEqual(g.siblings("a.md").data, [{ node: "b.md", parent: "p.md", type: "up" }]);
 	assert.deepEqual(g.siblings("p.md").data, []);
 	assert.throws(() => g.siblings("x.md"), code("NOT_FOUND"));
 });

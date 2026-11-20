@@ -38,10 +38,7 @@ export interface ScriptHost {
 function validateTimeout(options: RunScriptOptions) {
 	const timeoutMs = options.timeoutMs ?? defaultRunScriptOptions.timeoutMs;
 	if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1) {
-		throw new VaultQueryError(
-			ErrorCode.INVALID_OPTIONS,
-			"Invalid script timeout.",
-		);
+		throw new VaultQueryError(ErrorCode.INVALID_OPTIONS, "Invalid script timeout.");
 	}
 	return timeoutMs;
 }
@@ -55,66 +52,48 @@ export async function runScript(
 	host: ScriptHost,
 	options: RunScriptOptions = defaultRunScriptOptions,
 ): Promise<unknown[]> {
-	if (typeof source !== "string" || !source.trim())
-		throw new VaultQueryError(
-			ErrorCode.INVALID_QUERY,
-			"Script must not be empty.",
-		);
+	if (typeof source !== "string" || !source.trim()) {
+		throw new VaultQueryError(ErrorCode.INVALID_QUERY, "Script must not be empty.");
+	}
 	const timeoutMs = validateTimeout(options);
 	const plain = <T>(value: T): T => structuredClone(value);
 	const dv = {
 		current: host.current,
 		paths: () => plain(host.paths()),
 		list: (query: string) => plain(host.list(query)),
-		neighbors: (path: string, options?: object) =>
-			plain(host.neighbors(path, options)),
+		neighbors: (path: string, options?: object) => plain(host.neighbors(path, options)),
 	};
 	try {
-		const context = vm.createContext(
-			{ dv },
-			{ codeGeneration: { strings: false, wasm: false } },
-		);
+		const context = vm.createContext({ dv }, { codeGeneration: { strings: false, wasm: false } });
 		const script = new vm.Script(`(async () => {\n${source}\n})()`, {
 			filename: "query-script.js",
 		});
 		const pending = script.runInContext(context, { timeout: timeoutMs });
 		const timeout = new Promise<never>((_, reject) => {
-			timer = setTimeout(
-				() =>
-					reject(
-						new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out."),
-					),
-				timeoutMs,
-			);
+			timer = setTimeout(() => reject(new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.")), timeoutMs);
 		});
 		const value: unknown = await Promise.race([pending, timeout]);
-		if (value === undefined) return [];
+		if (value === undefined) {
+			return [];
+		}
 		const json = JSON.stringify(value);
-		if (json === undefined)
-			throw new VaultQueryError(
-				ErrorCode.INVALID_QUERY,
-				"Script result must be JSON-serializable.",
-			);
+		if (json === undefined) {
+			throw new VaultQueryError(ErrorCode.INVALID_QUERY, "Script result must be JSON-serializable.");
+		}
 		const parsed: unknown = JSON.parse(json);
 		return Array.isArray(parsed) ? parsed : [parsed];
 	} catch (error) {
-		if (error instanceof VaultQueryError) throw error;
+		if (error instanceof VaultQueryError) {
+			throw error;
+		}
 		// WORKAROUND: Detect timeout error
-		if (
-			error instanceof Error &&
-			error.message === "Script execution timed out."
-		) {
+		if (error instanceof Error && error.message === "Script execution timed out.") {
 			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.");
 		}
-		const name =
-			error && typeof error === "object" && "name" in error
-				? String(error.name)
-				: "Error";
+		const name = error && typeof error === "object" && "name" in error ? String(error.name) : "Error";
 		throw new VaultQueryError(
 			ErrorCode.INVALID_QUERY,
-			name === "SyntaxError" || name === "Error" || /Error$/.test(name)
-				? `Script failed: ${name}.`
-				: "Script failed.",
+			name === "SyntaxError" || name === "Error" || /Error$/.test(name) ? `Script failed: ${name}.` : "Script failed.",
 		);
 	}
 }
