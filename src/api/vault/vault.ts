@@ -3,8 +3,11 @@ import { fail, VaultQueryError } from "../utils/errors.js";
 import { runScript } from "../script/run.js";
 import { result } from "../utils/result.js";
 import { list } from "../dataview/list.js";
+import { exportGraph } from "../graph/export.js";
+import { traverse } from "../graph/traverse.js";
 import { neighbors } from "../graph/neighbors.js";
 import { requestLimit, validatePath } from "../validation.js";
+import type { VaultGraph } from "../graph/graph.js";
 import type { Vault, VaultOptions } from "./types.js";
 import { buildIndex } from "./indexer.js";
 import { optionsForOpen } from "./validation.js";
@@ -38,7 +41,22 @@ export async function openVault(
 	function ensureOpen() {
 		if (closed) fail("VAULT_CLOSED", "Vault is closed.");
 	}
-	const graph = {
+	const graph: VaultGraph = {
+		traverse(node, options = {}) {
+			ensureOpen();
+			return traverse(
+				index.graph,
+				generation,
+				config.graph,
+				config.limits.maxResults,
+				node,
+				options,
+			);
+		},
+		export(options = {}) {
+			ensureOpen();
+			return exportGraph(index.graph, generation, config.graph, options);
+		},
 		neighbors(node: string, options = {}) {
 			ensureOpen();
 			return neighbors(

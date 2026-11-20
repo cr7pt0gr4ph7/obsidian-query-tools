@@ -2,7 +2,7 @@ import { VaultQueryError } from "../../api/index.js";
 import type { NeighborOptions } from "../../api/index.js";
 import type { CliCommandSelector, NeighborCliOptions } from "./types.js";
 
-function positiveInteger(value: string, option: string): number {
+export function positiveInteger(value: string, option: string): number {
 	if (!/^[0-9]+$/.test(value)) {
 		throw new VaultQueryError(
 			"INVALID_OPTIONS",
@@ -35,6 +35,6 @@ export function createNeighborAction(select: CliCommandSelector) {
 		if (options.limit !== undefined) {
 			neighborOptions.limit = positiveInteger(options.limit, "--limit");
 		}
-		select({ path, options: neighborOptions });
+		select({ operation: "neighbors", path, options: neighborOptions });
 	};
 }

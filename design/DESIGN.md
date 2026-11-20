@@ -38,6 +38,13 @@ which returns direct `{ source, target, type }` edges. The dataview module
 implements only the project's narrow query subset and does not load or claim
 compatibility with the Dataview plugin. A graph obtained before refresh uses
 the current generation, and is invalidated when the vault closes.
+`VaultGraph` also provides `traverse(path, { direction, types, maxDepth, limit })`,
+a breadth-first walk over the same configured edges (plain reachability, not
+Breadcrumbs transitive rules), and `export({ format, types })`, which
+serializes every Markdown file as a node plus the selected edges as `json`,
+`csv` (formula-prefix guarded), `dot`, `mermaid`, or `graphml` with escaping.
+The CLI exposes these as `graph traverse` and `graph export`; MCP exposes
+`traverse` and `export`.
 `refresh()` publishes a new generation on success; `close()` invalidates the
 context.
 Results contain `{ generation, data, diagnostics, truncated }`; errors are

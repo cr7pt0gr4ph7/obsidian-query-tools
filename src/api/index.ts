@@ -6,7 +6,15 @@ export { openVault } from "./vault/vault.js";
 export type { ListOptions } from "./dataview/list.js";
 /** Types for directed edges and direct-neighbor queries. */
 export type { GraphLimits } from "./graph/config.js";
-export type { Edge, NeighborOptions, VaultGraph } from "./graph/graph.js";
+export type {
+	Edge,
+	ExportFormat,
+	ExportOptions,
+	GraphExport,
+	NeighborOptions,
+	TraverseOptions,
+	VaultGraph,
+} from "./graph/graph.js";
 /** Standard result envelope returned by query operations. */
 export type { QueryResult } from "./utils/result.js";
 /** Vault lifecycle, open configuration, and resource-limit types. */

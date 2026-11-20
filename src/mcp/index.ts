@@ -85,6 +85,36 @@ async function main() {
 			handle(() => vault.graph().neighbors(path, { direction, types, limit })),
 	);
 	server.registerTool(
+		"traverse",
+		{
+			description:
+				"Breadth-first walk of typed edges reachable from an indexed Markdown path.",
+			inputSchema: z.strictObject({
+				path: z.string().max(4096),
+				direction: z.enum(["incoming", "outgoing"]).optional(),
+				types: z.array(z.string().max(256)).max(100).optional(),
+				maxDepth: z.number().int().positive().max(1000).optional(),
+				limit,
+			}),
+			annotations,
+		},
+		async ({ path, ...options }) =>
+			handle(() => vault.graph().traverse(path, options)),
+	);
+	server.registerTool(
+		"export",
+		{
+			description:
+				"Serialize the whole graph as json, csv, dot, mermaid, or graphml.",
+			inputSchema: z.strictObject({
+				format: z.enum(["json", "csv", "dot", "mermaid", "graphml"]).optional(),
+				types: z.array(z.string().max(256)).max(100).optional(),
+			}),
+			annotations,
+		},
+		async (options) => handle(() => vault.graph().export(options)),
+	);
+	server.registerTool(
 		"refresh",
 		{
 			description:
