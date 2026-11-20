@@ -4,6 +4,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod/v4";
 import { openVault, VaultQueryError } from "../api/index.js";
+import { loadConfig, mergeOptions } from "../cli/config.js";
 
 function reply(data: Record<string, unknown>) {
 	return {
@@ -38,6 +39,7 @@ async function main() {
 				"edge-field": { type: "string", multiple: true },
 				opposite: { type: "string", multiple: true },
 				"allow-wikilinks": { type: "boolean" },
+				config: { type: "string" },
 			},
 		});
 	} catch {
@@ -52,21 +54,27 @@ async function main() {
 			"Expected --vault <path> at server startup.",
 		);
 	}
-	const vault = await openVault(parsed.values.vault, {
-		edgeFields: parsed.values["edge-field"] ?? [],
-		allowWikilinks: parsed.values["allow-wikilinks"] === true,
-		oppositeFields: Object.fromEntries(
-			(parsed.values.opposite ?? []).map((pair) => {
-				const at = pair.indexOf(":");
-				if (at < 1 || at === pair.length - 1)
-					throw new VaultQueryError(
-						"INVALID_OPTIONS",
-						"--opposite expects <field:type>.",
-					);
-				return [pair.slice(0, at), pair.slice(at + 1)];
-			}),
-		),
-	});
+	const fileOptions = parsed.values.config
+		? await loadConfig(parsed.values.config)
+		: {};
+	const vault = await openVault(
+		parsed.values.vault,
+		mergeOptions(fileOptions, {
+			edgeFields: parsed.values["edge-field"] ?? [],
+			allowWikilinks: parsed.values["allow-wikilinks"] === true,
+			oppositeFields: Object.fromEntries(
+				(parsed.values.opposite ?? []).map((pair) => {
+					const at = pair.indexOf(":");
+					if (at < 1 || at === pair.length - 1)
+						throw new VaultQueryError(
+							"INVALID_OPTIONS",
+							"--opposite expects <field:type>.",
+						);
+					return [pair.slice(0, at), pair.slice(at + 1)];
+				}),
+			),
+		}),
+	);
 	const server = new McpServer({
 		name: "obsidian-query-tools",
 		version: "0.1.0",

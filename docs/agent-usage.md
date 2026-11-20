@@ -39,5 +39,5 @@ Use `--opposite parent:child` to also see implied reverse edges (flagged
 
 `query --type dataviewjs --unsafe-allow-js` runs a caller-supplied script
 in-process with no sandbox. Never pass vault or other untrusted text to it.
-The MCP server (`obsidian-query-tools-mcp --vault <dir>`) exposes the same
+The MCP server (`obsidian-query-tools-mcp --vault <dir> [--config <file>]`) exposes the same
 read-only operations and never enables script execution.

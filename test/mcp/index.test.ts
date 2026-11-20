@@ -127,3 +127,40 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 	}
 	assert.equal(stderr, "");
 });
+
+test("MCP server reads startup options from --config", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-mcp-cfg-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const config = path.join(root, "..", `mcp-cfg-${process.pid}.json`);
+	t.after(() => rm(config, { force: true }));
+	await writeFile(
+		config,
+		JSON.stringify({ edgeFields: ["up"], oppositeFields: { up: "down" } }),
+	);
+	const client = new Client({ name: "test-client", version: "1.0.0" });
+	const transport = new StdioClientTransport({
+		command: process.execPath,
+		args: [
+			fileURLToPath(new URL("../../dist/mcp/index.js", import.meta.url)),
+			"--vault",
+			root,
+			"--config",
+			config,
+		],
+		stderr: "pipe",
+	});
+	try {
+		await client.connect(transport);
+		const out = await client.callTool({
+			name: "path",
+			arguments: { from: "b.md", to: "a.md", types: ["down"] },
+		});
+		assert.equal(out.isError, undefined);
+		const data = (out.structuredContent as { data: { type: string }[] }).data;
+		assert.equal(data[0].type, "down");
+	} finally {
+		await client.close();
+	}
+});
