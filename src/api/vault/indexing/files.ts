@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import type { FileHandle } from "node:fs/promises";
 import { lstat, open } from "node:fs/promises";
 import path from "node:path";
-import { ErrorCode, VaultQueryError } from "../../utils/errors.js";
+import { ErrorCode, Errors, VaultQueryError } from "../../utils/errors.js";
 
 export const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
@@ -25,7 +25,7 @@ export async function readMarkdownFile(
 		throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks and special files are not allowed.", relativePath);
 	}
 	if (stat.size > limit) {
-		throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file exceeds the byte limit.", relativePath);
+		throw Errors.Files.SizeExceeded("Markdown file exceeds the byte limit.", relativePath);
 	}
 	const file = await open(anchored, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
 	try {

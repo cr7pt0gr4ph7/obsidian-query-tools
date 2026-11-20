@@ -41,3 +41,18 @@ export const ErrorCode = {
 	VAULT_CLOSED: "VAULT_CLOSED",
 	VAULT_READ_ERROR: "VAULT_READ_ERROR",
 } as const;
+
+export const Errors = {
+	Files: {
+		SizeExceeded(message?: string, relativePath?: string) {
+			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message ?? "File size exceeded.", relativePath);
+		},
+		InvalidPath(message?: string, relativePath?: string) {
+			return new VaultQueryError(
+				ErrorCode.INVALID_PATH,
+				message ?? "Expected a vault-relative POSIX path.",
+				relativePath,
+			);
+		},
+	},
+};
