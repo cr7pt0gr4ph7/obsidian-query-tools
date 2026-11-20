@@ -58,6 +58,12 @@ export interface ExportOptions {
 	format?: ExportFormat;
 	/** Configured edge fields to include (default all). */
 	types?: string[];
+	/** Export only the subgraph within `maxDepth` hops of this Markdown path. */
+	root?: string;
+	/** Hop limit around `root` (default 1; requires `root`). */
+	maxDepth?: number;
+	/** Which edges to follow from `root` (default `both`; requires `root`). */
+	direction?: "outgoing" | "incoming" | "both";
 }
 
 /** A serialized graph document. Export is bounded by the index's edge limit, so it is never truncated. */

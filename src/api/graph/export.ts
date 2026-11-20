@@ -1,5 +1,7 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { edgeTypes, type GraphConfig } from "./config.js";
+import { requireNode } from "./analysis.js";
+import { traverse } from "./traverse.js";
 import type { ExportFormat, ExportOptions, GraphExport } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
@@ -37,7 +39,7 @@ export function exportGraph(
 	if (!options || typeof options !== "object" || Array.isArray(options))
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Options must be an object.");
 	for (const key of Object.keys(options))
-		if (!["format", "types"].includes(key))
+		if (!["format", "types", "root", "maxDepth", "direction"].includes(key))
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
 	const format = options.format ?? "json";
 	if (!exportFormats.includes(format))
@@ -51,8 +53,39 @@ export function exportGraph(
 			EC.INVALID_OPTIONS,
 			"types must contain configured edge fields.",
 		);
-	const edges = index.edges.filter((edge) => types.includes(edge.type));
-	const files = index.files;
+	let edges = index.edges.filter((edge) => types.includes(edge.type));
+	let files = index.files;
+	if (options.root === undefined) {
+		if (options.maxDepth !== undefined || options.direction !== undefined)
+			throw new VaultQueryError(
+				EC.INVALID_OPTIONS,
+				"maxDepth and direction require root.",
+			);
+	} else {
+		requireNode(index, options.root);
+		const direction = options.direction ?? "both";
+		if (!["outgoing", "incoming", "both"].includes(direction))
+			throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
+		const directions =
+			direction === "both" ? (["outgoing", "incoming"] as const) : [direction];
+		const keep = new Set([options.root]);
+		for (const each of directions) {
+			const walked = traverse(
+				index,
+				generation,
+				config,
+				Number.MAX_SAFE_INTEGER,
+				options.root,
+				{ direction: each, types, maxDepth: options.maxDepth ?? 1 },
+			);
+			for (const edge of walked.data) {
+				keep.add(edge.source);
+				keep.add(edge.target);
+			}
+		}
+		files = files.filter((file) => keep.has(file));
+		edges = edges.filter((e) => keep.has(e.source) && keep.has(e.target));
+	}
 	const id = new Map(files.map((file, i) => [file, `n${i}`]));
 	let content: string;
 	switch (format) {

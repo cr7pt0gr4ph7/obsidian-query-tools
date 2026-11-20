@@ -42,7 +42,7 @@ the current generation, and is invalidated when the vault closes.
 a breadth-first walk over the same configured edges (plain reachability, not
 Breadcrumbs transitive rules), and `export({ format, types })`, which
 serializes every Markdown file as a node plus the selected edges as `json`,
-`csv` (formula-prefix guarded), `dot`, `mermaid`, or `graphml` with escaping.
+`csv` (formula-prefix guarded), `dot`, `mermaid`, or `graphml` with escaping, optionally limited to the subgraph within `maxDepth` hops of a `root` note.
 The CLI exposes these as `graph traverse` and `graph export`; MCP exposes
 `traverse` and `export`.
 `VaultGraph` further provides `path()` (shortest chain), `stats()`, `nodes()`

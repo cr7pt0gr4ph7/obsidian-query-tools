@@ -602,3 +602,20 @@ test("wikilink edge values resolve by path or unique basename when enabled", asy
 		code("INVALID_EDGE"),
 	);
 });
+
+test("export can be limited to a subgraph around a root", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-sub-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\nup: c\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nup: d\n---\n");
+	await writeFile(path.join(root, "d.md"), "# d\n");
+	await writeFile(path.join(root, "z.md"), "# z\n");
+	const g = (await openVault(root, { edgeFields: ["up"] })).graph();
+	const one = g.export({ root: "b.md" });
+	assert.deepEqual([one.nodeCount, one.edgeCount], [3, 2]);
+	const out = g.export({ root: "b.md", direction: "outgoing", maxDepth: 5 });
+	assert.deepEqual(JSON.parse(out.content).nodes, ["b.md", "c.md", "d.md"]);
+	assert.throws(() => g.export({ maxDepth: 2 }), code("INVALID_OPTIONS"));
+	assert.throws(() => g.export({ root: "nope.md" }), code("NOT_FOUND"));
+});

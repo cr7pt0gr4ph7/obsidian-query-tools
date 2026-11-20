@@ -187,6 +187,9 @@ async function main() {
 			inputSchema: z.strictObject({
 				format: z.enum(["json", "csv", "dot", "mermaid", "graphml"]).optional(),
 				types: z.array(z.string().max(256)).max(100).optional(),
+				root: z.string().max(4096).optional(),
+				maxDepth: z.number().int().positive().max(1000).optional(),
+				direction: z.enum(["incoming", "outgoing", "both"]).optional(),
 			}),
 			annotations,
 		},
