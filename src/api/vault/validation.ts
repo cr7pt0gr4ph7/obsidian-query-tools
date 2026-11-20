@@ -1,4 +1,4 @@
-import { fail } from "../utils/errors.js";
+import { VaultQueryError, ErrorCode as EC } from "../utils/errors.js";
 import type { GraphLimits } from "../graph/config.js";
 import type { Config, VaultLimits, VaultOptions } from "./types.js";
 
@@ -13,11 +13,11 @@ const defaults: VaultLimits & GraphLimits = Object.freeze({
 /** Validate open options and combine caller settings with the default limits. */
 export function optionsForOpen(options: VaultOptions): Config {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
-		fail("INVALID_OPTIONS", "Options must be an object.");
+		throw new VaultQueryError("INVALID_OPTIONS", "Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
 		if (!["edgeFields", "limits"].includes(key))
-			fail("INVALID_OPTIONS", `Unknown option: ${key}`);
+			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
 	}
 	const edgeFields = options.edgeFields ?? [];
 	if (
@@ -25,14 +25,14 @@ export function optionsForOpen(options: VaultOptions): Config {
 		edgeFields.some((x) => typeof x !== "string" || !x.trim()) ||
 		new Set(edgeFields).size !== edgeFields.length
 	) {
-		fail(
-			"INVALID_OPTIONS",
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
 			"edgeFields must be an array of unique nonempty strings.",
 		);
 	}
 	const limits = options.limits ?? {};
 	if (!limits || typeof limits !== "object" || Array.isArray(limits)) {
-		fail("INVALID_OPTIONS", "limits must be an object.");
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "limits must be an object.");
 	}
 	for (const [key, value] of Object.entries(limits)) {
 		if (
@@ -40,7 +40,7 @@ export function optionsForOpen(options: VaultOptions): Config {
 			!Number.isSafeInteger(value) ||
 			value < 1
 		) {
-			fail("INVALID_OPTIONS", `Invalid limit: ${key}`);
+			throw new VaultQueryError(EC.INVALID_OPTIONS, `Invalid limit: ${key}`);
 		}
 	}
 	const { maxEdges, ...vaultLimits } = { ...defaults, ...limits };

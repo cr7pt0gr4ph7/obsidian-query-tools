@@ -28,5 +28,3 @@ export interface VaultGraph {
 	 */
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
 }
-
-
