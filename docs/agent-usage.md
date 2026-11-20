@@ -41,3 +41,8 @@ Use `--opposite parent:child` to also see implied reverse edges (flagged
 in-process with no sandbox. Never pass vault or other untrusted text to it.
 The MCP server (`obsidian-query-tools-mcp --vault <dir> [--config <file>]`) exposes the same
 read-only operations and never enables script execution.
+
+## Keeping context small
+
+`graph export --root <path> [--max-depth N] [--direction incoming|outgoing|both]`
+exports only the subgraph around one note instead of the whole vault.
