@@ -1,17 +1,17 @@
 import { lstat, realpath } from "node:fs/promises";
-import { list } from "../dataview/list.js";
+import { type ListOptions, list } from "../dataview/list.js";
 import { findCycles, findSiblings, graphStats, listNodes, shortestPath } from "../graph/analysis.js";
+import type { GraphLimits } from "../graph/config.js";
 import { exportGraph } from "../graph/export.js";
 import type { VaultGraph } from "../graph/graph.js";
 import { neighbors } from "../graph/neighbors.js";
 import { traverse } from "../graph/traverse.js";
-import { runScript } from "../script/run.js";
+import { runScript, type ScriptOptions } from "../script/run.js";
 import { ErrorCode, VaultQueryError } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
-import { result } from "../utils/result.js";
+import { type QueryResult, result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
 import { buildIndex } from "./indexer.js";
-import type { Vault, VaultOptions } from "./types.js";
 import { optionsForOpen } from "./validation.js";
 
 /**
@@ -148,4 +148,56 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 			closed = true;
 		},
 	};
+} /** Resource limits applied while reading and querying a vault. */
+
+export interface VaultLimits {
+	/** Maximum filesystem directory entries examined. */
+	maxEntries: number;
+	/** Maximum Markdown files indexed. */
+	maxFiles: number;
+	/** Maximum size in bytes of an individual Markdown file. */
+	maxFileBytes: number;
+	/** Maximum results returned by any query. */
+	maxResults: number;
+}
+/** Optional configuration for opening a local vault. */
+
+export interface VaultOptions {
+	/** Frontmatter fields whose values are interpreted as directed Markdown edges. */
+	edgeFields?: string[];
+	/**
+	 * Maps configured fields to opposite types; each `A -field-> B` also yields an
+	 * implied `B -opposite-> A` edge (flagged `implied`), unless already declared.
+	 */
+	/** Also accept `[[Note]]`, `[[Folder/Note|alias]]` and `[[Note#heading]]` edge values. */
+	allowWikilinks?: boolean;
+	oppositeFields?: Record<string, string>;
+	/** Positive resource-limit overrides; each value may lower or raise its default. */
+	limits?: Partial<VaultLimits & GraphLimits>;
+	/**
+	 * UNSAFE: allow `script()` to execute caller-supplied JavaScript in-process.
+	 * Not a sandbox; never enable for untrusted input. Defaults to false.
+	 */
+	unsafeJavaScript?: boolean;
+} /** Read-only operations over one open vault and its published index. */
+
+export interface Vault {
+	/**
+	 * List Markdown paths using the supported `LIST FROM "<folder>"` subset.
+	 * @param query Query text.
+	 * @param options Result limit and optional validated file context.
+	 */
+	list(query: string, options?: ListOptions): QueryResult<string>;
+	/**
+	 * UNSAFE: execute caller-supplied JavaScript with a read-only `dv` helper.
+	 * Fails with `UNSUPPORTED_FEATURE` unless opened with `unsafeJavaScript: true`.
+	 * @param source Async function body; its returned value is the result.
+	 */
+	script(source: string, options?: ScriptOptions): Promise<QueryResult<unknown>>;
+	/** Obtain a graph view that follows the vault's current generation and closes with the vault. */
+	graph(): VaultGraph;
+	/** Build and publish a replacement index, returning its new generation number. */
+	refresh(): Promise<number>;
+	/** Close the vault and invalidate subsequent operations. */
+	close(): void;
 }

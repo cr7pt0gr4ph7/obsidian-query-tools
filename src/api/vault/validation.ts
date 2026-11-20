@@ -1,6 +1,7 @@
 import type { GraphLimits } from "../graph/config.js";
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
-import type { Config, VaultLimits, VaultOptions } from "./types.js";
+import type { Config } from "./types.js";
+import type { VaultLimits, VaultOptions } from "./vault.js";
 
 export const defaultLimits: VaultLimits & GraphLimits = Object.freeze({
 	maxEntries: 100_000,
