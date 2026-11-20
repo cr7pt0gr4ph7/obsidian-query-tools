@@ -44,6 +44,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 			"neighbors",
 			"path",
 			"refresh",
+			"stats",
 			"traverse",
 		]);
 		const exported = await client.callTool({

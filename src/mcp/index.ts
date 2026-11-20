@@ -119,6 +119,18 @@ async function main() {
 			handle(() => vault.graph().path(from, to, options)),
 	);
 	server.registerTool(
+		"stats",
+		{
+			description:
+				"Count nodes, edges, per-type edges, sources, sinks and isolated nodes.",
+			inputSchema: z.strictObject({
+				types: z.array(z.string().max(256)).max(100).optional(),
+			}),
+			annotations,
+		},
+		async (options) => handle(() => vault.graph().stats(options)),
+	);
+	server.registerTool(
 		"export",
 		{
 			description:

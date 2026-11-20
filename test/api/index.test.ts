@@ -492,3 +492,20 @@ test("path returns the shortest edge chain or nothing", async (t) => {
 	);
 	assert.throws(() => g.path("a.md", "x.md"), code("NOT_FOUND"));
 });
+
+test("stats counts nodes, edges and node roles", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-stats-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\nsee: c\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	await writeFile(path.join(root, "c.md"), "# c\n");
+	await writeFile(path.join(root, "d.md"), "# d\n");
+	const g = (await openVault(root, { edgeFields: ["up", "see"] })).graph();
+	const s = g.stats();
+	assert.deepEqual(
+		[s.nodeCount, s.edgeCount, s.sources, s.sinks, s.isolated],
+		[4, 2, 1, 2, 1],
+	);
+	assert.deepEqual(s.edgesByType, { see: 1, up: 1 });
+	assert.equal(g.stats({ types: ["up"] }).isolated, 2);
+});

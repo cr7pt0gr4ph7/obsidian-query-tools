@@ -18,6 +18,23 @@ export interface TraverseOptions extends NeighborOptions {
 /** Filters for a shortest-path query. */
 export type PathOptions = Omit<TraverseOptions, "maxDepth">;
 
+/** Aggregate counts describing the graph. */
+export interface GraphStats {
+	generation: number;
+	nodeCount: number;
+	edgeCount: number;
+	/** Edge count for every selected type, including zero counts. */
+	edgesByType: Record<string, number>;
+	/** Nodes with outgoing but no incoming edges. */
+	sources: number;
+	/** Nodes with incoming but no outgoing edges. */
+	sinks: number;
+	/** Nodes with no edges in either direction. */
+	isolated: number;
+	diagnostics: { code: string; message: string }[];
+	truncated: boolean;
+}
+
 /** Supported graph serialization formats. */
 export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
 
@@ -69,6 +86,8 @@ export interface VaultGraph {
 	 * target is unreachable or equals the start.
 	 */
 	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
+	/** Count nodes and edges, optionally limited to some edge types. */
+	stats(options?: { types?: string[] }): GraphStats;
 	/** Serialize the whole graph (all Markdown files as nodes) in a chosen format. */
 	export(options?: ExportOptions): GraphExport;
 }

@@ -120,6 +120,23 @@ export function registerGraphCommands(
 		});
 
 	graph
+		.command("stats")
+		.description("Count nodes, edges, sources, sinks and isolated nodes.")
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.action((options, command: Command) => {
+			requireEdgeFields(command, options);
+			select({
+				operation: "stats",
+				options: options.edgeType.length ? { types: options.edgeType } : {},
+			});
+		});
+
+	graph
 		.command("export")
 		.description(
 			"Export the whole graph as json, csv, dot, mermaid, or graphml.",
