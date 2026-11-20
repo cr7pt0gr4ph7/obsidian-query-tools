@@ -112,7 +112,12 @@ export async function runCli(args: string[]): Promise<number> {
 		}
 		const fileOptions = options.config ? await loadConfig(options.config) : {};
 		const merged = mergeOptions(fileOptions, {
-			edgeFields: options.edgeField,
+			edgeFields: [
+				...options.edgeField,
+				...(selectedCommand.operation === "neighbors"
+					? (selectedCommand.edgeFields ?? [])
+					: []),
+			],
 			oppositeFields,
 			allowWikilinks: options.allowWikilinks === true,
 		});

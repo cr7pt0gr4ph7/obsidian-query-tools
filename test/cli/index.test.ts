@@ -343,3 +343,17 @@ test("--config supplies options and rejects unsafe or unknown keys", async (t) =
 	assert.match(JSON.parse(rejected.stderr).error.message, /unsafeJavaScript/);
 	assert.equal(run(path.join(root, "missing.json")).status, 1);
 });
+
+test("graph neighbors accepts its own --edge-field", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-sub-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const out = spawnSync(
+		process.execPath,
+		[cli, "--vault", root, "graph", "neighbors", "a.md", "--edge-field", "up"],
+		{ encoding: "utf8" },
+	);
+	assert.equal(out.status, 0, out.stderr);
+	assert.equal(JSON.parse(out.stdout).data[0].target, "b.md");
+});

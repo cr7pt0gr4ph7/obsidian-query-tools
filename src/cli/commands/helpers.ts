@@ -29,12 +29,17 @@ export function createNeighborAction(select: CliCommandSelector) {
 		if (options.direction !== undefined) {
 			neighborOptions.direction = options.direction;
 		}
-		if (options.edgeType !== undefined) {
+		if (options.edgeType?.length) {
 			neighborOptions.types = options.edgeType;
 		}
 		if (options.limit !== undefined) {
 			neighborOptions.limit = positiveInteger(options.limit, "--limit");
 		}
-		select({ operation: "neighbors", path, options: neighborOptions });
+		select({
+			operation: "neighbors",
+			path,
+			options: neighborOptions,
+			...(options.edgeField?.length ? { edgeFields: options.edgeField } : {}),
+		});
 	};
 }
