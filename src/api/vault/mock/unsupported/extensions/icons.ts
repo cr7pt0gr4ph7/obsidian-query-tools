@@ -19,6 +19,15 @@ export function addIcon(iconId: string, svgContent: string): void {
 }
 
 /**
+ * Remove a custom icon from the library.
+ * @param iconId the icon ID.
+ * @public
+ */
+export function removeIcon(iconId: string): void {
+    throw new Error("Method not implemented.");
+}
+
+/**
  * Create an SVG from an iconId. Returns `null` if no icon associated with the iconId.
  * @param iconId the icon ID.
  * @public

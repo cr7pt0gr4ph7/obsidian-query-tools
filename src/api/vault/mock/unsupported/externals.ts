@@ -22,6 +22,18 @@ export function loadMathJax(): Promise<void> {
 export function finishRenderMath(): Promise<void> {
     throw new Error("Method not implemented.");
 }
+
+/**
+ * Render some LaTeX math using the MathJax engine. Returns an HTMLElement.
+ * Requires calling `finishRenderMath` when rendering is all done to flush the MathJax stylesheet.
+ * @param source The LaTeX source code.
+ * @param display Whether to render the math in display mode.
+ * @public
+ */
+export function renderMath(source: string, display: boolean): HTMLElement {
+    throw new Error("Method not implemented.");
+}
+
 /**
  * Load Mermaid and return a promise to the global mermaid object.
  * Can also use `window.mermaid` after this promise resolves to get the same reference.
