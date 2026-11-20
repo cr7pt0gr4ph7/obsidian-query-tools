@@ -65,11 +65,11 @@ test("graph options are separated from vault limits without changing open option
 });
 
 test("vault errors only expose a path when one is supplied", () => {
-	const withoutPath = Errors.Query.Invalid("Invalid query.");
+	const withoutPath = Errors.Query.InvalidQuery("Invalid query.");
 	assert.equal(Object.hasOwn(withoutPath, "path"), false);
 	const withPath = Errors.Files.UnsafePath("Unsafe path.", "note.md");
 	assert.equal(withPath.path, "note.md");
-	assert.equal(Errors.Options.Invalid().message, "Invalid options.");
+	assert.equal(Errors.Options.InvalidOptions().message, "Invalid options.");
 	assert.ok(Errors.codes().includes("INVALID_OPTIONS"));
 });
 
