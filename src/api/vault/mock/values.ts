@@ -19,6 +19,7 @@ export abstract class Value {
 	static equals(a: Value | null, b: Value | null): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -32,11 +33,13 @@ export abstract class Value {
 	 * @since 1.10.0
 	 */
 	abstract toString(): string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	abstract isTruthy(): boolean;
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -44,6 +47,7 @@ export abstract class Value {
 	equals(other: this): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -51,6 +55,7 @@ export abstract class Value {
 	looseEquals(other: Value): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Render this value into the provided HTMLElement.
 	 * @public
@@ -81,6 +86,7 @@ export abstract class PrimitiveValue<T> extends NotNullValue {
 	constructor(value: T) {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -88,6 +94,7 @@ export abstract class PrimitiveValue<T> extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -111,6 +118,7 @@ export class NullValue extends Value {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -171,6 +179,7 @@ export class ObjectValue extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -178,6 +187,7 @@ export class ObjectValue extends NotNullValue {
 	isTruthy(): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -228,6 +238,7 @@ export class DateValue extends NotNullValue {
 	relative(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -268,6 +279,7 @@ export class DurationValue extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -284,6 +296,7 @@ export class DurationValue extends NotNullValue {
 	addToDate(value: DateValue, subtract?: boolean): DateValue {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Convert this duration into milliseconds.
 	 * @public
@@ -302,6 +315,7 @@ export class DurationValue extends NotNullValue {
 	static parseFromString(input: string): DurationValue | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Create a new DurationValue from milliseconds.
 	 * @public
@@ -325,6 +339,7 @@ export class FileValue extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -363,6 +378,7 @@ export class ListValue extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -370,6 +386,7 @@ export class ListValue extends NotNullValue {
 	isTruthy(): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @returns true if any elements in this list loosely equal the provided value.
 	 * @public
@@ -387,6 +404,7 @@ export class ListValue extends NotNullValue {
 	length(): number {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @returns the value at the provided index, or {@link NullValue}.
 	 * @public
@@ -419,6 +437,7 @@ export class RegExpValue extends NotNullValue {
 	toString(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.10.0

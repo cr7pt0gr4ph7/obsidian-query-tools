@@ -16,6 +16,7 @@ export interface Instruction {
 	 * @since 0.9.20
 	 */
 	command: string;
+
 	/**
 	 * The purpose of the command.
 	 * @public
@@ -37,12 +38,14 @@ export class Notice {
 	 * @since 0.9.7
 	 */
 	noticeEl: HTMLElement;
+
 	/**
 	 * The container element.
 	 * @public
 	 * @since 1.8.7
 	 */
 	containerEl: HTMLElement;
+
 	/**
 	 * The message element.
 	 * @public
@@ -70,6 +73,7 @@ export class Notice {
 	constructor(message: string | DocumentFragment, duration?: number) {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Change the message of this notice.
 	 * @param message The message.

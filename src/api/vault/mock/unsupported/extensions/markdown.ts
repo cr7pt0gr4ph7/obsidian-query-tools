@@ -57,6 +57,7 @@ export interface MarkdownPostProcessor {
 	 * @public
 	 */
 	(el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<any> | void;
+
 	/**
 	 * An optional integer sort order. Defaults to 0. Lower number runs before higher numbers.
 	 * @public
@@ -74,11 +75,13 @@ export interface MarkdownPostProcessorContext {
 	 * @public
 	 */
 	docId: string;
+
 	/**
 	 * The path to the associated file. Any links are assumed to be relative to the `sourcePath`.
 	 * @public
 	 */
 	sourcePath: string;
+
 	/**
 	 * The frontmatter of the document.
 	 * @public
@@ -115,11 +118,13 @@ export interface MarkdownSectionInformation {
 	 * @public
 	 */
 	text: string;
+
 	/**
 	 * The start line of the section (0-based).
 	 * @public
 	 */
 	lineStart: number;
+
 	/**
 	 * The end line of the section (0-based).
 	 * @public

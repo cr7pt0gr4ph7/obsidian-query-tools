@@ -19,6 +19,7 @@ export interface HeadingCache extends CacheItem {
 	 * @public
 	 */
 	heading: string;
+
 	/**
 	 * Number between 1 and 6.
 	 * @example
@@ -46,12 +47,14 @@ export interface HeadingSubpathResult extends SubpathResult {
 	 * @since 0.9.16
 	 */
 	type: "heading";
+
 	/**
 	 * The heading.
 	 * @public
 	 * @since 0.9.16
 	 */
 	current: HeadingCache;
+
 	/**
 	 * The next heading on the same or a higher level.
 	 * @public

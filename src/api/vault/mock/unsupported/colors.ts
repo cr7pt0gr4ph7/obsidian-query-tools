@@ -20,12 +20,14 @@ export interface HSL {
 	 * @since 0.16.0
 	 */
 	h: number;
+
 	/**
 	 * Saturation integer value between 0 and 100.
 	 * @public
 	 * @since 0.16.0
 	 */
 	s: number;
+
 	/**
 	 * Lightness integer value between 0 and 100.
 	 * @public
@@ -45,11 +47,13 @@ export interface RGB {
 	 * @public
 	 */
 	r: number;
+
 	/**
 	 * Green integer value between 0 and 255.
 	 * @public
 	 */
 	g: number;
+
 	/**
 	 * Blue integer value between 0 and 255.
 	 * @public

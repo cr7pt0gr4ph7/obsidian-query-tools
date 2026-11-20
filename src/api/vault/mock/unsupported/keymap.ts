@@ -146,6 +146,7 @@ export interface KeymapInfo {
 	 * @since 0.10.4
 	 */
 	modifiers: string | null;
+
 	/**
 	 * The main key of the key combination.
 	 * @public

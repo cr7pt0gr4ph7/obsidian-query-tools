@@ -12,21 +12,25 @@ export interface MenuPositionDef {
 	 * @public
 	 */
 	x: number;
+
 	/**
 	 * The y coordinate.
 	 * @public
 	 */
 	y: number;
+
 	/**
 	 * The width of the element the menu is shown next to, starting at `x`.
 	 * @public
 	 */
 	width?: number;
+
 	/**
 	 * Whether the menu should overlap the element described by `x` and `width`, instead of opening beside it.
 	 * @public
 	 */
 	overlap?: boolean;
+
 	/**
 	 * Whether to prefer opening the menu towards the left.
 	 * @public

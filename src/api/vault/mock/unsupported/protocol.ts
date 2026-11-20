@@ -26,6 +26,7 @@ export interface ObsidianProtocolData {
 	 * @public
 	 */
 	action: string;
+
 	/**
 	 * Additional parameters.
 	 * @example

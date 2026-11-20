@@ -26,6 +26,7 @@ export interface ReferenceLinkCache extends CacheItem {
 	 * @public
 	 */
 	id: string;
+
 	/**
 	 * The link destination.
 	 * @example

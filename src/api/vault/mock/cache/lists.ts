@@ -19,6 +19,7 @@ export interface ListItemCache extends CacheItem {
 	 * @public
 	 */
 	id?: string | undefined;
+
 	/**
 	 * A single character indicating the checked status of a task.
 	 * The space character `' '` is interpreted as an incomplete task.
@@ -27,6 +28,7 @@ export interface ListItemCache extends CacheItem {
 	 * @public
 	 */
 	task?: string | undefined;
+
 	/**
 	 * Line number of the parent list item (position.start.line).
 	 * If this item has no parent (e.g. it's a root level list),

@@ -63,6 +63,7 @@ export interface FootnoteSubpathResult extends SubpathResult {
 	 * @public
 	 */
 	type: "footnote";
+
 	/**
 	 * The footnote.
 	 * @public

@@ -29,6 +29,7 @@ export interface Point {
 	 * @public
 	 */
 	x: number;
+
 	/**
 	 * The y coordinate.
 	 * @public
@@ -47,6 +48,7 @@ export interface HoverLinkSource {
 	 * @public
 	 */
 	display: string;
+
 	/**
 	 * Whether the `hover-link` event requires the 'Mod' key to be pressed to trigger.
 	 * @public

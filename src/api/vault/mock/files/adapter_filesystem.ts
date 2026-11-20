@@ -154,6 +154,7 @@ export class FileSystemAdapter implements DataAdapter {
 	copy(normalizedPath: string, normalizedNewPath: string): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @inheritDoc
 	 * @public

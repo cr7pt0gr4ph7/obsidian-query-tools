@@ -22,6 +22,7 @@ export interface BasesProperty {
 	 * @since 1.10.0
 	 */
 	type: BasesPropertyType;
+
 	/**
 	 * @public
 	 * @since 1.10.0

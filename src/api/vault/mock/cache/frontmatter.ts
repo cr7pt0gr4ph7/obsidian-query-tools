@@ -76,21 +76,25 @@ export interface FrontMatterInfo {
 	 * @public
 	 */
 	exists: boolean;
+
 	/**
 	 * String representation of the frontmatter.
 	 * @public
 	 */
 	frontmatter: string;
+
 	/**
 	 * Start offset of the frontmatter contents (excluding the ---).
 	 * @public
 	 */
 	from: number;
+
 	/**
 	 * End offset of the frontmatter contents (excluding the ---).
 	 * @public
 	 */
 	to: number;
+
 	/**
 	 * Offset where the frontmatter block ends (including the ---).
 	 * @public

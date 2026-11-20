@@ -10,6 +10,7 @@ declare global {
 		 * ```
 		 */
 		isEmpty(object: Record<string, any>): boolean;
+
 		/**
 		 * Iterates over the own properties of an object, stopping early if the callback returns `false`.
 		 * @param object The object.
@@ -51,6 +52,7 @@ declare global {
 		 * ```
 		 */
 		first(): T | undefined;
+
 		/**
 		 * Returns the last element of the array, or `undefined` if the array is empty.
 		 * @example
@@ -60,6 +62,7 @@ declare global {
 		 * ```
 		 */
 		last(): T | undefined;
+
 		/**
 		 * Checks if the array contains a specific element.
 		 * @param target The element.
@@ -70,6 +73,7 @@ declare global {
 		 * ```
 		 */
 		contains(target: T): boolean;
+
 		/**
 		 * Removes all occurrences of an element from the array, in place.
 		 * @param target The element.
@@ -86,6 +90,7 @@ declare global {
 		 * See bug: {@link https://forum.obsidian.md/t/bug-array-remove-definition/98101}.
 		 */
 		remove(target: T): void;
+
 		/**
 		 * Shuffles the array in place.
 		 * @example
@@ -96,10 +101,12 @@ declare global {
 		 * ```
 		 */
 		shuffle(): this;
+
 		/**
 		 * Returns a new array with unique elements.
 		 */
 		unique(): T[];
+
 		/**
 		 * Returns the index of the last element that satisfies the predicate, or `-1` if there is none.
 		 * @param predicate The predicate.
@@ -126,6 +133,7 @@ declare global {
 		 * ```
 		 */
 		clamp(value: number, min: number, max: number): number;
+
 		/**
 		 * Returns the square of a number.
 		 * @param value The number.
@@ -160,6 +168,7 @@ declare global {
 		 * ```
 		 */
 		contains(target: string): boolean;
+
 		/**
 		 * Checks if the string starts with a specific substring.
 		 * @param searchString The substring.
@@ -173,6 +182,7 @@ declare global {
 		 * ```
 		 */
 		startsWith(searchString: string, position?: number): boolean;
+
 		/**
 		 * Checks if the string ends with a specific substring.
 		 * @param searchString The substring.
@@ -186,6 +196,7 @@ declare global {
 		 * ```
 		 */
 		endsWith(searchString: string, endPosition?: number): boolean;
+
 		/**
 		 * Formats a string using the indexed placeholders.
 		 * @param args The values for the `{0}`, `{1}`, ... placeholders.
@@ -224,6 +235,7 @@ declare global {
 		 * ```
 		 */
 		detach(): void;
+
 		/**
 		 * Removes all children of the node.
 		 * @example
@@ -236,6 +248,7 @@ declare global {
 		 * ```
 		 */
 		empty(): void;
+
 		/**
 		 * Inserts a node as a child of this node, right after the given child.
 		 * @param node The node.
@@ -252,11 +265,13 @@ declare global {
 		 * ```
 		 */
 		insertAfter<T extends Node>(node: T, child: Node | null): T;
+
 		/**
 		 * Returns the index of a child node within this node's child nodes, or `-1` if it is not a child.
 		 * @param other The child node.
 		 */
 		indexOf(other: Node): number;
+
 		/**
 		 * Replaces the children of this node with the given nodes, keeping existing children in place where possible.
 		 * @param children The new children, in order.
@@ -271,6 +286,7 @@ declare global {
 		 * ```
 		 */
 		setChildrenInPlace(children: Node[]): void;
+
 		/**
 		 * Appends a text node to the node.
 		 * @param val The text.
@@ -283,6 +299,7 @@ declare global {
 		 * ```
 		 */
 		appendText(val: string): void;
+
 		/**
 		 * Cross-window capable instanceof check, a drop-in replacement
 		 * for instanceof checks on DOM Nodes. Remember to also check
@@ -296,14 +313,17 @@ declare global {
 		 * ```
 		 */
 		instanceOf<T>(type: { new (): T }): this is T;
+
 		/**
 		 * The document this node belongs to, or the global document.
 		 */
 		doc: Document;
+
 		/**
 		 * The window object this node belongs to, or the global window.
 		 */
 		win: Window;
+
 		/**
 		 * The window whose constructors were used to create this node.
 		 * Usually the same as `win`, but can differ after the node is moved to another window.
@@ -322,6 +342,7 @@ declare global {
 		 * ```
 		 */
 		getText(): string;
+
 		/**
 		 * Sets the text content of the element.
 		 * @param val The text, or a node to replace the content with.
@@ -337,6 +358,7 @@ declare global {
 		 * ```
 		 */
 		setText(val: string | DocumentFragment): void;
+
 		/**
 		 * Adds one or more classes to the element.
 		 * @param classes The classes.
@@ -348,6 +370,7 @@ declare global {
 		 * ```
 		 */
 		addClass(...classes: string[]): void;
+
 		/**
 		 * Adds multiple classes to the element.
 		 * @param classes The classes.
@@ -359,6 +382,7 @@ declare global {
 		 * ```
 		 */
 		addClasses(classes: string[]): void;
+
 		/**
 		 * Removes one or more classes from the element.
 		 * @param classes The classes.
@@ -371,6 +395,7 @@ declare global {
 		 * ```
 		 */
 		removeClass(...classes: string[]): void;
+
 		/**
 		 * Removes multiple classes from the element.
 		 * @param classes The classes.
@@ -383,6 +408,7 @@ declare global {
 		 * ```
 		 */
 		removeClasses(classes: string[]): void;
+
 		/**
 		 * Adds or removes one or more classes on the element.
 		 * @param classes The class or classes.
@@ -402,6 +428,7 @@ declare global {
 		 * ```
 		 */
 		toggleClass(classes: string | string[], value: boolean): void;
+
 		/**
 		 * Checks if the element has a class.
 		 * @param cls The class.
@@ -414,6 +441,7 @@ declare global {
 		 * ```
 		 */
 		hasClass(cls: string): boolean;
+
 		/**
 		 * Sets an attribute on the element.
 		 * @param qualifiedName The attribute name.
@@ -426,6 +454,7 @@ declare global {
 		 * ```
 		 */
 		setAttr(qualifiedName: string, value: string | number | boolean | null): void;
+
 		/**
 		 * Sets multiple attributes on the element.
 		 * @param obj The attributes. A `null` value removes the attribute.
@@ -441,6 +470,7 @@ declare global {
 		 * ```
 		 */
 		setAttrs(obj: { [key: string]: string | number | boolean | null }): void;
+
 		/**
 		 * Gets an attribute from the element.
 		 * @param qualifiedName The attribute name.
@@ -453,6 +483,7 @@ declare global {
 		 * ```
 		 */
 		getAttr(qualifiedName: string): string | null;
+
 		/**
 		 * Returns the closest element that matches the selector, starting with this element and walking up the DOM tree.
 		 * @param selector The selector.
@@ -471,6 +502,7 @@ declare global {
 		 * ```
 		 */
 		matchParent(selector: string, lastParent?: Element): Element | null;
+
 		/**
 		 * Gets the computed value of a CSS property of the element.
 		 * @param property The CSS property.
@@ -484,6 +516,7 @@ declare global {
 		 * ```
 		 */
 		getCssPropertyValue(property: string, pseudoElement?: string): string;
+
 		/**
 		 * Checks if the element is focused, taking iframes and the active window into account.
 		 * @example
@@ -500,10 +533,12 @@ declare global {
 		 * Shows the element by restoring its CSS `display` property, if it was hidden with `hide()`.
 		 */
 		show(): void;
+
 		/**
 		 * Hides the element by setting its CSS `display` property to `none`.
 		 */
 		hide(): void;
+
 		/**
 		 * Shows or hides the element using its CSS `display` property.
 		 * @param show Whether to show the element.
@@ -514,6 +549,7 @@ declare global {
 		 * ```
 		 */
 		toggle(show: boolean): void;
+
 		/**
 		 * Shows or hides the element using its CSS `visibility` property.
 		 * @param visible Whether to show the element.
@@ -524,6 +560,7 @@ declare global {
 		 * ```
 		 */
 		toggleVisibility(visible: boolean): void;
+
 		/**
 		 * Returns whether this element is shown, when the element is attached to the DOM and
 		 * none of the parent and ancestor elements are hidden with `display: none`.
@@ -538,6 +575,7 @@ declare global {
 		 * ```
 		 */
 		isShown(): boolean;
+
 		/**
 		 * Sets the CSS styles of the element.
 		 * @param styles The styles.
@@ -548,6 +586,7 @@ declare global {
 		 * ```
 		 */
 		setCssStyles(styles: Partial<CSSStyleDeclaration>): void;
+
 		/**
 		 * Sets the CSS properties of the element.
 		 * @param props The CSS properties.
@@ -558,10 +597,12 @@ declare global {
 		 * ```
 		 */
 		setCssProps(props: Record<string, string>): void;
+
 		/**
 		 * Get the inner width of this element without padding.
 		 */
 		readonly innerWidth: number;
+
 		/**
 		 * Get the inner height of this element without padding.
 		 */
@@ -578,6 +619,7 @@ declare global {
 		 * ```
 		 */
 		setCssStyles(styles: Partial<CSSStyleDeclaration>): void;
+
 		/**
 		 * Sets the CSS properties of the element.
 		 * @param props The CSS properties.
@@ -637,6 +679,7 @@ declare global {
 		 * ```
 		 */
 		find(selector: string): Element | null;
+
 		/**
 		 * Finds all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -651,6 +694,7 @@ declare global {
 		 * @remarks See bug {@link https://forum.obsidian.md/t/bug-find-findall-findallself/98108}.
 		 */
 		findAll(selector: string): HTMLElement[];
+
 		/**
 		 * Finds this element and all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -685,6 +729,7 @@ declare global {
 		 * @remarks See bug {@link https://forum.obsidian.md/t/bug-find-findall-findallself/98108}.
 		 */
 		find(selector: string): HTMLElement | null;
+
 		/**
 		 * Finds all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -713,6 +758,7 @@ declare global {
 		 * ```
 		 */
 		cls?: string | string[];
+
 		/**
 		 * The textContent to be assigned.
 		 * @example
@@ -724,36 +770,44 @@ declare global {
 		 * ```
 		 */
 		text?: string | DocumentFragment;
+
 		/**
 		 * HTML attributes to be added.
 		 */
 		attr?: {
 			[key: string]: string | number | boolean | null;
 		};
+
 		/**
 		 * HTML title (for hover tooltip).
 		 */
 		title?: string;
+
 		/**
 		 * The parent element to be assigned to.
 		 */
 		parent?: Node;
+
 		/**
 		 * Only applies to `<input>`, `<select>`, and `<option>` elements.
 		 */
 		value?: string;
+
 		/**
 		 * Only applies to `<input>` and `<style>` elements.
 		 */
 		type?: string;
+
 		/**
 		 * Whether to insert the element as the first child of the parent, instead of the last.
 		 */
 		prepend?: boolean;
+
 		/**
 		 * Only applies to `<input>` elements.
 		 */
 		placeholder?: string;
+
 		/**
 		 * Only applies to `<a>`, `<link>`, and `<base>` elements.
 		 */
@@ -772,16 +826,19 @@ declare global {
 		 * ```
 		 */
 		cls?: string | string[];
+
 		/**
 		 * HTML attributes to be added.
 		 */
 		attr?: {
 			[key: string]: string | number | boolean | null;
 		};
+
 		/**
 		 * The parent element to be assigned to.
 		 */
 		parent?: Node;
+
 		/**
 		 * Whether to insert the element as the first child of the parent, instead of the last.
 		 */
@@ -805,6 +862,7 @@ declare global {
 			o?: DomElementInfo | string,
 			callback?: (el: HTMLElementTagNameMap[K]) => void,
 		): HTMLElementTagNameMap[K];
+
 		/**
 		 * Create a `<div>` element and append it to this node.
 		 * @param o The options, or a CSS class to add.
@@ -817,6 +875,7 @@ declare global {
 		 * ```
 		 */
 		createDiv(o?: DomElementInfo | string, callback?: (el: HTMLDivElement) => void): HTMLDivElement;
+
 		/**
 		 * Create a `<span>` element and append it to this node.
 		 * @param o The options, or a CSS class to add.
@@ -829,6 +888,7 @@ declare global {
 		 * ```
 		 */
 		createSpan(o?: DomElementInfo | string, callback?: (el: HTMLSpanElement) => void): HTMLSpanElement;
+
 		/**
 		 * Create an SVG element such as `<svg>`, `<circle>` or `<rect>` and append it to this node.
 		 * @param tag The tag name.
@@ -924,14 +984,17 @@ declare global {
 		 * The selector that the event target, or one of its ancestors, must match.
 		 */
 		selector: string;
+
 		/**
 		 * The listener passed to `on()`.
 		 */
 		listener: Function;
+
 		/**
 		 * The options passed to `on()`.
 		 */
 		options?: boolean | AddEventListenerOptions;
+
 		/**
 		 * The wrapper function registered with `addEventListener`, which calls the listener when the selector matches.
 		 */
@@ -944,6 +1007,7 @@ declare global {
 		_EVENTS?: {
 			[K in keyof HTMLElementEventMap]?: EventListenerInfo[];
 		};
+
 		/**
 		 * Adds a delegated event listener to the element. The listener is called when the event target,
 		 * or one of its ancestors, matches the selector.
@@ -959,6 +1023,7 @@ declare global {
 			listener: (this: HTMLElement, ev: HTMLElementEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Removes a delegated event listener that was added with `on()`.
 		 * The arguments must match the ones that were passed to `on()`.
@@ -980,6 +1045,7 @@ declare global {
 			listener: (this: HTMLElement, ev: HTMLElementEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Adds a listener for both `click` and `auxclick` (e.g. middle click) events to the element.
 		 * @param listener The listener.
@@ -990,6 +1056,7 @@ declare global {
 			listener: (this: HTMLElement, ev: MouseEvent) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Registers a callback to be called when this element is inserted into the DOM.
 		 * @param listener The callback.
@@ -997,12 +1064,14 @@ declare global {
 		 * @returns A function that unregisters the callback, to avoid memory leaks.
 		 */
 		onNodeInserted(this: HTMLElement, listener: () => any, once?: boolean): () => void;
+
 		/**
 		 * Registers a callback to be called when this element is moved to another window.
 		 * @param listener The callback, called with the new window.
 		 * @returns A function that unregisters the callback, to avoid memory leaks.
 		 */
 		onWindowMigrated(this: HTMLElement, listener: (win: Window) => any): () => void;
+
 		/**
 		 * Dispatches a bubbling event of the given type on the element.
 		 * @param eventType The event type.
@@ -1016,6 +1085,7 @@ declare global {
 		_EVENTS?: {
 			[K in keyof DocumentEventMap]?: EventListenerInfo[];
 		};
+
 		/**
 		 * Adds a delegated event listener to the document. The listener is called when the event target,
 		 * or one of its ancestors, matches the selector.
@@ -1031,6 +1101,7 @@ declare global {
 			listener: (this: Document, ev: DocumentEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Removes a delegated event listener that was added with `on()`.
 		 * The arguments must match the ones that were passed to `on()`.
@@ -1058,14 +1129,17 @@ declare global {
 		 * The target node of the event.
 		 */
 		targetNode: Node | null;
+
 		/**
 		 * The window in which the event occurred.
 		 */
 		win: Window;
+
 		/**
 		 * The document in which the event occurred.
 		 */
 		doc: Document;
+
 		/**
 		 * Cross-window capable instanceof check, a drop-in replacement
 		 * for instanceof checks on UIEvents.
@@ -1087,31 +1161,38 @@ declare global {
 		 * The HTTP method. Defaults to `'GET'`.
 		 */
 		method?: "GET" | "POST";
+
 		/**
 		 * The request URL.
 		 */
 		url: string;
+
 		/**
 		 * Called when the request completes with a status code from 200 to 399.
 		 */
 		success?: (response: any, req: XMLHttpRequest) => any;
+
 		/**
 		 * Called when the request fails or completes with any other status code.
 		 */
 		error?: (error: any, req: XMLHttpRequest) => any;
+
 		/**
 		 * The request body. Objects are sent as JSON.
 		 */
 		data?: object | string | ArrayBuffer;
+
 		/**
 		 * The request headers.
 		 */
 		headers?: Record<string, string>;
+
 		/**
 		 * Whether to send credentials.
 		 * Defaults to `true` if `data` is set, `false` otherwise.
 		 */
 		withCredentials?: boolean;
+
 		/**
 		 * Set to the underlying `XMLHttpRequest` once the request is sent.
 		 */
@@ -1182,16 +1263,19 @@ declare global {
 		 * it will be different when using popout windows.
 		 */
 		activeWindow: Window;
+
 		/**
 		 * The actively focused Document object. This is usually the same as `document` but
 		 * it will be different when using popout windows.
 		 */
 		activeDocument: Document;
+
 		/**
 		 * Sleeps for a given number of milliseconds.
 		 * @param ms The number of milliseconds.
 		 */
 		sleep(ms: number): Promise<void>;
+
 		/**
 		 * Waits for the next animation frame.
 		 * @returns A promise that resolves on the next animation frame.
@@ -1217,6 +1301,7 @@ declare global {
 		 * ```
 		 */
 		isEmpty(object: Record<string, any>): boolean;
+
 		/**
 		 * Iterates over the own properties of an object, stopping early if the callback returns `false`.
 		 * @param object The object.
@@ -1258,6 +1343,7 @@ declare global {
 		 * ```
 		 */
 		first(): T | undefined;
+
 		/**
 		 * Returns the last element of the array, or `undefined` if the array is empty.
 		 * @example
@@ -1267,6 +1353,7 @@ declare global {
 		 * ```
 		 */
 		last(): T | undefined;
+
 		/**
 		 * Checks if the array contains a specific element.
 		 * @param target The element.
@@ -1277,6 +1364,7 @@ declare global {
 		 * ```
 		 */
 		contains(target: T): boolean;
+
 		/**
 		 * Removes all occurrences of an element from the array, in place.
 		 * @param target The element.
@@ -1293,6 +1381,7 @@ declare global {
 		 * See bug: {@link https://forum.obsidian.md/t/bug-array-remove-definition/98101}.
 		 */
 		remove(target: T): void;
+
 		/**
 		 * Shuffles the array in place.
 		 * @example
@@ -1303,10 +1392,12 @@ declare global {
 		 * ```
 		 */
 		shuffle(): this;
+
 		/**
 		 * Returns a new array with unique elements.
 		 */
 		unique(): T[];
+
 		/**
 		 * Returns the index of the last element that satisfies the predicate, or `-1` if there is none.
 		 * @param predicate The predicate.
@@ -1333,6 +1424,7 @@ declare global {
 		 * ```
 		 */
 		clamp(value: number, min: number, max: number): number;
+
 		/**
 		 * Returns the square of a number.
 		 * @param value The number.
@@ -1367,6 +1459,7 @@ declare global {
 		 * ```
 		 */
 		contains(target: string): boolean;
+
 		/**
 		 * Checks if the string starts with a specific substring.
 		 * @param searchString The substring.
@@ -1380,6 +1473,7 @@ declare global {
 		 * ```
 		 */
 		startsWith(searchString: string, position?: number): boolean;
+
 		/**
 		 * Checks if the string ends with a specific substring.
 		 * @param searchString The substring.
@@ -1393,6 +1487,7 @@ declare global {
 		 * ```
 		 */
 		endsWith(searchString: string, endPosition?: number): boolean;
+
 		/**
 		 * Formats a string using the indexed placeholders.
 		 * @param args The values for the `{0}`, `{1}`, ... placeholders.
@@ -1431,6 +1526,7 @@ declare global {
 		 * ```
 		 */
 		detach(): void;
+
 		/**
 		 * Removes all children of the node.
 		 * @example
@@ -1443,6 +1539,7 @@ declare global {
 		 * ```
 		 */
 		empty(): void;
+
 		/**
 		 * Inserts a node as a child of this node, right after the given child.
 		 * @param node The node.
@@ -1459,11 +1556,13 @@ declare global {
 		 * ```
 		 */
 		insertAfter<T extends Node>(node: T, child: Node | null): T;
+
 		/**
 		 * Returns the index of a child node within this node's child nodes, or `-1` if it is not a child.
 		 * @param other The child node.
 		 */
 		indexOf(other: Node): number;
+
 		/**
 		 * Replaces the children of this node with the given nodes, keeping existing children in place where possible.
 		 * @param children The new children, in order.
@@ -1478,6 +1577,7 @@ declare global {
 		 * ```
 		 */
 		setChildrenInPlace(children: Node[]): void;
+
 		/**
 		 * Appends a text node to the node.
 		 * @param val The text.
@@ -1490,6 +1590,7 @@ declare global {
 		 * ```
 		 */
 		appendText(val: string): void;
+
 		/**
 		 * Cross-window capable instanceof check, a drop-in replacement
 		 * for instanceof checks on DOM Nodes. Remember to also check
@@ -1503,14 +1604,17 @@ declare global {
 		 * ```
 		 */
 		instanceOf<T>(type: { new (): T }): this is T;
+
 		/**
 		 * The document this node belongs to, or the global document.
 		 */
 		doc: Document;
+
 		/**
 		 * The window object this node belongs to, or the global window.
 		 */
 		win: Window;
+
 		/**
 		 * The window whose constructors were used to create this node.
 		 * Usually the same as `win`, but can differ after the node is moved to another window.
@@ -1529,6 +1633,7 @@ declare global {
 		 * ```
 		 */
 		getText(): string;
+
 		/**
 		 * Sets the text content of the element.
 		 * @param val The text, or a node to replace the content with.
@@ -1544,6 +1649,7 @@ declare global {
 		 * ```
 		 */
 		setText(val: string | DocumentFragment): void;
+
 		/**
 		 * Adds one or more classes to the element.
 		 * @param classes The classes.
@@ -1555,6 +1661,7 @@ declare global {
 		 * ```
 		 */
 		addClass(...classes: string[]): void;
+
 		/**
 		 * Adds multiple classes to the element.
 		 * @param classes The classes.
@@ -1566,6 +1673,7 @@ declare global {
 		 * ```
 		 */
 		addClasses(classes: string[]): void;
+
 		/**
 		 * Removes one or more classes from the element.
 		 * @param classes The classes.
@@ -1578,6 +1686,7 @@ declare global {
 		 * ```
 		 */
 		removeClass(...classes: string[]): void;
+
 		/**
 		 * Removes multiple classes from the element.
 		 * @param classes The classes.
@@ -1590,6 +1699,7 @@ declare global {
 		 * ```
 		 */
 		removeClasses(classes: string[]): void;
+
 		/**
 		 * Adds or removes one or more classes on the element.
 		 * @param classes The class or classes.
@@ -1609,6 +1719,7 @@ declare global {
 		 * ```
 		 */
 		toggleClass(classes: string | string[], value: boolean): void;
+
 		/**
 		 * Checks if the element has a class.
 		 * @param cls The class.
@@ -1621,6 +1732,7 @@ declare global {
 		 * ```
 		 */
 		hasClass(cls: string): boolean;
+
 		/**
 		 * Sets an attribute on the element.
 		 * @param qualifiedName The attribute name.
@@ -1633,6 +1745,7 @@ declare global {
 		 * ```
 		 */
 		setAttr(qualifiedName: string, value: string | number | boolean | null): void;
+
 		/**
 		 * Sets multiple attributes on the element.
 		 * @param obj The attributes. A `null` value removes the attribute.
@@ -1648,6 +1761,7 @@ declare global {
 		 * ```
 		 */
 		setAttrs(obj: { [key: string]: string | number | boolean | null }): void;
+
 		/**
 		 * Gets an attribute from the element.
 		 * @param qualifiedName The attribute name.
@@ -1660,6 +1774,7 @@ declare global {
 		 * ```
 		 */
 		getAttr(qualifiedName: string): string | null;
+
 		/**
 		 * Returns the closest element that matches the selector, starting with this element and walking up the DOM tree.
 		 * @param selector The selector.
@@ -1678,6 +1793,7 @@ declare global {
 		 * ```
 		 */
 		matchParent(selector: string, lastParent?: Element): Element | null;
+
 		/**
 		 * Gets the computed value of a CSS property of the element.
 		 * @param property The CSS property.
@@ -1691,6 +1807,7 @@ declare global {
 		 * ```
 		 */
 		getCssPropertyValue(property: string, pseudoElement?: string): string;
+
 		/**
 		 * Checks if the element is focused, taking iframes and the active window into account.
 		 * @example
@@ -1707,10 +1824,12 @@ declare global {
 		 * Shows the element by restoring its CSS `display` property, if it was hidden with `hide()`.
 		 */
 		show(): void;
+
 		/**
 		 * Hides the element by setting its CSS `display` property to `none`.
 		 */
 		hide(): void;
+
 		/**
 		 * Shows or hides the element using its CSS `display` property.
 		 * @param show Whether to show the element.
@@ -1721,6 +1840,7 @@ declare global {
 		 * ```
 		 */
 		toggle(show: boolean): void;
+
 		/**
 		 * Shows or hides the element using its CSS `visibility` property.
 		 * @param visible Whether to show the element.
@@ -1731,6 +1851,7 @@ declare global {
 		 * ```
 		 */
 		toggleVisibility(visible: boolean): void;
+
 		/**
 		 * Returns whether this element is shown, when the element is attached to the DOM and
 		 * none of the parent and ancestor elements are hidden with `display: none`.
@@ -1745,6 +1866,7 @@ declare global {
 		 * ```
 		 */
 		isShown(): boolean;
+
 		/**
 		 * Sets the CSS styles of the element.
 		 * @param styles The styles.
@@ -1755,6 +1877,7 @@ declare global {
 		 * ```
 		 */
 		setCssStyles(styles: Partial<CSSStyleDeclaration>): void;
+
 		/**
 		 * Sets the CSS properties of the element.
 		 * @param props The CSS properties.
@@ -1765,10 +1888,12 @@ declare global {
 		 * ```
 		 */
 		setCssProps(props: Record<string, string>): void;
+
 		/**
 		 * Get the inner width of this element without padding.
 		 */
 		readonly innerWidth: number;
+
 		/**
 		 * Get the inner height of this element without padding.
 		 */
@@ -1785,6 +1910,7 @@ declare global {
 		 * ```
 		 */
 		setCssStyles(styles: Partial<CSSStyleDeclaration>): void;
+
 		/**
 		 * Sets the CSS properties of the element.
 		 * @param props The CSS properties.
@@ -1844,6 +1970,7 @@ declare global {
 		 * ```
 		 */
 		find(selector: string): Element | null;
+
 		/**
 		 * Finds all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -1858,6 +1985,7 @@ declare global {
 		 * @remarks See bug {@link https://forum.obsidian.md/t/bug-find-findall-findallself/98108}.
 		 */
 		findAll(selector: string): HTMLElement[];
+
 		/**
 		 * Finds this element and all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -1892,6 +2020,7 @@ declare global {
 		 * @remarks See bug {@link https://forum.obsidian.md/t/bug-find-findall-findallself/98108}.
 		 */
 		find(selector: string): HTMLElement | null;
+
 		/**
 		 * Finds all descendant elements that match the selector.
 		 * @param selector The CSS selector.
@@ -1920,6 +2049,7 @@ declare global {
 		 * ```
 		 */
 		cls?: string | string[];
+
 		/**
 		 * The textContent to be assigned.
 		 * @example
@@ -1931,36 +2061,44 @@ declare global {
 		 * ```
 		 */
 		text?: string | DocumentFragment;
+
 		/**
 		 * HTML attributes to be added.
 		 */
 		attr?: {
 			[key: string]: string | number | boolean | null;
 		};
+
 		/**
 		 * HTML title (for hover tooltip).
 		 */
 		title?: string;
+
 		/**
 		 * The parent element to be assigned to.
 		 */
 		parent?: Node;
+
 		/**
 		 * Only applies to `<input>`, `<select>`, and `<option>` elements.
 		 */
 		value?: string;
+
 		/**
 		 * Only applies to `<input>` and `<style>` elements.
 		 */
 		type?: string;
+
 		/**
 		 * Whether to insert the element as the first child of the parent, instead of the last.
 		 */
 		prepend?: boolean;
+
 		/**
 		 * Only applies to `<input>` elements.
 		 */
 		placeholder?: string;
+
 		/**
 		 * Only applies to `<a>`, `<link>`, and `<base>` elements.
 		 */
@@ -1979,16 +2117,19 @@ declare global {
 		 * ```
 		 */
 		cls?: string | string[];
+
 		/**
 		 * HTML attributes to be added.
 		 */
 		attr?: {
 			[key: string]: string | number | boolean | null;
 		};
+
 		/**
 		 * The parent element to be assigned to.
 		 */
 		parent?: Node;
+
 		/**
 		 * Whether to insert the element as the first child of the parent, instead of the last.
 		 */
@@ -2012,6 +2153,7 @@ declare global {
 			o?: DomElementInfo | string,
 			callback?: (el: HTMLElementTagNameMap[K]) => void,
 		): HTMLElementTagNameMap[K];
+
 		/**
 		 * Create a `<div>` element and append it to this node.
 		 * @param o The options, or a CSS class to add.
@@ -2024,6 +2166,7 @@ declare global {
 		 * ```
 		 */
 		createDiv(o?: DomElementInfo | string, callback?: (el: HTMLDivElement) => void): HTMLDivElement;
+
 		/**
 		 * Create a `<span>` element and append it to this node.
 		 * @param o The options, or a CSS class to add.
@@ -2036,6 +2179,7 @@ declare global {
 		 * ```
 		 */
 		createSpan(o?: DomElementInfo | string, callback?: (el: HTMLSpanElement) => void): HTMLSpanElement;
+
 		/**
 		 * Create an SVG element such as `<svg>`, `<circle>` or `<rect>` and append it to this node.
 		 * @param tag The tag name.
@@ -2131,14 +2275,17 @@ declare global {
 		 * The selector that the event target, or one of its ancestors, must match.
 		 */
 		selector: string;
+
 		/**
 		 * The listener passed to `on()`.
 		 */
 		listener: Function;
+
 		/**
 		 * The options passed to `on()`.
 		 */
 		options?: boolean | AddEventListenerOptions;
+
 		/**
 		 * The wrapper function registered with `addEventListener`, which calls the listener when the selector matches.
 		 */
@@ -2151,6 +2298,7 @@ declare global {
 		_EVENTS?: {
 			[K in keyof HTMLElementEventMap]?: EventListenerInfo[];
 		};
+
 		/**
 		 * Adds a delegated event listener to the element. The listener is called when the event target,
 		 * or one of its ancestors, matches the selector.
@@ -2166,6 +2314,7 @@ declare global {
 			listener: (this: HTMLElement, ev: HTMLElementEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Removes a delegated event listener that was added with `on()`.
 		 * The arguments must match the ones that were passed to `on()`.
@@ -2187,6 +2336,7 @@ declare global {
 			listener: (this: HTMLElement, ev: HTMLElementEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Adds a listener for both `click` and `auxclick` (e.g. middle click) events to the element.
 		 * @param listener The listener.
@@ -2197,6 +2347,7 @@ declare global {
 			listener: (this: HTMLElement, ev: MouseEvent) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Registers a callback to be called when this element is inserted into the DOM.
 		 * @param listener The callback.
@@ -2204,12 +2355,14 @@ declare global {
 		 * @returns A function that unregisters the callback, to avoid memory leaks.
 		 */
 		onNodeInserted(this: HTMLElement, listener: () => any, once?: boolean): () => void;
+
 		/**
 		 * Registers a callback to be called when this element is moved to another window.
 		 * @param listener The callback, called with the new window.
 		 * @returns A function that unregisters the callback, to avoid memory leaks.
 		 */
 		onWindowMigrated(this: HTMLElement, listener: (win: Window) => any): () => void;
+
 		/**
 		 * Dispatches a bubbling event of the given type on the element.
 		 * @param eventType The event type.
@@ -2223,6 +2376,7 @@ declare global {
 		_EVENTS?: {
 			[K in keyof DocumentEventMap]?: EventListenerInfo[];
 		};
+
 		/**
 		 * Adds a delegated event listener to the document. The listener is called when the event target,
 		 * or one of its ancestors, matches the selector.
@@ -2238,6 +2392,7 @@ declare global {
 			listener: (this: Document, ev: DocumentEventMap[K], delegateTarget: HTMLElement) => any,
 			options?: boolean | AddEventListenerOptions,
 		): void;
+
 		/**
 		 * Removes a delegated event listener that was added with `on()`.
 		 * The arguments must match the ones that were passed to `on()`.
@@ -2265,14 +2420,17 @@ declare global {
 		 * The target node of the event.
 		 */
 		targetNode: Node | null;
+
 		/**
 		 * The window in which the event occurred.
 		 */
 		win: Window;
+
 		/**
 		 * The document in which the event occurred.
 		 */
 		doc: Document;
+
 		/**
 		 * Cross-window capable instanceof check, a drop-in replacement
 		 * for instanceof checks on UIEvents.
@@ -2294,31 +2452,38 @@ declare global {
 		 * The HTTP method. Defaults to `'GET'`.
 		 */
 		method?: "GET" | "POST";
+
 		/**
 		 * The request URL.
 		 */
 		url: string;
+
 		/**
 		 * Called when the request completes with a status code from 200 to 399.
 		 */
 		success?: (response: any, req: XMLHttpRequest) => any;
+
 		/**
 		 * Called when the request fails or completes with any other status code.
 		 */
 		error?: (error: any, req: XMLHttpRequest) => any;
+
 		/**
 		 * The request body. Objects are sent as JSON.
 		 */
 		data?: object | string | ArrayBuffer;
+
 		/**
 		 * The request headers.
 		 */
 		headers?: Record<string, string>;
+
 		/**
 		 * Whether to send credentials.
 		 * Defaults to `true` if `data` is set, `false` otherwise.
 		 */
 		withCredentials?: boolean;
+
 		/**
 		 * Set to the underlying `XMLHttpRequest` once the request is sent.
 		 */
@@ -2389,16 +2554,19 @@ declare global {
 		 * it will be different when using popout windows.
 		 */
 		activeWindow: Window;
+
 		/**
 		 * The actively focused Document object. This is usually the same as `document` but
 		 * it will be different when using popout windows.
 		 */
 		activeDocument: Document;
+
 		/**
 		 * Sleeps for a given number of milliseconds.
 		 * @param ms The number of milliseconds.
 		 */
 		sleep(ms: number): Promise<void>;
+
 		/**
 		 * Waits for the next animation frame.
 		 * @returns A promise that resolves on the next animation frame.

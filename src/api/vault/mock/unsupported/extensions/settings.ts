@@ -44,6 +44,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @since 1.11.0
 	 */
 	icon: IconName;
+
 	/**
 	 * Reference to the app instance.
 	 * @public
@@ -72,6 +73,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @since 1.13.0
 	 */
 	getSettingDefinitions(): SettingDefinitionItem[];
+
 	/**
 	 * Stores the result of getSettingDefinitions() for rendering and search indexing.
 	 * Called by addSettingTab() and by dynamic tabs when their data changes.
@@ -79,6 +81,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @since 1.13.0
 	 */
 	update(): void;
+
 	/**
 	 * Read the current value for a control key. Called on every render of a
 	 * `control`-type setting definition.
@@ -92,6 +95,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @since 1.13.0
 	 */
 	getControlValue(key: string): unknown;
+
 	/**
 	 * Persist a new value for a control key. Called on user change of a
 	 * `control`-type setting definition.
@@ -129,6 +133,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 */
 	display(): void;
+
 	/**
 	 * Hides the contents of the setting tab.
 	 * Any registered components should be unloaded when the view is hidden.
@@ -153,6 +158,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	constructor(app: App, plugin: Plugin) {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -160,6 +166,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	getSettingDefinitions(): SettingDefinitionItem[] {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Reads from `this.plugin.settings`. Override to read from a different
 	 * data source.
@@ -169,6 +176,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	getControlValue(key: string): unknown {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Mutates and persists `this.plugin.settings`. Override to write to a
 	 * different data source.

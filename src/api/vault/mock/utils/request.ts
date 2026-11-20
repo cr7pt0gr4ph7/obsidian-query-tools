@@ -43,6 +43,7 @@ export interface RequestUrlParam {
 	 * @public
 	 */
 	url: string;
+
 	/**
 	 * The HTTP method.
 	 * @example 'GET'
@@ -50,12 +51,14 @@ export interface RequestUrlParam {
 	 * @public
 	 */
 	method?: string;
+
 	/**
 	 * The content type.
 	 * @example 'application/json'
 	 * @public
 	 */
 	contentType?: string;
+
 	/**
 	 * The request body.
 	 * @example
@@ -66,6 +69,7 @@ export interface RequestUrlParam {
 	 * @public
 	 */
 	body?: string | ArrayBuffer;
+
 	/**
 	 * The request headers.
 	 * @example
@@ -75,6 +79,7 @@ export interface RequestUrlParam {
 	 * @public
 	 */
 	headers?: Record<string, string>;
+
 	/**
 	 * Whether to throw an error when the status code is 400+.
 	 * Defaults to `true`.
@@ -94,6 +99,7 @@ export interface RequestUrlResponse {
 	 * @public
 	 */
 	status: number;
+
 	/**
 	 * The response headers.
 	 * @example
@@ -103,16 +109,19 @@ export interface RequestUrlResponse {
 	 * @public
 	 */
 	headers: Record<string, string>;
+
 	/**
 	 * The body as an `ArrayBuffer`.
 	 * @public
 	 */
 	arrayBuffer: ArrayBuffer;
+
 	/**
 	 * The body, parsed as JSON.
 	 * @public
 	 */
 	json: any;
+
 	/**
 	 * The body as a string.
 	 * @public
@@ -130,11 +139,13 @@ export interface RequestUrlResponsePromise extends Promise<RequestUrlResponse> {
 	 * @public
 	 */
 	arrayBuffer: Promise<ArrayBuffer>;
+
 	/**
 	 * The body, parsed as JSON.
 	 * @public
 	 */
 	json: Promise<any>;
+
 	/**
 	 * The body as a string.
 	 * @public

@@ -121,36 +121,43 @@ export interface PluginManifest {
 	 * @public
 	 */
 	dir?: string;
+
 	/**
 	 * The plugin ID.
 	 * @public
 	 */
 	id: string;
+
 	/**
 	 * The display name.
 	 * @public
 	 */
 	name: string;
+
 	/**
 	 * The author's name.
 	 * @public
 	 */
 	author: string;
+
 	/**
 	 * The current version, using {@link https://semver.org/ Semantic Versioning}.
 	 * @public
 	 */
 	version: string;
+
 	/**
 	 * The minimum required Obsidian version to run this plugin.
 	 * @public
 	 */
 	minAppVersion: string;
+
 	/**
 	 * A description of the plugin.
 	 * @public
 	 */
 	description: string;
+
 	/**
 	 * A URL to the author's website.
 	 * @public

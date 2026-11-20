@@ -29,12 +29,14 @@ export interface SettingControlBase<V, K extends string = string> {
 	 * @since 1.13.0
 	 */
 	key: K;
+
 	/**
 	 * Fallback when the resolver returns undefined/null.
 	 * @public
 	 * @since 1.13.0
 	 */
 	defaultValue?: V;
+
 	/**
 	 * Validate a candidate value before it is persisted. Return a non-empty
 	 * string to reject the change and surface it as an inline error message
@@ -54,6 +56,7 @@ export interface SettingControlBase<V, K extends string = string> {
 	 * @since 1.13.0
 	 */
 	validate?: (value: V) => string | void | Promise<string | void>;
+
 	/**
 	 * Disables the control. Evaluated on each render, so a function form can
 	 * reflect runtime state (e.g. whether another plugin is installed). Call
@@ -87,6 +90,7 @@ export interface SettingDropdownControl<K extends string = string> extends Setti
 	 * @since 1.13.0
 	 */
 	type: "dropdown";
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -104,6 +108,7 @@ export interface SettingTextControl<K extends string = string> extends SettingCo
 	 * @since 1.13.0
 	 */
 	type: "text";
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -122,11 +127,13 @@ export interface SettingTextAreaControl<K extends string = string> extends Setti
 	 * @since 1.13.0
 	 */
 	type: "textarea";
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	placeholder?: string;
+
 	/**
 	 * Initial number of visible rows.
 	 * @public
@@ -147,21 +154,25 @@ export interface SettingNumberControl<K extends string = string> extends Setting
 	 * @since 1.13.0
 	 */
 	type: "number";
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	placeholder?: string;
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	min?: number;
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	max?: number;
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -182,11 +193,13 @@ export interface SettingFileControl<K extends string = string> extends SettingCo
 	 * @since 1.13.0
 	 */
 	type: "file";
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	placeholder?: string;
+
 	/**
 	 * Optional filter — only files for which this returns truthy are suggested.
 	 * @public
@@ -207,17 +220,20 @@ export interface SettingFolderControl<K extends string = string> extends Setting
 	 * @since 1.13.0
 	 */
 	type: "folder";
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	placeholder?: string;
+
 	/**
 	 * Optional filter — only folders for which this returns truthy are suggested.
 	 * @public
 	 * @since 1.13.0
 	 */
 	filter?: (folder: TFolder) => boolean;
+
 	/**
 	 * Whether the vault root is offered as a suggestion. Default: false.
 	 * @public
@@ -236,21 +252,25 @@ export interface SettingSliderControl<K extends string = string> extends Setting
 	 * @since 1.13.0
 	 */
 	type: "slider";
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	min: number;
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	max: number;
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	step: number;
+
 	/**
 	 * Formats the value shown inline next to the slider. Return an empty
 	 * string to hide the inline value entirely.

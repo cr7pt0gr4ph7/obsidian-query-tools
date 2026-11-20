@@ -64,6 +64,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	links?: LinkCache[];
+
 	/**
 	 * The embeds in the note.
 	 * ```markdown
@@ -74,6 +75,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	embeds?: EmbedCache[];
+
 	/**
 	 * The tags in the note.
 	 * ```markdown
@@ -88,6 +90,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	tags?: TagCache[];
+
 	/**
 	 * The headings in the note.
 	 * ```markdown
@@ -98,6 +101,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	headings?: HeadingCache[];
+
 	/**
 	 * The footnotes in the note.
 	 * ```markdown
@@ -113,6 +117,7 @@ export interface CachedMetadata {
 	 * @since 1.6.6
 	 */
 	footnotes?: FootnoteCache[];
+
 	/**
 	 * The footnote references in the note.
 	 * ```markdown
@@ -128,6 +133,7 @@ export interface CachedMetadata {
 	 * @since 1.8.7
 	 */
 	footnoteRefs?: FootnoteRefCache[];
+
 	/**
 	 * The reference links in the note.
 	 * ```markdown
@@ -139,6 +145,7 @@ export interface CachedMetadata {
 	 * @since 1.8.7
 	 */
 	referenceLinks?: ReferenceLinkCache[];
+
 	/**
 	 * The sections of the note.
 	 * Sections are root level Markdown blocks, which can be used to divide the document up.
@@ -153,6 +160,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	sections?: SectionCache[];
+
 	/**
 	 * The list items in the note.
 	 * ```markdown
@@ -167,6 +175,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	listItems?: ListItemCache[];
+
 	/**
 	 * The frontmatter of the note.
 	 * ```markdown
@@ -178,6 +187,7 @@ export interface CachedMetadata {
 	 * @public
 	 */
 	frontmatter?: FrontMatterCache;
+
 	/**
 	 * Position of the frontmatter in the file.
 	 * ```markdown
@@ -203,6 +213,7 @@ export interface CachedMetadata {
 	 * @since 1.4.0
 	 */
 	frontmatterLinks?: FrontmatterLinkCache[];
+
 	/**
 	 * The blocks with IDs in the note, keyed by ID.
 	 * ```markdown

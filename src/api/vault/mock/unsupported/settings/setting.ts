@@ -27,24 +27,28 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	settingEl: HTMLElement;
+
 	/**
 	 * The element containing the name and description.
 	 * @public
 	 * @since 0.9.7
 	 */
 	infoEl: HTMLElement;
+
 	/**
 	 * The name element.
 	 * @public
 	 * @since 0.9.7
 	 */
 	nameEl: HTMLElement;
+
 	/**
 	 * The description element.
 	 * @public
 	 * @since 0.9.7
 	 */
 	descEl: HTMLElement;
+
 	/**
 	 * The element containing the controls.
 	 * @public
@@ -58,6 +62,7 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	components: BaseComponent[];
+
 	/**
 	 * Error message element shown below the input.
 	 * Created by {@link setErrorMessage}.
@@ -79,6 +84,7 @@ export class Setting {
 		this.components = [];
 		this.errorEl = null;
 	}
+
 	/**
 	 * Show a persistent validation error message below the setting. Pass an
 	 * empty string or `null` to clear it. Adds the `is-invalid` class to the
@@ -89,6 +95,7 @@ export class Setting {
 	setErrorMessage(message: string | null): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a read-only display value to the row. On a navigable row, this
 	 * surfaces the value edited on the page the row opens, so the user can see
@@ -115,6 +122,7 @@ export class Setting {
 	setName(name: string | DocumentFragment): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the description of the setting.
 	 * @param desc The description.
@@ -124,6 +132,7 @@ export class Setting {
 	setDesc(desc: string | DocumentFragment): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add one or more CSS classes to the setting element.
 	 * @param cls The classes, separated by spaces.
@@ -133,6 +142,7 @@ export class Setting {
 	setClass(cls: string): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set a tooltip on the name of the setting.
 	 * @param tooltip The tooltip text.
@@ -143,6 +153,7 @@ export class Setting {
 	setTooltip(tooltip: string, options?: TooltipOptions): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Make the setting a heading.
 	 * @public
@@ -151,6 +162,7 @@ export class Setting {
 	setHeading(): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set whether the setting is disabled.
 	 * @param disabled `true` to disable, `false` to enable.
@@ -176,6 +188,7 @@ export class Setting {
 	addButton(cb: (component: ButtonComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add an extra button to the setting.
 	 * @param cb Called with the new component.
@@ -191,6 +204,7 @@ export class Setting {
 	addExtraButton(cb: (component: ExtraButtonComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a toggle to the setting.
 	 * @param cb Called with the new component.
@@ -206,6 +220,7 @@ export class Setting {
 	addToggle(cb: (component: ToggleComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a text component to the setting.
 	 * @param cb Called with the new component.
@@ -221,6 +236,7 @@ export class Setting {
 	addText(cb: (component: TextComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.0
@@ -228,6 +244,7 @@ export class Setting {
 	addComponent<T extends BaseComponent>(cb: (el: HTMLElement) => T): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a search component to the setting.
 	 * @param cb Called with the new component.
@@ -243,6 +260,7 @@ export class Setting {
 	addSearch(cb: (component: SearchComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a text area component to the setting.
 	 * @param cb Called with the new component.
@@ -258,6 +276,7 @@ export class Setting {
 	addTextArea(cb: (component: TextAreaComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a moment format component to the setting.
 	 * @param cb Called with the new component.
@@ -273,6 +292,7 @@ export class Setting {
 	addMomentFormat(cb: (component: MomentFormatComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a dropdown component to the setting.
 	 * @param cb Called with the new component.
@@ -288,6 +308,7 @@ export class Setting {
 	addDropdown(cb: (component: DropdownComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a color picker component to the setting.
 	 * @param cb Called with the new component.
@@ -303,6 +324,7 @@ export class Setting {
 	addColorPicker(cb: (component: ColorComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a progress bar component to the setting.
 	 * @param cb Called with the new component.
@@ -318,6 +340,7 @@ export class Setting {
 	addProgressBar(cb: (component: ProgressBarComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a slider component to the setting.
 	 * @param cb Called with the new component.
@@ -333,6 +356,7 @@ export class Setting {
 	addSlider(cb: (component: SliderComponent) => any): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Facilitates chaining.
 	 * @param cb Called with this setting.
@@ -350,6 +374,7 @@ export class Setting {
 		cb(this);
 		return this;
 	}
+
 	/**
 	 * Remove all controls from the setting.
 	 * @public

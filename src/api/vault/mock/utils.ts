@@ -54,11 +54,13 @@ export interface Debouncer<T extends unknown[], V> {
 	 * @public
 	 */
 	(...args: [...T]): this;
+
 	/**
 	 * Cancel any pending debounced function call.
 	 * @public
 	 */
 	cancel(): this;
+
 	/**
 	 * If there is any pending function call, clear the timer and call the function immediately.
 	 * @returns The return value of the function, or `undefined` if there are no pending function calls.

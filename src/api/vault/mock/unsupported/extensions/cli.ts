@@ -38,12 +38,14 @@ export interface CliFlag {
 	 * @since 1.12.2
 	 */
 	value?: string;
+
 	/**
 	 * Description shown in help and autocomplete
 	 * @public
 	 * @since 1.12.2
 	 */
 	description: string;
+
 	/**
 	 * Whether this flag is required (default: false)
 	 * @public

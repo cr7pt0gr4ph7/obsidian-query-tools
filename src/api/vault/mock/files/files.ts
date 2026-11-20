@@ -69,11 +69,13 @@ export interface FileStats {
 	 * @public
 	 */
 	ctime: number;
+
 	/**
 	 * Time of last modification, represented as a unix timestamp, in milliseconds.
 	 * @public
 	 */
 	mtime: number;
+
 	/**
 	 * Size on disk, as bytes.
 	 * @public

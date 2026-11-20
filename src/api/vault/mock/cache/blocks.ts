@@ -36,11 +36,13 @@ export interface BlockSubpathResult extends SubpathResult {
 	 * @public
 	 */
 	type: "block";
+
 	/**
 	 * The block.
 	 * @public
 	 */
 	block: BlockCache;
+
 	/**
 	 * The list item, if the block is a list item.
 	 * @public

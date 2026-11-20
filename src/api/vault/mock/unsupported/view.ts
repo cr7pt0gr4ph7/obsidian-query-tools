@@ -14,12 +14,14 @@ export abstract class View extends Component {
 	 * @since 0.9.7
 	 */
 	app: App;
+
 	/**
 	 * The icon of the view.
 	 * @public
 	 * @since 1.1.0
 	 */
 	icon: IconName;
+
 	/**
 	 * Whether or not the view is intended for navigation.
 	 * If your view is a static view that is not intended to be navigated away, set this to false.
@@ -31,18 +33,21 @@ export abstract class View extends Component {
 	 * @since 0.15.1
 	 */
 	navigation: boolean;
+
 	/**
 	 * The leaf that owns this view.
 	 * @public
 	 * @since 0.9.7
 	 */
 	leaf: WorkspaceLeaf;
+
 	/**
 	 * The container element.
 	 * @public
 	 * @since 0.9.7
 	 */
 	containerEl: HTMLElement;
+
 	/**
 	 * Assign an optional scope to your view to register hotkeys for when the view
 	 * is in focus.
@@ -55,6 +60,7 @@ export abstract class View extends Component {
 	 * @since 1.5.7
 	 */
 	scope: Scope | null;
+
 	/**
 	 * @param leaf The leaf that owns this view.
 	 * @public
@@ -72,6 +78,7 @@ export abstract class View extends Component {
 	protected onOpen(): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when the view is closed.
 	 * @public
@@ -80,12 +87,14 @@ export abstract class View extends Component {
 	protected onClose(): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the type of the view.
 	 * @public
 	 * @since 0.9.7
 	 */
 	abstract getViewType(): string;
+
 	/**
 	 * Get the state of the view.
 	 * @public
@@ -94,6 +103,7 @@ export abstract class View extends Component {
 	getState(): Record<string, unknown> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the state of the view.
 	 * @param state The state.
@@ -114,6 +124,7 @@ export abstract class View extends Component {
 	setState(state: unknown, result: ViewStateResult): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the ephemeral state of the view.
 	 * @public
@@ -122,6 +133,7 @@ export abstract class View extends Component {
 	getEphemeralState(): Record<string, unknown> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the ephemeral state of the view.
 	 * @param state The ephemeral state.
@@ -131,6 +143,7 @@ export abstract class View extends Component {
 	setEphemeralState(state: unknown): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the icon of the view.
 	 * @public
@@ -139,6 +152,7 @@ export abstract class View extends Component {
 	getIcon(): IconName {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when the size of this view is changed.
 	 * @public
@@ -147,12 +161,14 @@ export abstract class View extends Component {
 	onResize(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the display text of the view.
 	 * @public
 	 * @since 0.9.7
 	 */
 	abstract getDisplayText(): string;
+
 	/**
 	 * Populates the pane menu.
 	 *
@@ -183,21 +199,25 @@ export interface ViewState {
 	 * @public
 	 */
 	type: string;
+
 	/**
 	 * The state of the view. This gets serialized to the workspace layout.
 	 * @public
 	 */
 	state?: Record<string, unknown>;
+
 	/**
 	 * Whether the view is active.
 	 * @public
 	 */
 	active?: boolean;
+
 	/**
 	 * Whether the leaf is pinned.
 	 * @public
 	 */
 	pinned?: boolean;
+
 	/**
 	 * A leaf to link this leaf with. See {@link WorkspaceLeaf.setGroupMember}.
 	 * @public
@@ -260,17 +280,20 @@ export abstract class FileView extends ItemView {
 	 * @public
 	 */
 	allowNoFile: boolean;
+
 	/**
 	 * The file being viewed.
 	 * @public
 	 */
 	file: TFile | null;
+
 	/**
 	 * Whether the view should get replaced when following a link (`true` by default).
 	 * @inheritDoc
 	 * @public
 	 */
 	navigation: boolean;
+
 	/**
 	 * @inheritDoc
 	 * @public
@@ -286,6 +309,7 @@ export abstract class FileView extends ItemView {
 	getDisplayText(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @inheritDoc
 	 * @public
@@ -293,6 +317,7 @@ export abstract class FileView extends ItemView {
 	onload(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @inheritDoc
 	 * @public
@@ -318,6 +343,7 @@ export abstract class FileView extends ItemView {
 	onLoadFile(file: TFile): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when the file is unloaded.
 	 * @param file The file.
@@ -326,6 +352,7 @@ export abstract class FileView extends ItemView {
 	onUnloadFile(file: TFile): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when the file is renamed.
 	 * @param file The file.
@@ -368,6 +395,7 @@ export abstract class TextFileView extends EditableFileView {
 	 * @since 0.10.12
 	 */
 	data: string;
+
 	/**
 	 * Request a save, debounced by 2 seconds.
 	 * @public
@@ -392,6 +420,7 @@ export abstract class TextFileView extends EditableFileView {
 	onUnloadFile(file: TFile): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when the file is loaded. Reads the file and passes its contents to {@link TextFileView.setViewData}.
 	 * @param file The file.
@@ -418,6 +447,7 @@ export abstract class TextFileView extends EditableFileView {
 	 * @since 0.10.12
 	 */
 	abstract getViewData(): string;
+
 	/**
 	 * Set the data to the editor. This is used to load the file contents.
 	 *
@@ -430,6 +460,7 @@ export abstract class TextFileView extends EditableFileView {
 	 * @since 0.10.12
 	 */
 	abstract setViewData(data: string, clear: boolean): void;
+
 	/**
 	 * Clear the editor. This is usually called when we're about to open a completely
 	 * different file, so it's best to clear any editor states like undo-redo history,
@@ -491,6 +522,7 @@ export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownF
 	clear(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the Markdown content.
 	 * @public
@@ -498,6 +530,7 @@ export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownF
 	get(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the Markdown content.
 	 * @param data The content.
@@ -531,6 +564,7 @@ export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownF
 	getScroll(): number {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Apply a scroll position.
 	 * @param scroll The scroll position.
@@ -551,6 +585,7 @@ export interface MarkdownFileInfo extends HoverParent {
 	 * @public
 	 */
 	app: App;
+
 	/**
 	 * The associated file.
 	 * @public
@@ -586,6 +621,7 @@ export class MarkdownPreviewRenderer {
 	static registerPostProcessor(postProcessor: MarkdownPostProcessor, sortOrder?: number): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Unregister a post processor.
 	 * @param postProcessor The post processor.
@@ -648,6 +684,7 @@ export abstract class MarkdownRenderer extends MarkdownRenderChild implements Ma
 	static renderMarkdown(markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Renders Markdown string to an HTML element.
 	 * @param app A reference to the app object.
@@ -688,6 +725,7 @@ export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSub
 	get(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the Markdown content.
 	 * @param data The content.
@@ -697,6 +735,7 @@ export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSub
 	set(data: string, clear: boolean): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Clear the content.
 	 * @public
@@ -721,6 +760,7 @@ export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSub
 	getScroll(): number {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Apply a scroll position.
 	 * @param scroll The scroll position.
@@ -741,6 +781,7 @@ export interface MarkdownSubView {
 	 * @public
 	 */
 	getScroll(): number;
+
 	/**
 	 * Apply the scroll position.
 	 * @param scroll The scroll position.
@@ -753,6 +794,7 @@ export interface MarkdownSubView {
 	 * @public
 	 */
 	get(): string;
+
 	/**
 	 * Set the Markdown content.
 	 * @param data The content.
@@ -790,6 +832,7 @@ export class MarkdownView extends TextFileView implements MarkdownFileInfo {
 	 * @public
 	 */
 	hoverPopover: HoverPopover | null;
+
 	/**
 	 * @inheritDoc
 	 * @public
@@ -821,6 +864,7 @@ export class MarkdownView extends TextFileView implements MarkdownFileInfo {
 	getViewData(): string {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @inheritDoc
 	 * @public

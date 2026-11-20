@@ -39,24 +39,28 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	leftSplit: WorkspaceSidedock | WorkspaceMobileDrawer;
+
 	/**
 	 * The right sidedock.
 	 * @public
 	 * @since 0.9.7
 	 */
 	rightSplit: WorkspaceSidedock | WorkspaceMobileDrawer;
+
 	/**
 	 * The left ribbon.
 	 * @public
 	 * @since 0.9.7
 	 */
 	leftRibbon: WorkspaceRibbon;
+
 	/**
 	 * The right ribbon. No longer exists.
 	 * @public
 	 * @deprecated No longer used
 	 */
 	rightRibbon: WorkspaceRibbon;
+
 	/**
 	 * The root split, which contains the main area.
 	 * @public
@@ -84,6 +88,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	containerEl: HTMLElement;
+
 	/**
 	 * Whether the layout of the app has been successfully initialized.
 	 * To react to the layout becoming ready, use {@link Workspace.onLayoutReady}.
@@ -91,6 +96,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	layoutReady: boolean;
+
 	/**
 	 * Save the state of the current workspace layout.
 	 * @public
@@ -115,6 +121,7 @@ export class Workspace extends Events {
 	onLayoutReady(callback: () => any): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Change the layout of the workspace.
 	 * @param workspace The layout to apply, as returned by {@link Workspace.getLayout}.
@@ -156,6 +163,7 @@ export class Workspace extends Events {
 	createLeafBySplit(leaf: WorkspaceLeaf, direction?: SplitDirection, before?: boolean): WorkspaceLeaf {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Split the active leaf.
 	 * @param direction The direction to split in.
@@ -176,6 +184,7 @@ export class Workspace extends Events {
 	 * @since 0.13.8
 	 */
 	duplicateLeaf(leaf: WorkspaceLeaf, direction?: SplitDirection): Promise<WorkspaceLeaf>;
+
 	/**
 	 * Duplicate a leaf.
 	 * @param leaf The leaf.
@@ -187,6 +196,7 @@ export class Workspace extends Events {
 	duplicateLeaf(leaf: WorkspaceLeaf, leafType: PaneType | boolean, direction?: SplitDirection): Promise<WorkspaceLeaf> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the unpinned leaf.
 	 * @public
@@ -195,6 +205,7 @@ export class Workspace extends Events {
 	getUnpinnedLeaf(): WorkspaceLeaf {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Creates a new leaf in a leaf adjacent to the currently active leaf.
 	 * If direction is `'vertical'`, the leaf will appear to the right.
@@ -204,6 +215,7 @@ export class Workspace extends Events {
 	 * @since 0.16.0
 	 */
 	getLeaf(newLeaf?: "split", direction?: SplitDirection): WorkspaceLeaf;
+
 	/**
 	 * If newLeaf is `false` (or not set) then an existing leaf which can be navigated
 	 * is returned, or a new leaf will be created if there was no leaf available.
@@ -245,6 +257,7 @@ export class Workspace extends Events {
 	openPopoutLeaf(data?: WorkspaceWindowInitData): WorkspaceLeaf {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Open a link text.
 	 * @param linktext The link text.
@@ -262,6 +275,7 @@ export class Workspace extends Events {
 	): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Sets the active leaf.
 	 * @param leaf The leaf.
@@ -276,6 +290,7 @@ export class Workspace extends Events {
 			focus?: boolean;
 		},
 	): void;
+
 	/**
 	 * Sets the active leaf.
 	 * @param leaf The leaf.
@@ -298,6 +313,7 @@ export class Workspace extends Events {
 	getLeafById(id: string): WorkspaceLeaf | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get all leaves that belong to a group.
 	 * @param group The group ID.
@@ -318,6 +334,7 @@ export class Workspace extends Events {
 	getMostRecentLeaf(root?: WorkspaceParent): WorkspaceLeaf | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Create a new leaf inside the left sidebar.
 	 * @param split Whether to create the leaf in a new tab group instead of as a new tab in the existing one.
@@ -327,6 +344,7 @@ export class Workspace extends Events {
 	getLeftLeaf(split: boolean): WorkspaceLeaf | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Create a new leaf inside the right sidebar.
 	 * @param split Whether to create the leaf in a new tab group instead of as a new tab in the existing one.
@@ -336,6 +354,7 @@ export class Workspace extends Events {
 	getRightLeaf(split: boolean): WorkspaceLeaf | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get side leaf or create one if one does not exist.
 	 * @param type The view type.
@@ -350,10 +369,13 @@ export class Workspace extends Events {
 		options?: {
 			/** @public */
 			active?: boolean;
+
 			/** @public */
 			split?: boolean;
+
 			/** @public */
 			reveal?: boolean;
+
 			/** @public */
 			state?: any;
 		},
@@ -391,6 +413,7 @@ export class Workspace extends Events {
 	iterateRootLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Iterate through all leaves, including main area leaves, floating leaves, and sidebar leaves.
 	 * @param callback Called for each leaf.
@@ -400,6 +423,7 @@ export class Workspace extends Events {
 	iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get all leaves of a given type.
 	 * @param viewType The view type.
@@ -409,6 +433,7 @@ export class Workspace extends Events {
 	getLeavesOfType(viewType: string): WorkspaceLeaf[] {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Remove all leaves of the given type.
 	 * @param viewType The view type.
@@ -429,6 +454,7 @@ export class Workspace extends Events {
 	revealLeaf(leaf: WorkspaceLeaf): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the filenames of the 10 most recently opened files.
 	 * @public
@@ -464,6 +490,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	on(name: "quick-preview", callback: (file: TFile, data: string) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when a `WorkspaceItem` is resized or the workspace layout has changed.
 	 * @public
@@ -477,6 +504,7 @@ export class Workspace extends Events {
 	 * @since 0.10.9
 	 */
 	on(name: "active-leaf-change", callback: (leaf: WorkspaceLeaf | null) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when the active file changes. The file could be in a new leaf, an existing leaf,
 	 * or an embed.
@@ -491,18 +519,21 @@ export class Workspace extends Events {
 	 * @since 0.9.20
 	 */
 	on(name: "layout-change", callback: () => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when a new popout window is created.
 	 * @public
 	 * @since 0.15.3
 	 */
 	on(name: "window-open", callback: (win: WorkspaceWindow, window: Window) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when a popout window is closed.
 	 * @public
 	 * @since 0.15.3
 	 */
 	on(name: "window-close", callback: (win: WorkspaceWindow, window: Window) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when the CSS of the app has changed.
 	 * @public
@@ -520,6 +551,7 @@ export class Workspace extends Events {
 		callback: (menu: Menu, file: TAbstractFile, source: string, leaf?: WorkspaceLeaf) => any,
 		ctx?: any,
 	): EventRef;
+
 	/**
 	 * Triggered when the user opens the context menu with multiple files selected in the File Explorer.
 	 * @public
@@ -537,6 +569,7 @@ export class Workspace extends Events {
 	 * @since 1.5.1
 	 */
 	on(name: "url-menu", callback: (menu: Menu, url: string) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when the user opens the context menu on an editor.
 	 * @public
@@ -547,6 +580,7 @@ export class Workspace extends Events {
 		callback: (menu: Menu, editor: Editor, info: MarkdownView | MarkdownFileInfo) => any,
 		ctx?: any,
 	): EventRef;
+
 	/**
 	 * Triggered when changes to an editor have been applied, either programmatically or from a user event.
 	 * @public
@@ -570,6 +604,7 @@ export class Workspace extends Events {
 		callback: (evt: ClipboardEvent, editor: Editor, info: MarkdownView | MarkdownFileInfo) => any,
 		ctx?: any,
 	): EventRef;
+
 	/**
 	 * Triggered when the editor receives a drop event.
 	 * Check for `evt.defaultPrevented` before attempting to handle this event, and return if it has been already handled.
@@ -593,7 +628,9 @@ export class Workspace extends Events {
 	on(name: "quit", callback: (tasks: Tasks) => any, ctx?: any): EventRef {
 		throw new Error("Method not implemented.");
 	}
-} /**
+}
+
+/**
  * An item in the workspace layout, such as a leaf or a parent containing other items.
  * @public
  * @since 0.10.2
@@ -614,6 +651,7 @@ export abstract class WorkspaceItem extends Events {
 	getRoot(): WorkspaceItem {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the root container parent item, which can be one of:
 	 * - {@link WorkspaceRoot}
@@ -658,6 +696,7 @@ export abstract class WorkspaceContainer extends WorkspaceSplit {
 	 * @since 0.15.4
 	 */
 	abstract win: Window;
+
 	/**
 	 * The document this container is in.
 	 * @public
@@ -687,6 +726,7 @@ export class WorkspaceSidedock extends WorkspaceSplit {
 	toggle(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Collapse the sidedock.
 	 * @public
@@ -695,6 +735,7 @@ export class WorkspaceSidedock extends WorkspaceSplit {
 	collapse(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Expand the sidedock.
 	 * @public
@@ -772,16 +813,19 @@ export interface OpenViewState {
 	 * @public
 	 */
 	state?: Record<string, unknown>;
+
 	/**
 	 * The ephemeral state.
 	 * @public
 	 */
 	eState?: Record<string, unknown>;
+
 	/**
 	 * Whether to make the leaf active. Omit to follow the user's preference.
 	 * @public
 	 */
 	active?: boolean;
+
 	/**
 	 * A leaf to link this leaf with. See {@link WorkspaceLeaf.setGroupMember}.
 	 * @public
@@ -845,6 +889,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	getViewState(): ViewState {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the view state of this leaf.
 	 * @param viewState The view state.
@@ -854,6 +899,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	setViewState(viewState: ViewState, eState?: any): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Returns `true` if this leaf is currently deferred because it is in the background.
 	 * A deferred leaf will have a DeferredView as its view, instead of the View that
@@ -864,6 +910,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	get isDeferred(): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * If this view is currently deferred, load it and await that it has fully loaded.
 	 * @since 1.7.2
@@ -880,6 +927,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	getEphemeralState(): any {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the ephemeral state of this leaf.
 	 * @param state The ephemeral state.
@@ -888,6 +936,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	setEphemeralState(state: any): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Toggle the pinned state of this leaf.
 	 * @public
@@ -895,6 +944,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	togglePinned(): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the pinned state of this leaf.
 	 * @param pinned `true` to pin, `false` to unpin.
@@ -913,6 +963,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	setGroupMember(other: WorkspaceLeaf): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Set the group of this leaf.
 	 * @param group The ID of the group, or `null` to remove the leaf from its group.
@@ -921,6 +972,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	setGroup(group: string): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Close this leaf and remove it from the workspace.
 	 * @public
@@ -936,6 +988,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	getIcon(): IconName {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the display text of this leaf.
 	 * @public
@@ -957,6 +1010,7 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @public
 	 */
 	on(name: "pinned-change", callback: (pinned: boolean) => any, ctx?: any): EventRef;
+
 	/**
 	 * Triggered when the group of the leaf changes.
 	 * @public
@@ -983,6 +1037,7 @@ export class WorkspaceRoot extends WorkspaceContainer {
 	 * @public
 	 */
 	win: Window;
+
 	/**
 	 * The document this container is in.
 	 * @public
@@ -1013,6 +1068,7 @@ export class WorkspaceWindow extends WorkspaceContainer {
 	 * @public
 	 */
 	win: Window;
+
 	/**
 	 * The document of the popout.
 	 * @public
@@ -1030,6 +1086,7 @@ export interface WorkspaceWindowInitData {
 	 * @public
 	 */
 	x?: number;
+
 	/**
 	 * The y position of the window on the screen.
 	 * @public
@@ -1046,6 +1103,7 @@ export interface WorkspaceWindowInitData {
 		 * @public
 		 */
 		width: number;
+
 		/**
 		 * The height.
 		 * @public

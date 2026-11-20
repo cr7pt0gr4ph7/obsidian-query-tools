@@ -16,16 +16,19 @@ export class Modal implements HistoryHandler {
 	 * @public
 	 */
 	app: App;
+
 	/**
 	 * The keymap scope that is active while the modal is open.
 	 * @public
 	 */
 	scope: Scope;
+
 	/**
 	 * The outermost element of the modal. Contains the modal (`.modal`) and the modal background element (`.modal-bg`).
 	 * @public
 	 */
 	containerEl: HTMLElement;
+
 	/**
 	 * The outermost element of the popup itself.
 	 * @public
@@ -37,6 +40,7 @@ export class Modal implements HistoryHandler {
 	 * @public
 	 */
 	titleEl: HTMLElement;
+
 	/**
 	 * The content element.
 	 * @public
@@ -240,6 +244,7 @@ export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> 
 		this.inputEl = placeholder;
 		this.resultContainerEl = placeholder;
 	}
+
 	/**
 	 * Set the placeholder text.
 	 * @param placeholder The placeholder text.
@@ -353,6 +358,7 @@ export interface FuzzyMatch<T> {
 	 * @since 0.9.20
 	 */
 	item: T;
+
 	/**
 	 * The search result.
 	 * @public
@@ -386,6 +392,7 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	getSuggestions(query: string): FuzzyMatch<T>[] {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Render the suggestion.
 	 * @param item The match.
@@ -404,6 +411,7 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	renderSuggestion(item: FuzzyMatch<T>, el: HTMLElement): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Called when a suggestion is chosen.
 	 * @param item The chosen match.
@@ -414,6 +422,7 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	onChooseSuggestion(item: FuzzyMatch<T>, evt: MouseEvent | KeyboardEvent): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the items to be used in the fuzzy search.
 	 * @example
@@ -428,6 +437,7 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	 * @since 0.9.20
 	 */
 	abstract getItems(): T[];
+
 	/**
 	 * Get the text of an item, which is used for the fuzzy search and displayed in the suggestion.
 	 * @param item The item.
@@ -443,6 +453,7 @@ export abstract class FuzzySuggestModal<T> extends SuggestModal<FuzzyMatch<T>> {
 	 * @since 0.9.20
 	 */
 	abstract getItemText(item: T): string;
+
 	/**
 	 * Called when an item is chosen.
 	 * @param item The chosen item.

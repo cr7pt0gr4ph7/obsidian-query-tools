@@ -62,6 +62,7 @@ export class MetadataCache extends Events {
 	getFileCache(file: TFile): CachedMetadata | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get the cached metadata for a path.
 	 * @param path The path of the file.
@@ -97,6 +98,7 @@ export class MetadataCache extends Events {
 	 * @public
 	 */
 	resolvedLinks: Record<string, Record<string, number>>;
+
 	/**
 	 * Contains all unresolved links. This object maps each source file to an object of unknown destinations with count.
 	 * Source paths are all vault absolute paths, similar to {@link MetadataCache.resolvedLinks}.
@@ -112,6 +114,7 @@ export class MetadataCache extends Events {
 	 * @public
 	 */
 	on(name: "changed", callback: (file: TFile, data: string, cache: CachedMetadata) => any, ctx?: any): EventRef;
+
 	/**
 	 * Called when a file has been deleted. A best-effort previous version of the cached metadata is presented,
 	 * but it could be `null` in case the file was not successfully cached previously.
@@ -125,6 +128,7 @@ export class MetadataCache extends Events {
 	 * @public
 	 */
 	on(name: "resolve", callback: (file: TFile) => any, ctx?: any): EventRef;
+
 	/**
 	 * Called when all files have been resolved. This will be fired each time files get modified after the initial load.
 	 * @public

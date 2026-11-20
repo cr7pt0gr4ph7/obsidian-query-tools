@@ -8,11 +8,13 @@ export interface Loc {
 	 * @public
 	 */
 	line: number;
+
 	/**
 	 * Column number. 0-based.
 	 * @public
 	 */
 	col: number;
+
 	/**
 	 * Number of characters from the beginning of the file.
 	 * @public
@@ -30,6 +32,7 @@ export interface Pos {
 	 * @public
 	 */
 	start: Loc;
+
 	/**
 	 * End location.
 	 * @public
@@ -59,11 +62,13 @@ export interface Reference {
 	 * @public
 	 */
 	link: string;
+
 	/**
 	 * Contains the text as it's written in the document. Not available on Publish.
 	 * @public
 	 */
 	original: string;
+
 	/**
 	 * Display text of the link.
 	 * @example
@@ -96,6 +101,7 @@ export interface SubpathResult {
 	 * @public
 	 */
 	start: Loc;
+
 	/**
 	 * The end of the subpath.
 	 * @public

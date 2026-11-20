@@ -20,6 +20,7 @@ export class SettingGroup {
 	constructor(containerEl: HTMLElement) {
 		this.listEl = placeholder;
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.0
@@ -27,6 +28,7 @@ export class SettingGroup {
 	setHeading(text: string | DocumentFragment): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.0
@@ -34,6 +36,7 @@ export class SettingGroup {
 	addClass(...classes: string[]): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.0
@@ -41,6 +44,7 @@ export class SettingGroup {
 	addSetting(cb: (setting: Setting) => void): this {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a search input at the beginning of the setting group. Useful for filtering
 	 * results or adding an input for quick entry.

@@ -31,6 +31,7 @@ export interface BasesConfigFile {
 	 * @since 1.10.0
 	 */
 	properties?: Record<string, Record<string, any>>;
+
 	/**
 	 * Configuration for formulas used in this Base.
 	 *
@@ -41,6 +42,7 @@ export interface BasesConfigFile {
 	 * @since 1.10.0
 	 */
 	formulas?: Record<string, string>;
+
 	/**
 	 * Configuration for summary formulas used in this Base.
 	 *
@@ -51,6 +53,7 @@ export interface BasesConfigFile {
 	 * @since 1.10.0
 	 */
 	summaries?: Record<string, string>;
+
 	/**
 	 * Configuration for views used in this Base.
 	 *
@@ -100,6 +103,7 @@ export interface BasesConfigFileView {
 	 * @since 1.10.0
 	 */
 	type: string;
+
 	/**
 	 * Friendly name for this view, displayed in the UI to select between views.
 	 *
@@ -107,6 +111,7 @@ export interface BasesConfigFileView {
 	 * @since 1.10.0
 	 */
 	name: string;
+
 	/**
 	 * Additional filters, applied only to this view.
 	 *
@@ -114,6 +119,7 @@ export interface BasesConfigFileView {
 	 * @since 1.10.0
 	 */
 	filters?: BasesConfigFileFilter;
+
 	/**
 	 * Configuration for grouping the results of this view.
 	 *
@@ -121,6 +127,7 @@ export interface BasesConfigFileView {
 	 * @since 1.10.0
 	 */
 	groupBy?: {};
+
 	/**
 	 * Ordered list of the groupBy values to show. When set, only these groups appear, in this order.
 	 * `null` is the group of entries with no value.
@@ -129,6 +136,7 @@ export interface BasesConfigFileView {
 	 * @since 1.14.3
 	 */
 	groupOrder?: FrontmatterValue[];
+
 	/**
 	 * An ordered list of the properties to display in this view.
 	 *
@@ -136,6 +144,7 @@ export interface BasesConfigFileView {
 	 * @since 1.10.0
 	 */
 	order?: string[];
+
 	/**
 	 * Configuration of summaries to display for each property in this view.
 	 *
@@ -214,6 +223,7 @@ export type BasesSortConfig = {
 	 * @since 1.10.0
 	 */
 	property: BasesPropertyId;
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -318,6 +328,7 @@ export /*class*/ interface BasesViewConfig {
 	 * @since 1.10.0
 	 */
 	get(key: string): unknown;
+
 	/**
 	 * Retrieve a user-configured value from the config, converting it to a BasesPropertyId.
 	 * Returns null if the requested key is not present in the config, or if the value is invalid.
@@ -325,6 +336,7 @@ export /*class*/ interface BasesViewConfig {
 	 * @since 1.10.0
 	 */
 	getAsPropertyId(key: string): BasesPropertyId | null;
+
 	/**
 	 * Retrieve a user-configured value from the config, evaluating it as a
 	 * formula in the context of the current Base. For embedded bases, or bases
@@ -336,6 +348,7 @@ export /*class*/ interface BasesViewConfig {
 	 * @since 1.10.2
 	 */
 	getEvaluatedFormula(view: BasesView, key: string): Value;
+
 	/**
 	 * Store configuration data for the view. Views should prefer `BasesViewRegistration.options`
 	 * to allow users to configure options where appropriate.
@@ -343,6 +356,7 @@ export /*class*/ interface BasesViewConfig {
 	 * @since 1.10.0
 	 */
 	set(key: string, value: any | null): void;
+
 	/**
 	 * Ordered list of properties to display in this view.
 	 * In a table, these can be interpreted as the list of visible columns.

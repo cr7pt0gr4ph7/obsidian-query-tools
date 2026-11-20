@@ -23,12 +23,14 @@ export interface TooltipOptions {
 	 * @public
 	 */
 	placement?: TooltipPlacement;
+
 	/**
 	 * Extra CSS classes to add to the tooltip.
 	 * @public
 	 * @since 1.8.7
 	 */
 	classes?: string[];
+
 	/**
 	 * The gap between the tooltip and the element, in pixels.
 	 * @public

@@ -8,16 +8,19 @@ export interface Stat {
 	 * @public
 	 */
 	type: "file" | "folder";
+
 	/**
 	 * Time of creation, represented as a unix timestamp.
 	 * @public
 	 */
 	ctime: number;
+
 	/**
 	 * Time of last modification, represented as a unix timestamp.
 	 * @public
 	 */
 	mtime: number;
+
 	/**
 	 * Size on disk in bytes.
 	 * @public
@@ -54,6 +57,7 @@ export interface DataWriteOptions {
 	 * @public
 	 */
 	ctime?: number;
+
 	/**
 	 * Time of last modification, represented as a unix timestamp, in milliseconds.
 	 * Omit this if you want to keep the default behavior.
@@ -89,6 +93,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	exists(normalizedPath: string, sensitive?: boolean): Promise<boolean>;
+
 	/**
 	 * Retrieve metadata about the given file/folder.
 	 * @param normalizedPath path to file/folder, use {@link normalizePath} to normalize beforehand.
@@ -104,6 +109,7 @@ export interface DataAdapter {
 	 * @since 0.12.2
 	 */
 	stat(normalizedPath: string): Promise<Stat | null>;
+
 	/**
 	 * Retrieve a list of all files and folders inside the given folder, non-recursive.
 	 * @param normalizedPath path to folder, use {@link normalizePath} to normalize beforehand.
@@ -114,18 +120,21 @@ export interface DataAdapter {
 	 * @public
 	 */
 	list(normalizedPath: string): Promise<ListedFiles>;
+
 	/**
 	 * Read the contents of a file.
 	 * @param normalizedPath path to file, use {@link normalizePath} to normalize beforehand.
 	 * @public
 	 */
 	read(normalizedPath: string): Promise<string>;
+
 	/**
 	 * Read the contents of a binary file.
 	 * @param normalizedPath path to file, use {@link normalizePath} to normalize beforehand.
 	 * @public
 	 */
 	readBinary(normalizedPath: string): Promise<ArrayBuffer>;
+
 	/**
 	 * Write to a plaintext file.
 	 * If the file exists its content will be overwritten, otherwise the file will be created.
@@ -135,6 +144,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	write(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void>;
+
 	/**
 	 * Write to a binary file.
 	 * If the file exists its content will be overwritten, otherwise the file will be created.
@@ -149,6 +159,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	writeBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>;
+
 	/**
 	 * Add text to the end of a plaintext file.
 	 * @param normalizedPath path to file, use {@link normalizePath} to normalize beforehand.
@@ -157,6 +168,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	append(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void>;
+
 	/**
 	 * Add data to the end of a binary file.
 	 * @param normalizedPath - path to file, use {@link normalizePath} to normalize beforehand.
@@ -166,6 +178,7 @@ export interface DataAdapter {
 	 * @since 1.12.3
 	 */
 	appendBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>;
+
 	/**
 	 * Atomically read, modify, and save the contents of a plaintext file.
 	 * @param normalizedPath path to file/folder, use {@link normalizePath} to normalize beforehand.
@@ -181,6 +194,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	process(normalizedPath: string, fn: (data: string) => string, options?: DataWriteOptions): Promise<string>;
+
 	/**
 	 * Returns a URI for the browser engine to use, for example to embed an image.
 	 * @param normalizedPath path to file/folder, use {@link normalizePath} to normalize beforehand.
@@ -191,12 +205,14 @@ export interface DataAdapter {
 	 * @public
 	 */
 	getResourcePath(normalizedPath: string): string;
+
 	/**
 	 * Create a directory.
 	 * @param normalizedPath path to use for new folder, use {@link normalizePath} to normalize beforehand.
 	 * @public
 	 */
 	mkdir(normalizedPath: string): Promise<void>;
+
 	/**
 	 * Try moving to system trash.
 	 * @param normalizedPath path to file/folder, use {@link normalizePath} to normalize beforehand.
@@ -210,6 +226,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	trashSystem(normalizedPath: string): Promise<boolean>;
+
 	/**
 	 * Move to local trash.
 	 * Files will be moved into the `.trash` folder at the root of the vault.
@@ -217,6 +234,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	trashLocal(normalizedPath: string): Promise<void>;
+
 	/**
 	 * Remove a directory.
 	 * @param normalizedPath path to folder, use {@link normalizePath} to normalize beforehand.
@@ -224,6 +242,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	rmdir(normalizedPath: string, recursive: boolean): Promise<void>;
+
 	/**
 	 * Delete a file.
 	 * @param normalizedPath path to file, use {@link normalizePath} to normalize beforehand.
@@ -238,6 +257,7 @@ export interface DataAdapter {
 	 * @public
 	 */
 	rename(normalizedPath: string, normalizedNewPath: string): Promise<void>;
+
 	/**
 	 * Create a copy of a file.
 	 * This will fail if there is already a file at `normalizedNewPath`.

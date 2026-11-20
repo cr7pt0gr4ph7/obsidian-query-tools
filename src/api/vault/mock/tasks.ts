@@ -13,6 +13,7 @@ export class Tasks {
 	add(callback: () => Promise<any>): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Add a promise to wait for.
 	 * @param promise The promise.
@@ -22,6 +23,7 @@ export class Tasks {
 	addPromise(promise: Promise<any>): void {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Check if there are no tasks.
 	 * @public
@@ -30,6 +32,7 @@ export class Tasks {
 	isEmpty(): boolean {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Get a promise that resolves when all tasks have completed.
 	 * @public

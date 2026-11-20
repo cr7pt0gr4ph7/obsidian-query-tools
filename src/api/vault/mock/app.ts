@@ -39,6 +39,7 @@ export class App {
 	 * @since 0.9.7
 	 */
 	vault: Vault;
+
 	/**
 	 * @public
 	 * @since 0.9.7
@@ -64,6 +65,7 @@ export class App {
 	 * @since 1.10.0
 	 */
 	renderContext: RenderContext;
+
 	/**
 	 * @public
 	 * @since 1.11.4
@@ -88,6 +90,7 @@ export class App {
 	loadLocalStorage(key: string): any | null {
 		throw new Error("Method not implemented.");
 	}
+
 	/**
 	 * Save vault-specific value to `localStorage`. If data is `null`, the entry will be cleared.
 	 * @param key The key.

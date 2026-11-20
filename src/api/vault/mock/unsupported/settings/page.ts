@@ -17,11 +17,13 @@ export abstract class SettingPage {
 	 * @since 1.13.0
 	 */
 	rootEl: HTMLElement;
+
 	/**
 	 * @public
 	 * @since 1.13.0
 	 */
 	titlebarEl: HTMLElement;
+
 	/**
 	 * Container for the page's content. Render into this element from
 	 * {@link display}.
@@ -29,12 +31,14 @@ export abstract class SettingPage {
 	 * @since 1.13.0
 	 */
 	containerEl: HTMLElement;
+
 	/**
 	 * Title displayed in the page titlebar.
 	 * @public
 	 * @since 1.13.0
 	 */
 	title: string;
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -45,6 +49,7 @@ export abstract class SettingPage {
 		this.rootEl = placeholder;
 		this.titlebarEl = placeholder;
 	}
+
 	/**
 	 * Called when the page is opened. Clears and re-renders content
 	 * into {@link containerEl}.
@@ -52,6 +57,7 @@ export abstract class SettingPage {
 	 * @since 1.13.0
 	 */
 	abstract display(): void;
+
 	/**
 	 * Hides the contents of the page. Any registered components should be
 	 * unloaded when the page is hidden. Override this if you need to perform

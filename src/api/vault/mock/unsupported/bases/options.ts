@@ -35,16 +35,19 @@ export interface BasesOption {
 	 * @since 1.10.0
 	 */
 	key: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	type: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	displayName: string;
+
 	/**
 	 * If provided, the option will be hidden if the function returns true.
 	 *
@@ -65,16 +68,19 @@ export interface BasesOptionGroup<T extends BasesOption> {
 	 * @since 1.10.0
 	 */
 	type: "group";
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	displayName: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	items: T[];
+
 	/**
 	 * If provided, the group will be hidden if the function returns true.
 	 * @public
@@ -93,11 +99,13 @@ export interface BasesDropdownOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "dropdown";
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -116,16 +124,19 @@ export interface BasesFileOption extends BasesOption {
 	 * @since 1.10.2
 	 */
 	type: "file";
+
 	/**
 	 * @public
 	 * @since 1.10.2
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.2
 	 */
 	placeholder?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.2
@@ -144,16 +155,19 @@ export interface BasesFolderOption extends BasesOption {
 	 * @since 1.10.2
 	 */
 	type: "folder";
+
 	/**
 	 * @public
 	 * @since 1.10.2
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.2
 	 */
 	placeholder?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.2
@@ -172,11 +186,13 @@ export interface BasesFormulaOption extends BasesOption {
 	 * @since 1.10.2
 	 */
 	type: "formula";
+
 	/**
 	 * @public
 	 * @since 1.10.2
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.2
@@ -194,6 +210,7 @@ export interface BasesMultitextOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "multitext";
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -212,16 +229,19 @@ export interface BasesPropertyOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "property";
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	placeholder?: string;
+
 	/**
 	 * If provided, only properties which pass the filter will be included for selection in the property dropdown.
 	 *
@@ -241,26 +261,31 @@ export interface BasesSliderOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "slider";
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	default?: number;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	min?: number;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	max?: number;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	step?: number;
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -278,11 +303,13 @@ export interface BasesTextOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "text";
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	default?: string;
+
 	/**
 	 * @public
 	 * @since 1.10.0
@@ -300,6 +327,7 @@ export interface BasesToggleOption extends BasesOption {
 	 * @since 1.10.0
 	 */
 	type: "toggle";
+
 	/**
 	 * @public
 	 * @since 1.10.0

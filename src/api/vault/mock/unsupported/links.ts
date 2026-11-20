@@ -32,6 +32,7 @@ export function parseLinktext(linktext: string): {
 	 * @public
 	 */
 	path: string;
+
 	/**
 	 * @public
 	 */

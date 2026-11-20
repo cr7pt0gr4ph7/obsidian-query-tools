@@ -37,6 +37,7 @@ export interface BasesViewRegistration {
 	 * @since 1.10.0
 	 */
 	name: string;
+
 	/**
 	 * Icon ID to be used in the Bases view selector.
 	 * See {@link https://docs.obsidian.md/Plugins/User+interface/Icons} for available icons and how to add your own.
@@ -44,11 +45,13 @@ export interface BasesViewRegistration {
 	 * @since 1.10.0
 	 */
 	icon: IconName;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	factory: BasesViewFactory;
+
 	/**
 	 * @public
 	 * @since 1.10.0

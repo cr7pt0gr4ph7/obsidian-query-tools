@@ -159,6 +159,7 @@ export class ToggleComponent extends ValueComponent<boolean> {
 	getValue(): boolean {
 		return this.value;
 	}
+
 	/**
 	 * Set the value of the toggle.
 	 * @param on Whether the toggle is on.
@@ -229,6 +230,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 		super();
 		this.inputEl = inputEl;
 	}
+
 	/**
 	 * @inheritDoc
 	 * @public
@@ -237,6 +239,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	setDisabled(disabled: boolean): this {
 		return this;
 	}
+
 	/**
 	 * Gets the value of the input element.
 	 * @public
@@ -245,6 +248,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	getValue(): string {
 		return "";
 	}
+
 	/**
 	 * Sets the value of the input element.
 	 * @param value The value.
@@ -254,6 +258,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	setValue(value: string): this {
 		return this;
 	}
+
 	/**
 	 * Sets the placeholder of the input element.
 	 * @param placeholder The placeholder text.
@@ -263,12 +268,14 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	setPlaceholder(placeholder: string): this {
 		return this;
 	}
+
 	/**
 	 * Manually invokes the callback registered with `onChange`.
 	 * @public
 	 * @since 0.9.21
 	 */
 	onChanged(): void {}
+
 	/**
 	 * Set the callback to be called when the value changes.
 	 * @param callback Called with the new value.
@@ -323,6 +330,7 @@ export class ColorComponent extends ValueComponent<string> {
 	constructor(containerEl: HTMLElement) {
 		super();
 	}
+
 	/**
 	 * Set whether the color picker is disabled.
 	 * @param disabled `true` to disable, `false` to enable.
@@ -332,6 +340,7 @@ export class ColorComponent extends ValueComponent<string> {
 	setDisabled(disabled: boolean): this {
 		return this;
 	}
+
 	/**
 	 * Get the current value of the color picker.
 	 * @public
@@ -340,6 +349,7 @@ export class ColorComponent extends ValueComponent<string> {
 	getValue(): HexString {
 		return placeholder;
 	}
+
 	/**
 	 * Get the current value of the color picker as an RGB object.
 	 * @public
@@ -348,6 +358,7 @@ export class ColorComponent extends ValueComponent<string> {
 	getValueRgb(): RGB {
 		return placeholder;
 	}
+
 	/**
 	 * Get the current value of the color picker as an HSL object.
 	 * @public
@@ -366,6 +377,7 @@ export class ColorComponent extends ValueComponent<string> {
 	setValue(value: HexString): this {
 		return this;
 	}
+
 	/**
 	 * Set the current value of the color picker as an RGB object.
 	 * @param rgb The color.
@@ -375,6 +387,7 @@ export class ColorComponent extends ValueComponent<string> {
 	setValueRgb(rgb: RGB): this {
 		return this;
 	}
+
 	/**
 	 * Set the current value of the color picker as an HSL object.
 	 * @param hsl The color.
@@ -416,6 +429,7 @@ export class SliderComponent extends ValueComponent<number> {
 		super();
 		this.sliderEl = placeholder;
 	}
+
 	/**
 	 * Set whether the slider is disabled.
 	 * @param disabled `true` to disable, `false` to enable.
@@ -425,6 +439,7 @@ export class SliderComponent extends ValueComponent<number> {
 	setDisabled(disabled: boolean): this {
 		return this;
 	}
+
 	/**
 	 * Set whether the value should be updated while the slider is being dragged.
 	 * @param instant `true` to update the value while dragging.
@@ -434,6 +449,7 @@ export class SliderComponent extends ValueComponent<number> {
 	setInstant(instant: boolean): this {
 		return this;
 	}
+
 	/**
 	 * Set the limits of the slider.
 	 * @param min The minimum value.
@@ -445,6 +461,7 @@ export class SliderComponent extends ValueComponent<number> {
 	setLimits(min: number | null, max: number | null, step: number | "any"): this {
 		return this;
 	}
+
 	/**
 	 * Get the value of the slider.
 	 * @public
@@ -453,6 +470,7 @@ export class SliderComponent extends ValueComponent<number> {
 	getValue(): number {
 		return 0;
 	}
+
 	/**
 	 * Set the value of the slider.
 	 * @param value The value.
@@ -462,6 +480,7 @@ export class SliderComponent extends ValueComponent<number> {
 	setValue(value: number): this {
 		return this;
 	}
+
 	/**
 	 * Get the value of the slider, formatted for display.
 	 * @public
@@ -470,6 +489,7 @@ export class SliderComponent extends ValueComponent<number> {
 	getValuePretty(): string {
 		return "";
 	}
+
 	/**
 	 * Set a custom formatter for the value shown inline next to the slider.
 	 * @public
@@ -478,6 +498,7 @@ export class SliderComponent extends ValueComponent<number> {
 	setDisplayFormat(format: (value: number) => string): this {
 		return this;
 	}
+
 	/**
 	 * Set the dynamic tooltip of the slider.
 	 * @public
@@ -530,6 +551,7 @@ export class DropdownComponent extends ValueComponent<string> {
 	setDisabled(disabled: boolean): this {
 		return this;
 	}
+
 	/**
 	 * Add an option to the dropdown.
 	 * @param value The option value.
@@ -540,6 +562,7 @@ export class DropdownComponent extends ValueComponent<string> {
 	addOption(value: string, display: string): this {
 		return this;
 	}
+
 	/**
 	 * Add multiple options to the dropdown.
 	 * @param options A map from option value to display text.
@@ -549,6 +572,7 @@ export class DropdownComponent extends ValueComponent<string> {
 	addOptions(options: Record<string, string>): this {
 		return this;
 	}
+
 	/**
 	 * Get the selected value of the dropdown.
 	 * @public
@@ -557,6 +581,7 @@ export class DropdownComponent extends ValueComponent<string> {
 	getValue(): string {
 		return "";
 	}
+
 	/**
 	 * Set the selected value of the dropdown.
 	 * @param value The value.
@@ -566,6 +591,7 @@ export class DropdownComponent extends ValueComponent<string> {
 	setValue(value: string): this {
 		return this;
 	}
+
 	/**
 	 * Set the callback to be called when the value changes.
 	 * @param callback Called with the new value.
@@ -601,6 +627,7 @@ export class SearchComponent extends AbstractTextComponent<HTMLInputElement> {
 	constructor(containerEl: HTMLElement) {
 		super(placeholder);
 	}
+
 	/**
 	 * Called when the value changes.
 	 * @public
@@ -632,6 +659,7 @@ export interface SearchResult {
 	 * @public
 	 */
 	score: number;
+
 	/**
 	 * The matched text ranges.
 	 * @public
@@ -662,6 +690,7 @@ export class SecretComponent extends BaseComponent {
 	constructor(app: App, containerEl: HTMLElement) {
 		super();
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.4
@@ -669,6 +698,7 @@ export class SecretComponent extends BaseComponent {
 	setValue(value: string): this {
 		return this;
 	}
+
 	/**
 	 * @public
 	 * @since 1.11.4
@@ -700,6 +730,7 @@ export class MomentFormatComponent extends TextComponent {
 	setDefaultFormat(defaultFormat: string): this {
 		return this;
 	}
+
 	/**
 	 * Sets the element that shows a sample of the current date in the selected format.
 	 * @param sampleEl The element.
@@ -709,6 +740,7 @@ export class MomentFormatComponent extends TextComponent {
 	setSampleEl(sampleEl: HTMLElement): this {
 		return this;
 	}
+
 	/**
 	 * Sets the format string and updates the sample.
 	 * @param value The `Moment.js` format string.
@@ -718,12 +750,14 @@ export class MomentFormatComponent extends TextComponent {
 	setValue(value: string): this {
 		return this;
 	}
+
 	/**
 	 * Called when the value changes.
 	 * @public
 	 * @since 0.9.7
 	 */
 	onChanged(): void {}
+
 	/**
 	 * Updates the sample element with the current date in the selected format.
 	 * @public
@@ -753,6 +787,7 @@ export class ButtonComponent extends BaseComponent {
 		super();
 		this.buttonEl = placeholder;
 	}
+
 	/**
 	 * Set whether the button is disabled.
 	 * @param disabled `true` to disable, `false` to enable.
