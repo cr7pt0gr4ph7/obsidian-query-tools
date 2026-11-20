@@ -1,5 +1,5 @@
 import vm from "node:vm";
-import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
+import { ErrorCode, VaultQueryError } from "../utils/errors.js";
 
 /** Options for unsafe script evaluation. */
 export interface ScriptOptions {
@@ -7,6 +7,15 @@ export interface ScriptOptions {
 	limit?: number;
 	/** Vault-relative Markdown file exposed to the script as `dv.current`. */
 	file?: string;
+	/** Synchronous-execution and overall wall-clock limit in milliseconds (default 5000). */
+	timeoutMs?: number;
+}
+
+const defaultRunScriptOptions = {
+	timeoutMs: 5000,
+} satisfies RunScriptOptions;
+
+export interface RunScriptOptions {
 	/** Synchronous-execution and overall wall-clock limit in milliseconds (default 5000). */
 	timeoutMs?: number;
 }
@@ -26,7 +35,16 @@ export interface ScriptHost {
 	current?: string;
 }
 
-const defaultTimeoutMs = 5000;
+function validateTimeout(options: RunScriptOptions) {
+	const timeoutMs = options.timeoutMs ?? defaultRunScriptOptions.timeoutMs;
+	if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1) {
+		throw new VaultQueryError(
+			ErrorCode.INVALID_OPTIONS,
+			"Invalid script timeout.",
+		);
+	}
+	return timeoutMs;
+}
 
 /**
  * Evaluate caller-supplied JavaScript. This is NOT a security sandbox: `node:vm`
@@ -35,12 +53,14 @@ const defaultTimeoutMs = 5000;
 export async function runScript(
 	source: string,
 	host: ScriptHost,
-	timeoutMs: number = defaultTimeoutMs,
+	options: RunScriptOptions = defaultRunScriptOptions,
 ): Promise<unknown[]> {
 	if (typeof source !== "string" || !source.trim())
-		throw new VaultQueryError(EC.INVALID_QUERY, "Script must not be empty.");
-	if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1)
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid script timeout.");
+		throw new VaultQueryError(
+			ErrorCode.INVALID_QUERY,
+			"Script must not be empty.",
+		);
+	const timeoutMs = validateTimeout(options);
 	const plain = <T>(value: T): T => structuredClone(value);
 	const dv = {
 		current: host.current,
@@ -62,7 +82,9 @@ export async function runScript(
 		const timeout = new Promise<never>((_, reject) => {
 			timer = setTimeout(
 				() =>
-					reject(new VaultQueryError(EC.LIMIT_EXCEEDED, "Script timed out.")),
+					reject(
+						new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out."),
+					),
 				timeoutMs,
 			);
 		});
@@ -71,7 +93,7 @@ export async function runScript(
 		const json = JSON.stringify(value);
 		if (json === undefined)
 			throw new VaultQueryError(
-				EC.INVALID_QUERY,
+				ErrorCode.INVALID_QUERY,
 				"Script result must be JSON-serializable.",
 			);
 		const parsed: unknown = JSON.parse(json);
@@ -83,7 +105,7 @@ export async function runScript(
 				? String(error.name)
 				: "Error";
 		throw new VaultQueryError(
-			EC.INVALID_QUERY,
+			ErrorCode.INVALID_QUERY,
 			name === "SyntaxError" || name === "Error" || /Error$/.test(name)
 				? `Script failed: ${name}.`
 				: "Script failed.",

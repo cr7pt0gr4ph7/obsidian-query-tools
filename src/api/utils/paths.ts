@@ -1,4 +1,4 @@
-import { VaultQueryError, ErrorCode } from "./errors.js";
+import { ErrorCode, VaultQueryError } from "./errors.js";
 
 /**
  * Validate and return a vault-relative POSIX path.
@@ -13,7 +13,7 @@ export function validatePath(value: string, allowEmpty = false): string {
 		value.includes("\0") ||
 		value.startsWith("/") ||
 		/^[a-z]:/i.test(value) ||
-		(value?.split("/").some((part) => !part || part === "." || part === ".."))
+		value?.split("/").some((part) => !part || part === "." || part === "..")
 	) {
 		throw new VaultQueryError(
 			ErrorCode.INVALID_PATH,
