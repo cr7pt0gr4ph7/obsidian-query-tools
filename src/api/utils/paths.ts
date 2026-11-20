@@ -2,6 +2,8 @@ import { ErrorCode, VaultQueryError } from "./errors.js";
 
 /**
  * Validate and return a vault-relative POSIX path.
+ * Throws a {@link VaultQueryError} if the path is invalid.
+ * 
  * @param value Path to validate.
  * @param allowEmpty Whether the empty path, representing the vault root, is allowed.
  */
