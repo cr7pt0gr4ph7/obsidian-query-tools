@@ -16,6 +16,8 @@ export type {
 	NeighborOptions,
 	NodesOptions,
 	PathOptions,
+	Sibling,
+	SiblingsOptions,
 	TraverseOptions,
 	VaultGraph,
 } from "./graph/graph.js";

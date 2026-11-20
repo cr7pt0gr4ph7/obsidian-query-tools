@@ -49,6 +49,22 @@ export interface CyclesOptions extends ListOptions {
 	types?: string[];
 }
 
+/** Filters for sibling lookup. */
+export interface SiblingsOptions extends ListOptions {
+	/** Configured edge fields that define a shared parent (default all). */
+	types?: string[];
+}
+
+/** A note that shares a parent with the queried note. */
+export interface Sibling {
+	/** The sibling's vault-relative path. */
+	node: string;
+	/** The shared target of both notes' edges. */
+	parent: string;
+	/** The edge type both notes use to reach the parent. */
+	type: string;
+}
+
 /** Supported graph serialization formats. */
 export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
 
@@ -108,6 +124,8 @@ export interface VaultGraph {
 	 * target is unreachable or equals the start.
 	 */
 	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
+	/** Find notes that point to the same target as `node` using the same edge type. */
+	siblings(node: string, options?: SiblingsOptions): QueryResult<Sibling>;
 	/** Find groups of nodes that can reach each other (cycles), each sorted, ordered by first path. */
 	cycles(options?: CyclesOptions): QueryResult<string[]>;
 	/** List sorted Markdown paths, optionally only sources, sinks, or isolated nodes. */

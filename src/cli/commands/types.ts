@@ -4,6 +4,7 @@ import type {
 	NeighborOptions,
 	NodesOptions,
 	PathOptions,
+	SiblingsOptions,
 	TraverseOptions,
 } from "../../api/index.js";
 
@@ -16,6 +17,7 @@ export type CliCommand =
 	  }
 	| { operation: "traverse"; path: string; options: TraverseOptions }
 	| { operation: "path"; from: string; to: string; options: PathOptions }
+	| { operation: "siblings"; path: string; options: SiblingsOptions }
 	| { operation: "cycles"; options: CyclesOptions }
 	| { operation: "nodes"; options: NodesOptions }
 	| { operation: "stats"; options: { types?: string[] } }

@@ -3,6 +3,7 @@ import type {
 	CyclesOptions,
 	NodesOptions,
 	PathOptions,
+	SiblingsOptions,
 	TraverseOptions,
 } from "../../api/index.js";
 import {
@@ -125,6 +126,27 @@ export function registerGraphCommands(
 			if (options.limit !== undefined)
 				pathOptions.limit = positiveInteger(options.limit, "--limit");
 			select({ operation: "path", from, to, options: pathOptions });
+		});
+
+	graph
+		.command("siblings <path>")
+		.description(
+			"Find notes sharing a parent with a note through the same edge type.",
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((path: string, options, command: Command) => {
+			requireEdgeFields(command, options);
+			const siblingOptions: SiblingsOptions = {};
+			if (options.edgeType.length) siblingOptions.types = options.edgeType;
+			if (options.limit !== undefined)
+				siblingOptions.limit = positiveInteger(options.limit, "--limit");
+			select({ operation: "siblings", path, options: siblingOptions });
 		});
 
 	graph

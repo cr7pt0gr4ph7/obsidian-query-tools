@@ -28,6 +28,7 @@ inside the vault, cannot enable `unsafeJavaScript`, and flags add to it.
     obsidian-query-tools $V neighbors Projects/a.md --direction incoming
     obsidian-query-tools $V graph traverse Projects/a.md --max-depth 3
     obsidian-query-tools $V graph path Projects/a.md Areas/b.md
+    obsidian-query-tools $V graph siblings Projects/a.md
     obsidian-query-tools $V graph cycles
     obsidian-query-tools $V graph export --format mermaid
     obsidian-query-tools --vault ./notes query --type dataview --query 'LIST FROM "Projects"'

@@ -619,3 +619,19 @@ test("export can be limited to a subgraph around a root", async (t) => {
 	assert.throws(() => g.export({ maxDepth: 2 }), code("INVALID_OPTIONS"));
 	assert.throws(() => g.export({ root: "nope.md" }), code("NOT_FOUND"));
 });
+
+test("siblings share a target through the same edge type", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-sib-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: p\nsee: q\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\nup: p\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nsee: p\n---\n");
+	await writeFile(path.join(root, "p.md"), "# p\n");
+	await writeFile(path.join(root, "q.md"), "# q\n");
+	const g = (await openVault(root, { edgeFields: ["up", "see"] })).graph();
+	assert.deepEqual(g.siblings("a.md").data, [
+		{ node: "b.md", parent: "p.md", type: "up" },
+	]);
+	assert.deepEqual(g.siblings("p.md").data, []);
+	assert.throws(() => g.siblings("x.md"), code("NOT_FOUND"));
+});

@@ -45,7 +45,7 @@ serializes every Markdown file as a node plus the selected edges as `json`,
 `csv` (formula-prefix guarded), `dot`, `mermaid`, or `graphml` with escaping, optionally limited to the subgraph within `maxDepth` hops of a `root` note.
 The CLI exposes these as `graph traverse` and `graph export`; MCP exposes
 `traverse` and `export`.
-`VaultGraph` further provides `path()` (shortest chain), `stats()`, `nodes()`
+`VaultGraph` further provides `path()` (shortest chain), `siblings()` (shared parent via the same type), `stats()`, `nodes()`
 (sources, sinks, isolated), and `cycles()` (strongly connected groups).
 The optional `oppositeFields` open option (CLI/MCP `--opposite field:type`)
 adds a Breadcrumbs-inspired implied reverse edge, flagged `implied: true`,

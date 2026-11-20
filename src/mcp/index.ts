@@ -141,6 +141,21 @@ async function main() {
 			handle(() => vault.graph().path(from, to, options)),
 	);
 	server.registerTool(
+		"siblings",
+		{
+			description:
+				"Find notes that share a typed-edge target (parent) with an indexed Markdown path.",
+			inputSchema: z.strictObject({
+				path: z.string().max(4096),
+				types: z.array(z.string().max(256)).max(100).optional(),
+				limit,
+			}),
+			annotations,
+		},
+		async ({ path, ...options }) =>
+			handle(() => vault.graph().siblings(path, options)),
+	);
+	server.registerTool(
 		"cycles",
 		{
 			description:

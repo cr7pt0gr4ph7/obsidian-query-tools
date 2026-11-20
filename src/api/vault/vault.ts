@@ -6,6 +6,7 @@ import { list } from "../dataview/list.js";
 import { exportGraph } from "../graph/export.js";
 import {
 	findCycles,
+	findSiblings,
 	graphStats,
 	listNodes,
 	shortestPath,
@@ -68,6 +69,17 @@ export async function openVault(
 				config.limits.maxResults,
 				from,
 				to,
+				options,
+			);
+		},
+		siblings(node, options = {}) {
+			ensureOpen();
+			return findSiblings(
+				index.graph,
+				generation,
+				config.graph,
+				config.limits.maxResults,
+				node,
 				options,
 			);
 		},
