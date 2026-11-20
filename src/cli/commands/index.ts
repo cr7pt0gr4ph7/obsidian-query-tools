@@ -38,6 +38,10 @@ export function createProgram(
 		});
 
 	program
+		.command("describe")
+		.description("Print supported operations, limits and error codes as JSON.");
+
+	program
 		.command("query [options]")
 		.description("Run a supported query; use query --help for its options.");
 

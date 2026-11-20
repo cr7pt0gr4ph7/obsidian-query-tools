@@ -294,3 +294,19 @@ test("--opposite adds implied edges in the CLI", async (t) => {
 	assert.equal(bad.status, 1);
 	assert.equal(JSON.parse(bad.stderr).error.code, "INVALID_OPTIONS");
 });
+
+test("describe prints capabilities without a vault", async () => {
+	const out = await exec(process.execPath, [cli, "describe"]);
+	const d = JSON.parse(out.stdout);
+	assert.equal(out.stderr, "");
+	assert.ok(d.operations.some((o: { name: string }) => o.name === "cycles"));
+	assert.equal(d.defaultLimits.maxResults, 1000);
+	assert.ok(d.errorCodes.includes("UNRESOLVED_EDGE"));
+	assert.deepEqual(d.exportFormats, [
+		"json",
+		"csv",
+		"dot",
+		"mermaid",
+		"graphml",
+	]);
+});

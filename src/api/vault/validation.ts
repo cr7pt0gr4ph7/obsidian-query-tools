@@ -2,7 +2,7 @@ import { VaultQueryError, ErrorCode as EC } from "../utils/errors.js";
 import type { GraphLimits } from "../graph/config.js";
 import type { Config, VaultLimits, VaultOptions } from "./types.js";
 
-const defaults: VaultLimits & GraphLimits = Object.freeze({
+export const defaultLimits: VaultLimits & GraphLimits = Object.freeze({
 	maxEntries: 100_000,
 	maxFiles: 10_000,
 	maxFileBytes: 1_048_576,
@@ -85,14 +85,14 @@ export function optionsForOpen(options: VaultOptions): Config {
 	}
 	for (const [key, value] of Object.entries(limits)) {
 		if (
-			!Object.hasOwn(defaults, key) ||
+			!Object.hasOwn(defaultLimits, key) ||
 			!Number.isSafeInteger(value) ||
 			value < 1
 		) {
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Invalid limit: ${key}`);
 		}
 	}
-	const { maxEdges, ...vaultLimits } = { ...defaults, ...limits };
+	const { maxEdges, ...vaultLimits } = { ...defaultLimits, ...limits };
 	return {
 		limits: vaultLimits,
 		unsafeJavaScript: options.unsafeJavaScript === true,

@@ -1,6 +1,6 @@
 import { Command, CommanderError } from "commander";
 import { createRequire } from "node:module";
-import { VaultQueryError, openVault } from "../api/index.js";
+import { VaultQueryError, describe, openVault } from "../api/index.js";
 import type { Vault } from "../api/index.js";
 import { runConsole } from "../console.js";
 import type { ConsoleRequest } from "../console.js";
@@ -52,6 +52,10 @@ async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
 
 /** Run the CLI with user arguments, writing results and diagnostics to process streams. */
 export async function runCli(args: string[]): Promise<number> {
+	if (args.length === 1 && args[0] === "describe") {
+		process.stdout.write(`${JSON.stringify(describe())}\n`);
+		return 0;
+	}
 	if (args[0] === "query") {
 		return runConsole(args, {
 			api: {
