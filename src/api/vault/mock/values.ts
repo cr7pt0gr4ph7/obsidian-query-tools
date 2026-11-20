@@ -1,3 +1,5 @@
+import moment, { type Duration } from "moment";
+
 /**
  * Container type for data which can expose functions for retrieving, comparing, and rendering the data.
  * Most commonly used in conjunction with formulas for Bases. Values can be used as formula parameters,
@@ -10,14 +12,16 @@ export abstract class Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type: string = "value";
 
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	static equals(a: Value | null, b: Value | null): boolean {
-		throw new Error("Method not implemented.");
+		if (a === null || a instanceof NullValue) return b === null || b instanceof NullValue;
+		if (b === null || b instanceof NullValue) return false;
+		return a.equals(b);
 	}
 
 	/**
@@ -25,7 +29,9 @@ export abstract class Value {
 	 * @since 1.10.0
 	 */
 	static looseEquals(a: Value | null, b: Value | null): boolean {
-		throw new Error("Method not implemented.");
+		if (a === null || a instanceof NullValue) return b === null || b instanceof NullValue;
+		if (b === null || b instanceof NullValue) return false;
+		return a.looseEquals(b);
 	}
 
 	/**
@@ -44,8 +50,8 @@ export abstract class Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	equals(other: this): boolean {
-		throw new Error("Method not implemented.");
+	equals(other: Value): boolean {
+		return this.constructor === other.constructor && this.toString() === other.toString();
 	}
 
 	/**
@@ -53,7 +59,7 @@ export abstract class Value {
 	 * @since 1.10.0
 	 */
 	looseEquals(other: Value): boolean {
-		throw new Error("Method not implemented.");
+		return this.equals(other);
 	}
 
 	/**
@@ -61,8 +67,8 @@ export abstract class Value {
 	 * @public
 	 * @since 1.10.0
 	 */
-	renderTo(el: HTMLElement, ctx: RenderContext): void {
-		throw new Error("Method not implemented.");
+	renderTo(el: HTMLElement, ctx: unknown): void {
+		el.appendChild(el.ownerDocument.createTextNode(this.toString()));
 	}
 }
 
@@ -79,12 +85,16 @@ export abstract class NotNullValue extends Value {}
  * @since 1.10.0
  */
 export abstract class PrimitiveValue<T> extends NotNullValue {
+	/** The wrapped primitive. */
+	readonly value: T;
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	constructor(value: T) {
-		throw new Error("Method not implemented.");
+		super();
+		this.value = value;
 	}
 
 	/**
@@ -92,7 +102,7 @@ export abstract class PrimitiveValue<T> extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return String(this.value);
 	}
 
 	/**
@@ -100,7 +110,19 @@ export abstract class PrimitiveValue<T> extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return Boolean(this.value);
+	}
+
+	/**
+	 * Compare wrapped primitives without coercion.
+	 *
+	 * @param other Value to compare.
+	 * @returns Whether the types and wrapped primitives match.
+	 */
+	equals(other: Value): boolean {
+		return (
+			this.constructor === other.constructor && other instanceof PrimitiveValue && Object.is(this.value, other.value)
+		);
 	}
 }
 
@@ -115,8 +137,18 @@ export class NullValue extends Value {
 	 * @public
 	 * @since 1.10.0
 	 */
+	static readonly value = new NullValue();
+
+	private constructor() {
+		super();
+	}
+
+	/**
+	 * @public
+	 * @since 1.10.0
+	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return "";
 	}
 
 	/**
@@ -124,14 +156,8 @@ export class NullValue extends Value {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return false;
 	}
-
-	/**
-	 * @public
-	 * @since 1.10.0
-	 */
-	static value: NullValue;
 }
 
 /**
@@ -144,7 +170,7 @@ export class BooleanValue extends PrimitiveValue<boolean> {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type = "boolean";
 }
 
 /**
@@ -157,7 +183,7 @@ export class NumberValue extends PrimitiveValue<number> {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type = "number";
 }
 
 /**
@@ -170,14 +196,25 @@ export class ObjectValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type = "object";
+	private readonly value: Record<string, unknown>;
+
+	/**
+	 * Create an object value.
+	 *
+	 * @param value Object to wrap.
+	 */
+	constructor(value: Record<string, unknown> = {}) {
+		super();
+		this.value = value;
+	}
 
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return JSON.stringify(this.value);
 	}
 
 	/**
@@ -185,7 +222,7 @@ export class ObjectValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return !this.isEmpty();
 	}
 
 	/**
@@ -193,7 +230,7 @@ export class ObjectValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isEmpty(): boolean {
-		throw new Error("Method not implemented.");
+		return Object.keys(this.value).length === 0;
 	}
 
 	/**
@@ -202,8 +239,23 @@ export class ObjectValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	get(key: string): Value | null {
-		throw new Error("Method not implemented.");
+	get(key: string): Value {
+		return Object.hasOwn(this.value, key) ? wrap(this.value[key]) : NullValue.value;
+	}
+
+	/**
+	 * Compare own properties by value.
+	 *
+	 * @param other Value to compare.
+	 * @returns Whether both objects have the same keys and values.
+	 */
+	equals(other: Value): boolean {
+		if (!(other instanceof ObjectValue)) return false;
+		const keys = Object.keys(this.value);
+		return (
+			keys.length === Object.keys(other.value).length &&
+			keys.every((key) => Object.hasOwn(other.value, key) && Value.equals(this.get(key), other.get(key)))
+		);
 	}
 }
 
@@ -213,12 +265,26 @@ export class ObjectValue extends NotNullValue {
  * @since 1.10.0
  */
 export class DateValue extends NotNullValue {
+	private readonly timestamp: number;
+
+	/**
+	 * Create a date value.
+	 *
+	 * @param value Valid date, timestamp, or ISO date string.
+	 */
+	constructor(value: Date | number | string) {
+		super();
+		const parsed = typeof value === "string" ? moment.parseZone(value, moment.ISO_8601, true) : moment(value);
+		if (!parsed.isValid()) throw new TypeError("Invalid date.");
+		this.timestamp = parsed.valueOf();
+	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return new Date(this.timestamp).toISOString();
 	}
 
 	/**
@@ -227,7 +293,7 @@ export class DateValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	dateOnly(): DateValue {
-		throw new Error("Method not implemented.");
+		return new DateValue(moment.utc(this.timestamp).startOf("day").valueOf());
 	}
 
 	/**
@@ -235,8 +301,8 @@ export class DateValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	relative(): string {
-		throw new Error("Method not implemented.");
+	relative(): RelativeDateValue {
+		return new RelativeDateValue(this.timestamp);
 	}
 
 	/**
@@ -244,7 +310,7 @@ export class DateValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return true;
 	}
 
 	/**
@@ -261,7 +327,23 @@ export class DateValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	static parseFromString(input: string): DateValue | null {
-		throw new Error("Method not implemented.");
+		const parsed = moment.parseZone(input, moment.ISO_8601, true);
+		return parsed.isValid() ? new DateValue(parsed.valueOf()) : null;
+	}
+
+	/**
+	 * Compare dates by instant.
+	 *
+	 * @param other Value to compare.
+	 * @returns Whether both dates represent the same instant.
+	 */
+	equals(other: Value): boolean {
+		return other instanceof DateValue && this.timestamp === other.timestamp;
+	}
+
+	/** @returns The timestamp in milliseconds since the Unix epoch. */
+	getTime(): number {
+		return this.timestamp;
 	}
 }
 
@@ -272,12 +354,19 @@ export class DateValue extends NotNullValue {
  * @since 1.10.0
  */
 export class DurationValue extends NotNullValue {
+	private readonly duration: Duration;
+
+	private constructor(duration: Duration) {
+		super();
+		this.duration = duration.clone();
+	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return this.duration.toISOString();
 	}
 
 	/**
@@ -285,7 +374,7 @@ export class DurationValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return this.duration.asMilliseconds() !== 0;
 	}
 
 	/**
@@ -293,8 +382,9 @@ export class DurationValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	addToDate(value: DateValue, subtract?: boolean): DateValue {
-		throw new Error("Method not implemented.");
+	addToDate(value: DateValue, subtract = false): DateValue {
+		const date = moment.utc(value.getTime());
+		return new DateValue((subtract ? date.subtract(this.duration) : date.add(this.duration)).valueOf());
 	}
 
 	/**
@@ -303,7 +393,7 @@ export class DurationValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	getMilliseconds(): number {
-		throw new Error("Method not implemented.");
+		return this.duration.asMilliseconds();
 	}
 
 	/**
@@ -313,7 +403,15 @@ export class DurationValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	static parseFromString(input: string): DurationValue | null {
-		throw new Error("Method not implemented.");
+		if (
+			!/^[+-]?P(?=\d|T\d)(?:\d+(?:[.,]\d+)?Y)?(?:\d+(?:[.,]\d+)?M)?(?:\d+(?:[.,]\d+)?W)?(?:\d+(?:[.,]\d+)?D)?(?:T(?=\d)(?:\d+(?:[.,]\d+)?H)?(?:\d+(?:[.,]\d+)?M)?(?:\d+(?:[.,]\d+)?S)?)?$/.test(
+				input,
+			)
+		) {
+			return null;
+		}
+		const duration = moment.duration(input);
+		return duration.isValid() ? new DurationValue(duration) : null;
 	}
 
 	/**
@@ -322,7 +420,8 @@ export class DurationValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	static fromMilliseconds(milliseconds: number): DurationValue {
-		throw new Error("Method not implemented.");
+		if (!Number.isFinite(milliseconds)) throw new TypeError("Duration must be finite.");
+		return new DurationValue(moment.duration(milliseconds));
 	}
 }
 
@@ -332,12 +431,24 @@ export class DurationValue extends NotNullValue {
  * @since 1.10.0
  */
 export class FileValue extends NotNullValue {
+	private readonly path: string;
+
+	/**
+	 * Create a file value.
+	 *
+	 * @param file File with a vault-relative path.
+	 */
+	constructor(file: { path: string }) {
+		super();
+		this.path = file.path;
+	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return this.path;
 	}
 
 	/**
@@ -345,7 +456,7 @@ export class FileValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return true;
 	}
 }
 
@@ -359,7 +470,8 @@ export class ListValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type = "list";
+	private readonly value: Value[];
 
 	/**
 	 * The array passed in will be modified!
@@ -367,8 +479,10 @@ export class ListValue extends NotNullValue {
 	 * @public
 	 * @since 1.10.0
 	 */
-	constructor(value: (unknown | Value)[]) {
-		throw new Error("Method not implemented.");
+	constructor(value: unknown[]) {
+		super();
+		this.value = value.map((item) => wrap(item));
+		for (let i = 0; i < this.value.length; i++) value[i] = this.value[i];
 	}
 
 	/**
@@ -376,7 +490,7 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return this.value.map((item) => item.toString()).join(", ");
 	}
 
 	/**
@@ -384,7 +498,7 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return this.value.length > 0;
 	}
 
 	/**
@@ -393,7 +507,7 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	includes(value: Value): boolean {
-		throw new Error("Method not implemented.");
+		return this.value.some((item) => item.looseEquals(value));
 	}
 
 	/**
@@ -402,7 +516,7 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	length(): number {
-		throw new Error("Method not implemented.");
+		return this.value.length;
 	}
 
 	/**
@@ -411,7 +525,7 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	get(index: number): Value {
-		throw new Error("Method not implemented.");
+		return this.value[index] ?? NullValue.value;
 	}
 
 	/**
@@ -420,7 +534,21 @@ export class ListValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	concat(other: ListValue): ListValue {
-		throw new Error("Method not implemented.");
+		return new ListValue([...this.value, ...other.value]);
+	}
+
+	/**
+	 * Compare lists element by element.
+	 *
+	 * @param other Value to compare.
+	 * @returns Whether both lists have equal elements.
+	 */
+	equals(other: Value): boolean {
+		return (
+			other instanceof ListValue &&
+			this.value.length === other.value.length &&
+			this.value.every((value, index) => Value.equals(value, other.value[index] ?? null))
+		);
 	}
 }
 
@@ -430,12 +558,24 @@ export class ListValue extends NotNullValue {
  * @since 1.10.0
  */
 export class RegExpValue extends NotNullValue {
+	private readonly value: RegExp;
+
+	/**
+	 * Create a regular expression value.
+	 *
+	 * @param value Regular expression to wrap.
+	 */
+	constructor(value: RegExp) {
+		super();
+		this.value = value;
+	}
+
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
 	toString(): string {
-		throw new Error("Method not implemented.");
+		return this.value.toString();
 	}
 
 	/**
@@ -443,7 +583,7 @@ export class RegExpValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	isTruthy(): boolean {
-		throw new Error("Method not implemented.");
+		return true;
 	}
 }
 
@@ -453,7 +593,12 @@ export class RegExpValue extends NotNullValue {
  * @public
  * @since 1.10.0
  */
-export class RelativeDateValue extends DateValue {}
+export class RelativeDateValue extends DateValue {
+	/** @returns A relative description of this date. */
+	toString(): string {
+		return moment.utc(super.toString()).fromNow();
+	}
+}
 
 /**
  * {@link Value} wrapping a string.
@@ -465,7 +610,7 @@ export class StringValue extends PrimitiveValue<string> {
 	 * @public
 	 * @since 1.10.0
 	 */
-	static type: string;
+	static readonly type = "string";
 }
 
 /**
@@ -486,6 +631,19 @@ export class TagValue extends StringValue {
 	 * @since 1.10.0
 	 */
 	constructor(value: string) {
-		throw new Error("Method not implemented.");
+		super(value);
 	}
+}
+
+function wrap(value: unknown): Value {
+	if (value instanceof Value) return value;
+	if (value === null || value === undefined) return NullValue.value;
+	if (typeof value === "string") return new StringValue(value);
+	if (typeof value === "number") return new NumberValue(value);
+	if (typeof value === "boolean") return new BooleanValue(value);
+	if (value instanceof Date) return new DateValue(value);
+	if (value instanceof RegExp) return new RegExpValue(value);
+	if (Array.isArray(value)) return new ListValue(value);
+	if (typeof value === "object") return new ObjectValue(value as Record<string, unknown>);
+	throw new TypeError(`Unsupported value type: ${typeof value}.`);
 }

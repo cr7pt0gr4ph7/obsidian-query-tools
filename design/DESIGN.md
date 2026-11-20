@@ -22,6 +22,13 @@ syntax and fixture references, not an execution oracle. Any future reuse or
 compatibility claim requires pinned revisions, documented deviations and
 licenses, and evidence against those revisions.
 
+The excluded `vault/mock/values.ts` module supplies project-defined value
+wrappers for local mock use, not Obsidian Bases compatibility. It wraps nested
+arrays and objects, compares values without cross-type coercion, renders plain
+text, and uses UTC instants and ISO durations for date arithmetic. Empty
+collections are false; unsupported JavaScript value types throw. Mock value
+semantics have not been compared against an Obsidian oracle.
+
 ## Interface contract
 
 The TypeScript API in `src/api/` has a stable public `index.ts` entrypoint and
