@@ -6,7 +6,7 @@ import path from "node:path";
 import { parseDocument } from "yaml";
 import type { Edge } from "../graph/graph.js";
 import type { GraphIndex } from "../graph/indexing.js";
-import { VaultQueryError } from "../utils/errors.js";
+import { ErrorCode, VaultQueryError } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import type { Config, VaultIndex } from "./types.js";
 
@@ -21,16 +21,16 @@ async function readFile(parent: FileHandle, name: string, relativePath: string, 
 	const anchored = path.join(fdPath(parent), name);
 	const stat = await lstat(anchored);
 	if (!stat.isFile() || stat.isSymbolicLink()) {
-		throw new VaultQueryError("UNSAFE_PATH", "Symlinks and special files are not allowed.", relativePath);
+		throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks and special files are not allowed.", relativePath);
 	}
 	if (stat.size > limit) {
-		throw new VaultQueryError("LIMIT_EXCEEDED", "Markdown file exceeds the byte limit.", relativePath);
+		throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file exceeds the byte limit.", relativePath);
 	}
 	const file = await open(anchored, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
 	try {
 		const before = await file.stat();
 		if (!before.isFile() || signature(stat) !== signature(before)) {
-			throw new VaultQueryError("VAULT_CHANGED", "File changed while indexing.", relativePath);
+			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "File changed while indexing.", relativePath);
 		}
 		const buffer = Buffer.alloc(before.size + 1);
 		let length = 0;
@@ -42,17 +42,17 @@ async function readFile(parent: FileHandle, name: string, relativePath: string, 
 			length += bytesRead;
 		}
 		if (length > limit) {
-			throw new VaultQueryError("LIMIT_EXCEEDED", "Markdown file exceeds the byte limit.", relativePath);
+			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file exceeds the byte limit.", relativePath);
 		}
 		const after = await file.stat();
 		const current = await lstat(anchored);
 		if (!current.isFile() || signature(before) !== signature(after) || signature(after) !== signature(current)) {
-			throw new VaultQueryError("VAULT_CHANGED", "File changed while indexing.", relativePath);
+			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "File changed while indexing.", relativePath);
 		}
 		try {
 			return new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, length));
 		} catch {
-			throw new VaultQueryError("INVALID_ENCODING", "Markdown file is not valid UTF-8.", relativePath);
+			throw new VaultQueryError(ErrorCode.INVALID_ENCODING, "Markdown file is not valid UTF-8.", relativePath);
 		}
 	} finally {
 		await file.close();
@@ -74,25 +74,25 @@ function readEdges(
 	}
 	const end = lines.indexOf("---", 1);
 	if (end < 0) {
-		throw new VaultQueryError("INVALID_FRONTMATTER", "Unclosed frontmatter.", relativePath);
+		throw new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, "Unclosed frontmatter.", relativePath);
 	}
 	const document = parseDocument(lines.slice(1, end).join("\n"), {
 		uniqueKeys: true,
 	});
 	if (document.errors.length || document.warnings.length) {
-		throw new VaultQueryError("INVALID_FRONTMATTER", "Invalid or unsupported YAML frontmatter.", relativePath);
+		throw new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, "Invalid or unsupported YAML frontmatter.", relativePath);
 	}
 	let frontmatter: unknown;
 	try {
 		frontmatter = document.toJS({ maxAliasCount: 0 });
 	} catch {
-		throw new VaultQueryError("INVALID_FRONTMATTER", "Unsupported YAML frontmatter.", relativePath);
+		throw new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, "Unsupported YAML frontmatter.", relativePath);
 	}
 	if (frontmatter === null) {
 		return;
 	}
 	if (typeof frontmatter !== "object" || Array.isArray(frontmatter)) {
-		throw new VaultQueryError("INVALID_FRONTMATTER", "Frontmatter must be a mapping.", relativePath);
+		throw new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, "Frontmatter must be a mapping.", relativePath);
 	}
 	for (const type of fields) {
 		if (!Object.hasOwn(frontmatter, type)) {
@@ -110,7 +110,7 @@ function readEdges(
 			}
 			if (link === undefined && (typeof target !== "string" || target.includes("[[") || target.includes("]]"))) {
 				throw new VaultQueryError(
-					"INVALID_EDGE",
+					ErrorCode.INVALID_EDGE,
 					"Edge fields must contain vault-relative Markdown paths.",
 					relativePath,
 				);
@@ -120,7 +120,7 @@ function readEdges(
 				normalized = validatePath(link ?? (target as string));
 			} catch {
 				throw new VaultQueryError(
-					"INVALID_EDGE",
+					ErrorCode.INVALID_EDGE,
 					"Edge fields must contain vault-relative Markdown paths.",
 					relativePath,
 				);
@@ -129,7 +129,7 @@ function readEdges(
 				normalized += ".md";
 			}
 			if (edges.length >= maxEdges) {
-				throw new VaultQueryError("LIMIT_EXCEEDED", "Edge limit exceeded.", relativePath);
+				throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Edge limit exceeded.", relativePath);
 			}
 			const edge: Edge = { source: relativePath, target: normalized, type };
 			if (link !== undefined) {
@@ -156,28 +156,28 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 		const dir = await opendir(fdPath(directory));
 		for await (const entry of dir) {
 			if (++entries > config.limits.maxEntries) {
-				throw new VaultQueryError("LIMIT_EXCEEDED", "Directory entry limit exceeded.");
+				throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Directory entry limit exceeded.");
 			}
 			const name = relativePath ? `${relativePath}/${entry.name}` : entry.name;
 			validatePath(name);
 			if (entry.isSymbolicLink()) {
-				throw new VaultQueryError("UNSAFE_PATH", "Symlinks are not allowed.", name);
+				throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks are not allowed.", name);
 			}
 			if (entry.isDirectory()) {
 				const anchored = path.join(fdPath(directory), entry.name);
 				const original = await lstat(anchored);
 				if (!original.isDirectory() || original.isSymbolicLink()) {
-					throw new VaultQueryError("UNSAFE_PATH", "Symlinks and special files are not allowed.", name);
+					throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks and special files are not allowed.", name);
 				}
 				const child = await open(anchored, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 				try {
 					if (signature(original) !== signature(await child.stat())) {
-						throw new VaultQueryError("VAULT_CHANGED", "Directory changed while indexing.", name);
+						throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", name);
 					}
 					await visit(child, name);
 					const current = await lstat(anchored);
 					if (!current.isDirectory() || signature(current) !== signature(await child.stat())) {
-						throw new VaultQueryError("VAULT_CHANGED", "Directory changed while indexing.", name);
+						throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", name);
 					}
 				} finally {
 					await child.close();
@@ -187,7 +187,7 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 					continue;
 				}
 				if (files.length >= config.limits.maxFiles) {
-					throw new VaultQueryError("LIMIT_EXCEEDED", "Markdown file limit exceeded.");
+					throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file limit exceeded.");
 				}
 				const contents = await readFile(directory, entry.name, name, config.limits.maxFileBytes);
 				files.push(name);
@@ -201,27 +201,27 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 					pending,
 				);
 			} else {
-				throw new VaultQueryError("UNSAFE_PATH", "Special files are not allowed.", name);
+				throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Special files are not allowed.", name);
 			}
 		}
 		const after = await directory.stat();
 		if (signature(before) !== signature(after)) {
-			throw new VaultQueryError("VAULT_CHANGED", "Directory changed while indexing.", relativePath);
+			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", relativePath);
 		}
 	}
 	try {
 		if (process.platform !== "linux" || constants.O_NOFOLLOW === undefined || constants.O_DIRECTORY === undefined) {
-			throw new VaultQueryError("UNSUPPORTED_PLATFORM", "Linux with /proc/self/fd and O_NOFOLLOW is required.");
+			throw new VaultQueryError(ErrorCode.UNSUPPORTED_PLATFORM, "Linux with /proc/self/fd and O_NOFOLLOW is required.");
 		}
 		const original = await lstat(root);
 		const directory = await open(root, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 		try {
 			if (signature(original) !== signature(await directory.stat())) {
-				throw new VaultQueryError("VAULT_CHANGED", "Vault root changed while indexing.");
+				throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Vault root changed while indexing.");
 			}
 			await visit(directory, "");
 			if (signature(await lstat(root)) !== signature(await directory.stat())) {
-				throw new VaultQueryError("VAULT_CHANGED", "Vault root changed while indexing.");
+				throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Vault root changed while indexing.");
 			}
 		} finally {
 			await directory.close();
@@ -230,7 +230,7 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 		if (error instanceof VaultQueryError) {
 			throw error;
 		}
-		throw new VaultQueryError("VAULT_READ_ERROR", "Could not read the vault; it may be unreadable or changing.");
+		throw new VaultQueryError(ErrorCode.VAULT_READ_ERROR, "Could not read the vault; it may be unreadable or changing.");
 	}
 	files.sort(compare);
 	const paths = new Set(files);
@@ -247,7 +247,7 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 			const matches = byName.get(edge.target.toLowerCase()) ?? [];
 			if (matches.length > 1) {
 				throw new VaultQueryError(
-					"INVALID_EDGE",
+					ErrorCode.INVALID_EDGE,
 					"Wikilink target is ambiguous; use a vault-relative path.",
 					edge.source,
 				);
@@ -259,7 +259,7 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 	}
 	for (const edge of edges) {
 		if (!paths.has(edge.target)) {
-			throw new VaultQueryError("UNRESOLVED_EDGE", "Edge target is not an indexed Markdown file.", edge.source);
+			throw new VaultQueryError(ErrorCode.UNRESOLVED_EDGE, "Edge target is not an indexed Markdown file.", edge.source);
 		}
 	}
 	const declared = new Set(edges.map((e) => `${e.source}\0${e.target}\0${e.type}`));
@@ -274,7 +274,7 @@ export async function buildIndex(root: string, config: Config): Promise<VaultInd
 		}
 		declared.add(key);
 		if (edges.length >= config.graph.limits.maxEdges) {
-			throw new VaultQueryError("LIMIT_EXCEEDED", "Edge limit exceeded.", edge.source);
+			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Edge limit exceeded.", edge.source);
 		}
 		edges.push({
 			source: edge.target,
