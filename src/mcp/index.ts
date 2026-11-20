@@ -102,6 +102,23 @@ async function main() {
 			handle(() => vault.graph().traverse(path, options)),
 	);
 	server.registerTool(
+		"path",
+		{
+			description:
+				"Find the shortest typed-edge path between two indexed Markdown paths.",
+			inputSchema: z.strictObject({
+				from: z.string().max(4096),
+				to: z.string().max(4096),
+				direction: z.enum(["incoming", "outgoing"]).optional(),
+				types: z.array(z.string().max(256)).max(100).optional(),
+				limit,
+			}),
+			annotations,
+		},
+		async ({ from, to, ...options }) =>
+			handle(() => vault.graph().path(from, to, options)),
+	);
+	server.registerTool(
 		"export",
 		{
 			description:

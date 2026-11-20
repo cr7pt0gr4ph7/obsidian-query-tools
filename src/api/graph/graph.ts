@@ -15,6 +15,9 @@ export interface TraverseOptions extends NeighborOptions {
 	maxDepth?: number;
 }
 
+/** Filters for a shortest-path query. */
+export type PathOptions = Omit<TraverseOptions, "maxDepth">;
+
 /** Supported graph serialization formats. */
 export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
 
@@ -61,6 +64,11 @@ export interface VaultGraph {
 	 * This is plain reachability, not Breadcrumbs' transitive rules.
 	 */
 	traverse(node: string, options?: TraverseOptions): QueryResult<Edge>;
+	/**
+	 * Shortest chain of edges from one node to another; `data` is empty when the
+	 * target is unreachable or equals the start.
+	 */
+	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
 	/** Serialize the whole graph (all Markdown files as nodes) in a chosen format. */
 	export(options?: ExportOptions): GraphExport;
 }

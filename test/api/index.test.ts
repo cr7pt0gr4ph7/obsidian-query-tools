@@ -470,3 +470,25 @@ test("traverse walks reachability and export serializes escaped formats", async 
 	);
 	assert.equal(g.export().edgeCount, 3);
 });
+
+test("path returns the shortest edge chain or nothing", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-path-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: [b, c]\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\nup: d\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nup: [b, d]\n---\n");
+	await writeFile(path.join(root, "d.md"), "# d\n");
+	await writeFile(path.join(root, "e.md"), "# e\n");
+	const g = (await openVault(root, { edgeFields: ["up"] })).graph();
+	assert.deepEqual(
+		g.path("a.md", "d.md").data.map((e) => `${e.source}>${e.target}`),
+		["a.md>b.md", "b.md>d.md"],
+	);
+	assert.deepEqual(g.path("a.md", "e.md").data, []);
+	assert.deepEqual(g.path("a.md", "a.md").data, []);
+	assert.equal(
+		g.path("d.md", "a.md", { direction: "incoming" }).data.length,
+		2,
+	);
+	assert.throws(() => g.path("a.md", "x.md"), code("NOT_FOUND"));
+});

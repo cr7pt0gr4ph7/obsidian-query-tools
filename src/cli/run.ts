@@ -37,6 +37,8 @@ async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
 			return graph.neighbors(command.path, command.options);
 		case "traverse":
 			return graph.traverse(command.path, command.options);
+		case "path":
+			return graph.path(command.from, command.to, command.options);
 		case "export":
 			return graph.export(command.options);
 	}

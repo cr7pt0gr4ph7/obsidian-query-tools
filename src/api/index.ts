@@ -12,6 +12,7 @@ export type {
 	ExportOptions,
 	GraphExport,
 	NeighborOptions,
+	PathOptions,
 	TraverseOptions,
 	VaultGraph,
 } from "./graph/graph.js";
