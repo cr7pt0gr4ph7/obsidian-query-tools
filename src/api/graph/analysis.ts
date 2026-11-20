@@ -2,7 +2,13 @@ import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
 import type { GraphConfig } from "./config.js";
-import type { Edge, GraphStats, NodesOptions, PathOptions } from "./graph.js";
+import type {
+	CyclesOptions,
+	Edge,
+	GraphStats,
+	NodesOptions,
+	PathOptions,
+} from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
@@ -161,4 +167,75 @@ export function listNodes(
 		}
 	});
 	return result(generation, values, limit);
+}
+
+/** Groups of mutually reachable nodes (including self-loops), via iterative Tarjan. */
+export function findCycles(
+	index: GraphIndex,
+	generation: number,
+	config: GraphConfig,
+	maxResults: number,
+	options: CyclesOptions = {},
+): QueryResult<string[]> {
+	const limit = requestLimit(options, maxResults, ["limit", "types"]);
+	const types = selectTypes(config, options.types);
+	const adjacency = new Map<string, string[]>();
+	const selfLoops = new Set<string>();
+	for (const edge of index.edges) {
+		if (!types.includes(edge.type)) continue;
+		if (edge.source === edge.target) selfLoops.add(edge.source);
+		const list = adjacency.get(edge.source) ?? [];
+		list.push(edge.target);
+		adjacency.set(edge.source, list);
+	}
+	const order = new Map<string, number>();
+	const low = new Map<string, number>();
+	const onStack = new Set<string>();
+	const stack: string[] = [];
+	const groups: string[][] = [];
+	let counter = 0;
+	for (const start of index.files) {
+		if (order.has(start)) continue;
+		const work: [string, number][] = [[start, 0]];
+		order.set(start, counter);
+		low.set(start, counter++);
+		stack.push(start);
+		onStack.add(start);
+		while (work.length) {
+			const frame = work[work.length - 1];
+			const [node] = frame;
+			const next = adjacency.get(node) ?? [];
+			if (frame[1] < next.length) {
+				const target = next[frame[1]++];
+				if (!order.has(target)) {
+					order.set(target, counter);
+					low.set(target, counter++);
+					stack.push(target);
+					onStack.add(target);
+					work.push([target, 0]);
+				} else if (onStack.has(target)) {
+					low.set(node, Math.min(low.get(node)!, order.get(target)!));
+				}
+				continue;
+			}
+			work.pop();
+			if (work.length) {
+				const parent = work[work.length - 1][0];
+				low.set(parent, Math.min(low.get(parent)!, low.get(node)!));
+			}
+			if (low.get(node) === order.get(node)) {
+				const group: string[] = [];
+				let member: string;
+				do {
+					member = stack.pop()!;
+					onStack.delete(member);
+					group.push(member);
+				} while (member !== node);
+				if (group.length > 1 || selfLoops.has(group[0]))
+					groups.push(group.sort());
+			}
+		}
+	}
+	groups.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+	return result(generation, groups, limit);
 }

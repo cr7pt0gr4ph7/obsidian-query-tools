@@ -523,3 +523,16 @@ test("nodes filters by role", async (t) => {
 	assert.equal(g.nodes({ limit: 2 }).truncated, true);
 	assert.throws(() => g.nodes({ role: "x" as "all" }), code("INVALID_OPTIONS"));
 });
+
+test("cycles finds mutually reachable groups and self-loops", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cycles-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\nup: [c, d]\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nup: a\n---\n");
+	await writeFile(path.join(root, "d.md"), "---\nup: d\n---\n");
+	await writeFile(path.join(root, "e.md"), "---\nup: a\n---\n");
+	const g = (await openVault(root, { edgeFields: ["up"] })).graph();
+	assert.deepEqual(g.cycles().data, [["a.md", "b.md", "c.md"], ["d.md"]]);
+	assert.equal(g.cycles({ limit: 1 }).truncated, true);
+});

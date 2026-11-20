@@ -7,6 +7,7 @@ export type { ListOptions } from "./dataview/list.js";
 /** Types for directed edges and direct-neighbor queries. */
 export type { GraphLimits } from "./graph/config.js";
 export type {
+	CyclesOptions,
 	Edge,
 	ExportFormat,
 	ExportOptions,

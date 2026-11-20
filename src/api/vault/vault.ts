@@ -4,7 +4,12 @@ import { runScript } from "../script/run.js";
 import { result } from "../utils/result.js";
 import { list } from "../dataview/list.js";
 import { exportGraph } from "../graph/export.js";
-import { graphStats, listNodes, shortestPath } from "../graph/analysis.js";
+import {
+	findCycles,
+	graphStats,
+	listNodes,
+	shortestPath,
+} from "../graph/analysis.js";
 import { traverse } from "../graph/traverse.js";
 import { neighbors } from "../graph/neighbors.js";
 import { requestLimit, validatePath } from "../validation.js";
@@ -63,6 +68,16 @@ export async function openVault(
 				config.limits.maxResults,
 				from,
 				to,
+				options,
+			);
+		},
+		cycles(options = {}) {
+			ensureOpen();
+			return findCycles(
+				index.graph,
+				generation,
+				config.graph,
+				config.limits.maxResults,
 				options,
 			);
 		},

@@ -1,5 +1,6 @@
 import { Command, Option } from "commander";
 import type {
+	CyclesOptions,
 	NodesOptions,
 	PathOptions,
 	TraverseOptions,
@@ -121,6 +122,25 @@ export function registerGraphCommands(
 			if (options.limit !== undefined)
 				pathOptions.limit = positiveInteger(options.limit, "--limit");
 			select({ operation: "path", from, to, options: pathOptions });
+		});
+
+	graph
+		.command("cycles")
+		.description("Find groups of nodes that can reach each other.")
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((options, command: Command) => {
+			requireEdgeFields(command, options);
+			const cycleOptions: CyclesOptions = {};
+			if (options.edgeType.length) cycleOptions.types = options.edgeType;
+			if (options.limit !== undefined)
+				cycleOptions.limit = positiveInteger(options.limit, "--limit");
+			select({ operation: "cycles", options: cycleOptions });
 		});
 
 	graph
