@@ -11,6 +11,7 @@ export type {
 	ExportFormat,
 	ExportOptions,
 	GraphExport,
+	GraphStats,
 	NeighborOptions,
 	PathOptions,
 	TraverseOptions,

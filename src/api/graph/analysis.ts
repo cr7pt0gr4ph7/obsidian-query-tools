@@ -2,7 +2,7 @@ import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
 import type { GraphConfig } from "./config.js";
-import type { Edge, PathOptions } from "./graph.js";
+import type { Edge, GraphStats, PathOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
@@ -76,4 +76,50 @@ export function shortestPath(
 		at = edge[key];
 	}
 	return result(generation, from === to || !seen.has(to) ? [] : path, limit);
+}
+
+/** Summary counts for the selected edge types. */
+export function graphStats(
+	index: GraphIndex,
+	generation: number,
+	config: GraphConfig,
+	types?: string[],
+): GraphStats {
+	const selected = selectTypes(config, types);
+	const edges = index.edges.filter((edge) => selected.includes(edge.type));
+	const edgesByType: Record<string, number> = {};
+	for (const type of [...selected].sort()) edgesByType[type] = 0;
+	const out = new Set<string>();
+	const into = new Set<string>();
+	for (const edge of edges) {
+		edgesByType[edge.type]++;
+		out.add(edge.source);
+		into.add(edge.target);
+	}
+	let sources = 0;
+	let sinks = 0;
+	let isolated = 0;
+	for (const file of index.files) {
+		const hasOut = out.has(file);
+		const hasIn = into.has(file);
+		if (!hasOut && !hasIn) isolated++;
+		else if (hasOut && !hasIn) sources++;
+		else if (!hasOut && hasIn) sinks++;
+	}
+	return {
+		generation,
+		nodeCount: index.files.length,
+		edgeCount: edges.length,
+		edgesByType,
+		sources,
+		sinks,
+		isolated,
+		diagnostics: [
+			{
+				code: "NON_ATOMIC_SNAPSHOT",
+				message: "The filesystem may change during indexing.",
+			},
+		],
+		truncated: false,
+	};
 }
