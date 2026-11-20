@@ -25,7 +25,6 @@ export type {
 export type { QueryResult } from "./utils/result.js";
 /** Vault lifecycle, open configuration, and resource-limit types. */
 export type { Vault, VaultLimits, VaultOptions } from "./vault/types.js";
-/** Options for unsafe script evaluation. */
 export type { ScriptOptions } from "./script/run.js";
 /** Describe supported operations, limits and error codes. */
 export { describe } from "./describe.js";

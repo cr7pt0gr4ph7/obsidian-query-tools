@@ -1,8 +1,7 @@
 import vm from "node:vm";
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
-import type { QueryResult } from "../utils/result.js";
 
-/** Optional controls for unsafe script evaluation. */
+/** Options for unsafe script evaluation. */
 export interface ScriptOptions {
 	/** Maximum values returned; cannot exceed the vault's configured maximum. */
 	limit?: number;
