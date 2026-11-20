@@ -11,7 +11,7 @@ import { ErrorCode, VaultQueryError } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import { type QueryResult, result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
-import { buildIndex } from "./indexer.js";
+import { buildIndex } from "./indexing/index.js";
 import { optionsForOpen } from "./validation.js";
 
 /**
