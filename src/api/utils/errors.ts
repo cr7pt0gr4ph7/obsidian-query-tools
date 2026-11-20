@@ -22,7 +22,7 @@ export class VaultQueryError extends Error {
 	}
 }
 
-const ErrorCode = {
+export const ErrorCode = {
 	INTERNAL_ERROR: "INTERNAL_ERROR",
 	INVALID_EDGE: "INVALID_EDGE",
 	INVALID_ENCODING: "INVALID_ENCODING",
