@@ -119,6 +119,19 @@ async function main() {
 			handle(() => vault.graph().path(from, to, options)),
 	);
 	server.registerTool(
+		"cycles",
+		{
+			description:
+				"Find groups of notes that can reach each other via typed edges.",
+			inputSchema: z.strictObject({
+				types: z.array(z.string().max(256)).max(100).optional(),
+				limit,
+			}),
+			annotations,
+		},
+		async (options) => handle(() => vault.graph().cycles(options)),
+	);
+	server.registerTool(
 		"nodes",
 		{
 			description:

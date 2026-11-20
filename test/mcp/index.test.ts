@@ -39,6 +39,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 		await client.connect(transport);
 		const { tools } = await client.listTools();
 		assert.deepEqual(tools.map((tool) => tool.name).sort(), [
+			"cycles",
 			"export",
 			"list",
 			"neighbors",

@@ -43,6 +43,12 @@ export interface NodesOptions extends ListOptions {
 	types?: string[];
 }
 
+/** Filters for cycle detection. */
+export interface CyclesOptions extends ListOptions {
+	/** Configured edge fields to follow (default all). */
+	types?: string[];
+}
+
 /** Supported graph serialization formats. */
 export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
 
@@ -94,6 +100,8 @@ export interface VaultGraph {
 	 * target is unreachable or equals the start.
 	 */
 	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
+	/** Find groups of nodes that can reach each other (cycles), each sorted, ordered by first path. */
+	cycles(options?: CyclesOptions): QueryResult<string[]>;
 	/** List sorted Markdown paths, optionally only sources, sinks, or isolated nodes. */
 	nodes(options?: NodesOptions): QueryResult<string>;
 	/** Count nodes and edges, optionally limited to some edge types. */
