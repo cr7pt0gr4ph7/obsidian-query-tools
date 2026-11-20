@@ -94,6 +94,7 @@ export async function runCli(args: string[]): Promise<number> {
 			vault?: string;
 			edgeField: string[];
 			opposite: string[];
+			allowWikilinks?: boolean;
 		}>();
 		if (!options.vault) invalidArguments("--vault is required.");
 		const oppositeFields: Record<string, string> = {};
@@ -106,6 +107,7 @@ export async function runCli(args: string[]): Promise<number> {
 		vault = await openVault(options.vault, {
 			edgeFields: options.edgeField,
 			oppositeFields,
+			allowWikilinks: options.allowWikilinks === true,
 		});
 		const result = await execute(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);

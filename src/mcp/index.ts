@@ -37,6 +37,7 @@ async function main() {
 				vault: { type: "string" },
 				"edge-field": { type: "string", multiple: true },
 				opposite: { type: "string", multiple: true },
+				"allow-wikilinks": { type: "boolean" },
 			},
 		});
 	} catch {
@@ -53,6 +54,7 @@ async function main() {
 	}
 	const vault = await openVault(parsed.values.vault, {
 		edgeFields: parsed.values["edge-field"] ?? [],
+		allowWikilinks: parsed.values["allow-wikilinks"] === true,
 		oppositeFields: Object.fromEntries(
 			(parsed.values.opposite ?? []).map((pair) => {
 				const at = pair.indexOf(":");

@@ -104,6 +104,8 @@ function readEdges(
 	fields: string[],
 	maxEdges: number,
 	edges: Edge[],
+	wikilinks: boolean,
+	pending: Set<Edge>,
 ): void {
 	const lines = contents.split(/\r?\n/);
 	if (lines[0] !== "---") return;
@@ -147,10 +149,19 @@ function readEdges(
 		const value: unknown = Reflect.get(frontmatter, type);
 		const targets = Array.isArray(value) ? value : [value];
 		for (const target of targets) {
+			let link: string | undefined;
+			if (wikilinks && typeof target === "string") {
+				const match =
+					/^\[\[([^\[\]|#]+)(?:#[^\[\]|]*)?(?:\|[^\[\]]*)?\]\]$/.exec(
+						target.trim(),
+					);
+				if (match) link = match[1].trim();
+			}
 			if (
-				typeof target !== "string" ||
-				target.includes("[[") ||
-				target.includes("]]")
+				link === undefined &&
+				(typeof target !== "string" ||
+					target.includes("[[") ||
+					target.includes("]]"))
 			) {
 				throw new VaultQueryError(
 					"INVALID_EDGE",
@@ -160,7 +171,7 @@ function readEdges(
 			}
 			let normalized;
 			try {
-				normalized = validatePath(target);
+				normalized = validatePath(link ?? (target as string));
 			} catch {
 				throw new VaultQueryError(
 					"INVALID_EDGE",
@@ -175,7 +186,9 @@ function readEdges(
 					"Edge limit exceeded.",
 					relativePath,
 				);
-			edges.push({ source: relativePath, target: normalized, type });
+			const edge: Edge = { source: relativePath, target: normalized, type };
+			if (link !== undefined) pending.add(edge);
+			edges.push(edge);
 		}
 	}
 }
@@ -192,6 +205,7 @@ export async function buildIndex(
 ): Promise<VaultIndex> {
 	const files: string[] = [];
 	const edges: Edge[] = [];
+	const pending = new Set<Edge>();
 	let entries = 0;
 	async function visit(
 		directory: FileHandle,
@@ -270,6 +284,8 @@ export async function buildIndex(
 					config.graph.edgeFields,
 					config.graph.limits.maxEdges,
 					edges,
+					config.graph.wikilinks,
+					pending,
 				);
 			} else
 				throw new VaultQueryError(
@@ -328,6 +344,24 @@ export async function buildIndex(
 	}
 	files.sort(compare);
 	const paths = new Set(files);
+	if (pending.size) {
+		const byName = new Map<string, string[]>();
+		for (const file of files) {
+			const name = file.slice(file.lastIndexOf("/") + 1).toLowerCase();
+			byName.set(name, [...(byName.get(name) ?? []), file]);
+		}
+		for (const edge of pending) {
+			if (paths.has(edge.target)) continue;
+			const matches = byName.get(edge.target.toLowerCase()) ?? [];
+			if (matches.length > 1)
+				throw new VaultQueryError(
+					"INVALID_EDGE",
+					"Wikilink target is ambiguous; use a vault-relative path.",
+					edge.source,
+				);
+			if (matches.length === 1) edge.target = matches[0];
+		}
+	}
 	for (const edge of edges) {
 		if (!paths.has(edge.target))
 			throw new VaultQueryError(

@@ -21,6 +21,10 @@ export function createProgram(
 			[],
 		)
 		.option(
+			"--allow-wikilinks",
+			"Accept [[wikilink]] edge values, resolved by path or unique basename",
+		)
+		.option(
 			"--opposite <field:type>",
 			"Imply a reverse edge of <type> for every <field> edge (repeatable)",
 			(value: string, previous: string[]) => [...previous, value],

@@ -25,6 +25,8 @@ export interface VaultOptions {
 	 * Maps configured fields to opposite types; each `A -field-> B` also yields an
 	 * implied `B -opposite-> A` edge (flagged `implied`), unless already declared.
 	 */
+	/** Also accept `[[Note]]`, `[[Folder/Note|alias]]` and `[[Note#heading]]` edge values. */
+	allowWikilinks?: boolean;
 	oppositeFields?: Record<string, string>;
 	/** Positive resource-limit overrides; each value may lower or raise its default. */
 	limits?: Partial<VaultLimits & GraphLimits>;
