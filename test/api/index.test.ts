@@ -62,7 +62,7 @@ type VaultLimitKeys = Assert<
 	>
 >;
 type GraphConfigKeys = Assert<
-	Equal<keyof GraphConfig, "edgeFields" | "opposites" | "limits">
+	Equal<keyof GraphConfig, "edgeFields" | "wikilinks" | "opposites" | "limits">
 >;
 type ConfigKeys = Assert<
 	Equal<keyof Config, "graph" | "limits" | "unsafeJavaScript">
@@ -77,6 +77,7 @@ test("graph options are separated from vault limits without changing open option
 	});
 	assert.deepEqual(config.graph, {
 		edgeFields: ["parent"],
+		wikilinks: false,
 		opposites: {},
 		limits: { maxEdges: 3 },
 	});
@@ -566,5 +567,38 @@ test("opposite fields add flagged implied edges within limits", async (t) => {
 			limits: { maxEdges: 3 },
 		}),
 		code("LIMIT_EXCEEDED"),
+	);
+});
+
+test("wikilink edge values resolve by path or unique basename when enabled", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-wiki-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await mkdir(path.join(root, "dir"));
+	await writeFile(
+		path.join(root, "a.md"),
+		"---\nup: ['[[Target|alias]]', '[[dir/Deep#Heading]]']\n---\n",
+	);
+	await writeFile(path.join(root, "dir", "Target.md"), "# t\n");
+	await writeFile(path.join(root, "dir", "Deep.md"), "# d\n");
+	const vault = await openVault(root, {
+		edgeFields: ["up"],
+		allowWikilinks: true,
+	});
+	assert.deepEqual(
+		vault
+			.graph()
+			.neighbors("a.md")
+			.data.map((e) => e.target),
+		["dir/Deep.md", "dir/Target.md"],
+	);
+	await assert.rejects(
+		openVault(root, { edgeFields: ["up"] }),
+		code("INVALID_EDGE"),
+	);
+	await writeFile(path.join(root, "Target.md"), "# t2\n");
+	await writeFile(path.join(root, "a.md"), "---\nup: '[[target]]'\n---\n");
+	await assert.rejects(
+		openVault(root, { edgeFields: ["up"], allowWikilinks: true }),
+		code("INVALID_EDGE"),
 	);
 });

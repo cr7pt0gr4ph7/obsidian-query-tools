@@ -17,9 +17,13 @@ export function optionsForOpen(options: VaultOptions): Config {
 	}
 	for (const key of Object.keys(options)) {
 		if (
-			!["edgeFields", "oppositeFields", "limits", "unsafeJavaScript"].includes(
-				key,
-			)
+			![
+				"edgeFields",
+				"oppositeFields",
+				"allowWikilinks",
+				"limits",
+				"unsafeJavaScript",
+			].includes(key)
 		)
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
 	}
@@ -30,6 +34,15 @@ export function optionsForOpen(options: VaultOptions): Config {
 		throw new VaultQueryError(
 			EC.INVALID_OPTIONS,
 			"unsafeJavaScript must be a boolean.",
+		);
+	}
+	if (
+		options.allowWikilinks !== undefined &&
+		typeof options.allowWikilinks !== "boolean"
+	) {
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
+			"allowWikilinks must be a boolean.",
 		);
 	}
 	const edgeFields = options.edgeFields ?? [];
@@ -85,6 +98,7 @@ export function optionsForOpen(options: VaultOptions): Config {
 		unsafeJavaScript: options.unsafeJavaScript === true,
 		graph: {
 			edgeFields: [...edgeFields],
+			wikilinks: options.allowWikilinks === true,
 			opposites: { ...opposites },
 			limits: { maxEdges },
 		},

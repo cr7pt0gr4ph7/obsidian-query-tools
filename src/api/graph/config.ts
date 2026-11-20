@@ -8,6 +8,8 @@ export interface GraphLimits {
 export interface GraphConfig {
 	/** Frontmatter field names interpreted as typed relationships. */
 	edgeFields: string[];
+	/** Accept `[[Note]]` values, resolved by vault path or unique basename. */
+	wikilinks: boolean;
 	/** Maps a configured field to the type of the implied reverse edge. */
 	opposites: Record<string, string>;
 	/** Graph-specific resource limits. */

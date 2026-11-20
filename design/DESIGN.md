@@ -66,7 +66,10 @@ as part of the same published generation. Public open options remain flat:
 Only fields listed in `edgeFields` are interpreted. A field value must be a
 string or array of strings containing exact vault-root-relative Markdown
 paths, with an optional `.md` suffix. Unresolved targets or unsupported
-values fail the build. Invalid UTF-8, unsupported YAML tags, and aliases are
+values fail the build. With `allowWikilinks` (CLI/MCP `--allow-wikilinks`),
+`[[Note]]`, `[[Folder/Note|alias]]` and `[[Note#heading]]` values are also
+accepted and resolved by exact vault path, then by unique case-insensitive
+basename; ambiguity fails the build. Invalid UTF-8, unsupported YAML tags, and aliases are
 rejected even in unconfigured fields. Note bodies, Obsidian settings, and
 plugin code are not evaluated.
 
