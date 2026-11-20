@@ -46,6 +46,24 @@ function validateTimeout(options: RunScriptOptions) {
 	return timeoutMs;
 }
 
+async function runWithTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+	let timer: NodeJS.Timeout | undefined;
+	try {
+		const timeout = new Promise<never>((_, reject) => {
+			timer = setTimeout(
+				() =>
+					reject(
+						new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out."),
+					),
+				timeoutMs,
+			);
+		});
+		return await Promise.race([promise, timeout]);
+	} finally {
+		clearTimeout(timer);
+	}
+}
+
 /**
  * Evaluate caller-supplied JavaScript. This is NOT a security sandbox: `node:vm`
  * contexts can be escaped. Only run scripts the caller fully trusts.
