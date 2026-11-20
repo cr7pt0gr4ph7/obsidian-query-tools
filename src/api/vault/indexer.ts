@@ -7,7 +7,7 @@ import { parseDocument } from "yaml";
 import { VaultQueryError } from "../utils/errors.js";
 import type { Edge } from "../graph/graph.js";
 import type { GraphIndex } from "../graph/indexing.js";
-import { validatePath } from "../validation.js";
+import { validatePath } from "../utils/paths.js";
 import type { Config, VaultIndex } from "./types.js";
 
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);

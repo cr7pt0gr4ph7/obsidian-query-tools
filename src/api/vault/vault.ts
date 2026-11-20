@@ -13,7 +13,8 @@ import {
 } from "../graph/analysis.js";
 import { traverse } from "../graph/traverse.js";
 import { neighbors } from "../graph/neighbors.js";
-import { requestLimit, validatePath } from "../validation.js";
+import { requestLimit } from "../utils/validation.js";
+import { validatePath } from "../utils/paths.js";
 import type { VaultGraph } from "../graph/graph.js";
 import type { Vault, VaultOptions } from "./types.js";
 import { buildIndex } from "./indexer.js";

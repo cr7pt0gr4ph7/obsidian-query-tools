@@ -1,6 +1,7 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
-import { requestLimit, validatePath } from "../validation.js";
+import { requestLimit } from "../utils/validation.js";
+import { validatePath } from "../utils/paths.js";
 import type { Edge, NeighborOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 import { edgeTypes, type GraphConfig } from "./config.js";

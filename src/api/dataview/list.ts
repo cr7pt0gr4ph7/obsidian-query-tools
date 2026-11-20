@@ -1,6 +1,6 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
-import { validatePath } from "../validation.js";
+import { validatePath } from "../utils/paths.js";
 
 /** Optional controls for a supported folder-list query. */
 export interface ListOptions {
