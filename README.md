@@ -67,7 +67,8 @@ node dist/cli/index.js --vault /path/to/vault graph neighbors Tasks/example.md -
 The `obsidian-query` binary is an alias for the CLI. Its preliminary `query`
 command accepts `dataview` and `dql` selectors but supports only the shared
 API's project-defined `LIST FROM "<folder>"` query. `dataviewjs` and `dqljs`
-are rejected without execution. `--query` and `--stdin` are mutually
+are rejected unless `--unsafe-allow-js` is given, which runs the script in-process
+without a sandbox (trusted scripts only; see the design notes). `--query` and `--stdin` are mutually
 exclusive; stdin is UTF-8 and the query body is limited to 1 MiB. JSON is the
 default output; Markdown emits path lists as bullets. An optional `--file`
 must name an existing vault-relative Markdown file, but no current-file-

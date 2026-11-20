@@ -16,8 +16,17 @@ export function optionsForOpen(options: VaultOptions): Config {
 		throw new VaultQueryError("INVALID_OPTIONS", "Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
-		if (!["edgeFields", "limits"].includes(key))
+		if (!["edgeFields", "limits", "unsafeJavaScript"].includes(key))
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
+	}
+	if (
+		options.unsafeJavaScript !== undefined &&
+		typeof options.unsafeJavaScript !== "boolean"
+	) {
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
+			"unsafeJavaScript must be a boolean.",
+		);
 	}
 	const edgeFields = options.edgeFields ?? [];
 	if (
@@ -46,6 +55,7 @@ export function optionsForOpen(options: VaultOptions): Config {
 	const { maxEdges, ...vaultLimits } = { ...defaults, ...limits };
 	return {
 		limits: vaultLimits,
+		unsafeJavaScript: options.unsafeJavaScript === true,
 		graph: { edgeFields: [...edgeFields], limits: { maxEdges } },
 	};
 }

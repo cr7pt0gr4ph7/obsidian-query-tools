@@ -18,7 +18,8 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
   bounded results.
 - Preliminary `obsidian-query query` command with `dataview`/`dql` aliases,
   bounded inline/stdin input, API-validated file context, JSON/Markdown output,
-  and explicitly disabled JavaScript selectors.
+  and JavaScript selectors disabled unless `--unsafe-allow-js` is given
+  (`Vault.script()`, opt-in `unsafeJavaScript` open option; not a sandbox).
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
 - Node.js 24 and 26 CI coverage; reproducible install, build, and test commands.
@@ -31,5 +32,5 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - Expand filesystem-race coverage and document any newly identified limits.
 - Treat broader query or relationship semantics as new scope: define them,
   add fixtures, and preserve the vault privacy and read-only requirements.
-- Do not enable JavaScript query modes or claim upstream parity without a
-  separately justified design and the evidence required in the design docs.
+- Do not claim upstream parity without the evidence required in the design
+  docs; `dataviewjs` support is only the unsafe `dv` helper, not Dataview's API.

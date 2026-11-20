@@ -198,3 +198,11 @@ The query and relationship semantics are a deliberately narrow,
 project-defined subset, not a compatibility implementation of Dataview or
 Breadcrumbs. See [the design](../design/DESIGN.md) and
 [requirements](../design/REQUIREMENTS.md) for the full contract and limits.
+
+## Unsafe script execution
+
+`openVault(root, { unsafeJavaScript: true })` enables `vault.script(source,
+{ limit, file, timeoutMs })`, which runs an async function body with a `dv`
+helper (`current`, `paths()`, `list(query)`, `neighbors(path, options)`). It is
+not a sandbox; use only trusted scripts. Without the option it fails with
+`UNSUPPORTED_FEATURE`.

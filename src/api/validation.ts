@@ -17,7 +17,10 @@ export function validatePath(value: string, allowEmpty = false): string {
 		(value &&
 			value.split("/").some((part) => !part || part === "." || part === ".."))
 	) {
-		throw new VaultQueryError(EC.INVALID_PATH, "Expected a vault-relative POSIX path.");
+		throw new VaultQueryError(
+			EC.INVALID_PATH,
+			"Expected a vault-relative POSIX path.",
+		);
 	}
 	return value;
 }
@@ -36,7 +39,8 @@ export function requestLimit(
 	if (!options || typeof options !== "object" || Array.isArray(options))
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Options must be an object.");
 	for (const key of Object.keys(options)) {
-		if (!keys.includes(key)) throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
+		if (!keys.includes(key))
+			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
 	}
 	const limit = options.limit ?? max;
 	if (!Number.isSafeInteger(limit) || limit < 1 || limit > max)

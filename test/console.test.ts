@@ -276,7 +276,7 @@ test("disabled JavaScript aliases fail explicitly without invoking the API", asy
 			assert.equal(h.stdout(), "");
 			assert.match(
 				h.stderr(),
-				/^UNSUPPORTED_FEATURE: JavaScript query modes are disabled\.\n$/,
+				/^UNSUPPORTED_FEATURE: JavaScript query modes are disabled; pass --unsafe-allow-js to run trusted scripts\.\n$/,
 			);
 			assert.doesNotMatch(h.stderr(), /dv\.list/);
 		}

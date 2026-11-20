@@ -40,11 +40,17 @@ export async function runCli(args: string[]): Promise<number> {
 		return runConsole(args, {
 			api: {
 				async query(request: ConsoleRequest) {
-					const vault = await openVault(request.vault);
+					const vault = await openVault(request.vault, {
+						...(request.unsafeJs ? { unsafeJavaScript: true } : {}),
+					});
 					try {
-						return vault.list(request.query, {
+						const options = {
 							...(request.file === undefined ? {} : { file: request.file }),
-						});
+							...(request.limit === undefined ? {} : { limit: request.limit }),
+						};
+						return request.type === "dataviewjs"
+							? await vault.script(request.query, options)
+							: vault.list(request.query, options);
 					} finally {
 						vault.close();
 					}
