@@ -356,7 +356,10 @@ test("rejects malformed or oversized stdin before invoking the API", async () =>
 	assert.equal(
 		await runConsole(
 			["query", "--vault", "vault", "--type", "dql", "--stdin"],
-			{ ...oversized.dependencies, stdin: stdin("x".repeat(1_048_577)) },
+			{
+				...oversized.dependencies,
+				stdin: stdin("x".repeat(1_048_577)),
+			},
 		),
 		1,
 	);
@@ -371,7 +374,9 @@ test("API failures produce no success output and do not echo query source", asyn
 			new Error(
 				"Invalid query private query: current file is outside the vault.",
 			),
-			{ code: "INVALID_PATH" },
+			{
+				code: "INVALID_PATH",
+			},
 		);
 	};
 	assert.equal(

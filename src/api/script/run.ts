@@ -100,9 +100,12 @@ export async function runScript(
 	} catch (error) {
 		if (error instanceof VaultQueryError) throw error;
 		// WORKAROUND: Detect timeout error
-		if (error instanceof Error && error.message === "Script execution timed out.") {
+		if (
+			error instanceof Error &&
+			error.message === "Script execution timed out."
+		) {
 			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.");
-		} 
+		}
 		const name =
 			error && typeof error === "object" && "name" in error
 				? String(error.name)

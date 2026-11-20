@@ -3,6 +3,9 @@
 	"files": {
 		"includes": ["**", "!dist"]
 	},
+	"formatter": {
+		"lineWidth": 80
+	},
 	"linter": {
 		"rules": {
 			"style": {

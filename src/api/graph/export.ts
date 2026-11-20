@@ -76,7 +76,11 @@ export function exportGraph(
 				config,
 				Number.MAX_SAFE_INTEGER,
 				options.root,
-				{ direction: each, types, maxDepth: options.maxDepth ?? 1 },
+				{
+					direction: each,
+					types,
+					maxDepth: options.maxDepth ?? 1,
+				},
 			);
 			for (const edge of walked.data) {
 				keep.add(edge.source);

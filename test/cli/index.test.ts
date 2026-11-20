@@ -52,7 +52,10 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	const stdinQuery = spawnSync(
 		process.execPath,
 		[cli, "query", "--vault", root, "--type", "dql", "--stdin"],
-		{ input: 'LIST FROM ""\n', encoding: "utf8" },
+		{
+			input: 'LIST FROM ""\n',
+			encoding: "utf8",
+		},
 	);
 	assert.equal(stdinQuery.status, 0, stdinQuery.stderr);
 	assert.deepEqual(JSON.parse(stdinQuery.stdout), vault.list('LIST FROM ""\n'));
@@ -252,7 +255,9 @@ test("unsafe JavaScript runs only with the explicit flag", async (t) => {
 	const ok = spawnSync(
 		process.execPath,
 		[...base, "--unsafe-allow-js", "--query", script, "--limit", "1"],
-		{ encoding: "utf8" },
+		{
+			encoding: "utf8",
+		},
 	);
 	assert.equal(ok.status, 0, ok.stderr);
 	const out = JSON.parse(ok.stdout);
@@ -261,7 +266,10 @@ test("unsafe JavaScript runs only with the explicit flag", async (t) => {
 	const loop = spawnSync(
 		process.execPath,
 		[...base, "--unsafe-allow-js", "--query", "while (true) {}"],
-		{ encoding: "utf8", timeout: 20000 },
+		{
+			encoding: "utf8",
+			timeout: 20000,
+		},
 	);
 	assert.equal(loop.status, 1);
 	assert.match(loop.stderr, /^INVALID_QUERY|LIMIT_EXCEEDED/);
@@ -352,7 +360,9 @@ test("graph neighbors accepts its own --edge-field", async (t) => {
 	const out = spawnSync(
 		process.execPath,
 		[cli, "--vault", root, "graph", "neighbors", "a.md", "--edge-field", "up"],
-		{ encoding: "utf8" },
+		{
+			encoding: "utf8",
+		},
 	);
 	assert.equal(out.status, 0, out.stderr);
 	assert.equal(JSON.parse(out.stdout).data[0].target, "b.md");

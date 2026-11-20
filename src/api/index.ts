@@ -2,9 +2,10 @@
 
 /** Options for folder-list queries. */
 export type { ListOptions } from "./dataview/list.js";
-export type { Description } from "./describe.js";
+
 /** Describe supported operations, limits and error codes. */
-export { describe } from "./describe.js";
+export { Description, describe } from "./description.js";
+
 /** Types for directed edges and direct-neighbor queries. */
 export type { GraphLimits } from "./graph/config.js";
 export type {
@@ -28,5 +29,6 @@ export { VaultQueryError } from "./utils/errors.js";
 export type { QueryResult } from "./utils/result.js";
 /** Vault lifecycle, open configuration, and resource-limit types. */
 export type { Vault, VaultLimits, VaultOptions } from "./vault/types.js";
+
 /** Open a local vault and create the shared read-only query context. */
 export { openVault } from "./vault/vault.js";
