@@ -17,7 +17,15 @@ const csv = (value: string) => {
 };
 const mermaidLabel = (value: string) => value.replaceAll('"', "#quot;").replaceAll(/[\r\n]/g, " ");
 
-/** Serialize the graph (all files as nodes, selected edges) deterministically. */
+/**
+ * Serialize the graph (all files as nodes, selected edges) deterministically.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation being exported.
+ * @param config Graph configuration, including configured edge types.
+ * @param options Format, type filters, and optional root-subgraph settings.
+ * @returns Serialized graph content with node, edge, and generation metadata.
+ */
 export function exportGraph(
 	index: GraphIndex,
 	generation: number,

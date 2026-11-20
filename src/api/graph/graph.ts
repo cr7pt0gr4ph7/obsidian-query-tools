@@ -110,28 +110,65 @@ export interface Edge {
 export interface VaultGraph {
 	/**
 	 * Find direct edges incident to a Markdown file.
+	 *
 	 * @param node Vault-relative Markdown path to query.
 	 * @param options Direction, edge-type, and result-limit filters.
+	 * @returns Matching directed edges and result metadata.
 	 */
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
 	/**
 	 * Breadth-first walk of edges reachable from a node, visiting each node once.
 	 * This is plain reachability, not Breadcrumbs' transitive rules.
+	 *
+	 * @param node Vault-relative Markdown path from which to walk.
+	 * @param options Direction, edge-type, depth, and result-limit filters.
+	 * @returns Discovered edges and result metadata.
 	 */
 	traverse(node: string, options?: TraverseOptions): QueryResult<Edge>;
 	/**
 	 * Shortest chain of edges from one node to another; `data` is empty when the
 	 * target is unreachable or equals the start.
+	 *
+	 * @param from Starting vault-relative Markdown path.
+	 * @param to Destination vault-relative Markdown path.
+	 * @param options Direction, edge-type, and result-limit filters.
+	 * @returns The shortest edge chain and result metadata.
 	 */
 	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
-	/** Find notes that point to the same target as `node` using the same edge type. */
+	/**
+	 * Find notes that point to the same target as `node` using the same edge type.
+	 *
+	 * @param node Vault-relative Markdown path whose siblings are requested.
+	 * @param options Edge-type and result-limit filters.
+	 * @returns Sibling notes and their shared targets.
+	 */
 	siblings(node: string, options?: SiblingsOptions): QueryResult<Sibling>;
-	/** Find groups of nodes that can reach each other (cycles), each sorted, ordered by first path. */
+	/**
+	 * Find groups of nodes that can reach each other (cycles), each sorted and ordered by first path.
+	 *
+	 * @param options Edge-type and result-limit filters.
+	 * @returns Cycle groups and result metadata.
+	 */
 	cycles(options?: CyclesOptions): QueryResult<string[]>;
-	/** List sorted Markdown paths, optionally only sources, sinks, or isolated nodes. */
+	/**
+	 * List sorted Markdown paths, optionally only sources, sinks, or isolated nodes.
+	 *
+	 * @param options Node-role, edge-type, and result-limit filters.
+	 * @returns Matching paths and result metadata.
+	 */
 	nodes(options?: NodesOptions): QueryResult<string>;
-	/** Count nodes and edges, optionally limited to some edge types. */
+	/**
+	 * Count nodes and edges, optionally limited to some edge types.
+	 *
+	 * @param options Edge-type filter.
+	 * @returns Graph counts for the current generation.
+	 */
 	stats(options?: { types?: string[] }): GraphStats;
-	/** Serialize the whole graph (all Markdown files as nodes) in a chosen format. */
+	/**
+	 * Serialize the whole graph (all Markdown files as nodes) in a chosen format.
+	 *
+	 * @param options Format, type filters, and optional root-subgraph settings.
+	 * @returns Serialized graph content with metadata.
+	 */
 	export(options?: ExportOptions): GraphExport;
 }

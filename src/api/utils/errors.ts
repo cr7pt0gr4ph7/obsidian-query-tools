@@ -7,6 +7,7 @@ export class VaultQueryError extends Error {
 
 	/**
 	 * Create a structured query error.
+	 *
 	 * @param code Stable machine-readable error category.
 	 * @param message Human-readable explanation.
 	 * @param relativePath Vault-relative path associated with the error, if any.

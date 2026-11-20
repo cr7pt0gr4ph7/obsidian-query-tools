@@ -3,9 +3,11 @@ import { Errors } from "./errors.js";
 
 /**
  * Validate result-limit options and return the effective limit.
+ *
  * @param options Options object supplied to the query.
  * @param max Maximum configured result count.
  * @param keys Option names allowed by the caller.
+ * @returns The requested limit, or the configured maximum.
  */
 export function requestLimit(options: ListOptions, max: number, keys: string[]): number {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
@@ -21,8 +23,10 @@ export function requestLimit(options: ListOptions, max: number, keys: string[]):
 
 /**
  * Validate that the provided options object only contains allowed keys.
+ *
  * @param options Options object to validate.
  * @param keys Array of allowed option keys.
+ * @returns Nothing when all option keys are allowed.
  */
 export function validateOptions<T extends {}>(options: T, keys: (keyof T)[]) {
 	for (const key of Object.keys(options)) {

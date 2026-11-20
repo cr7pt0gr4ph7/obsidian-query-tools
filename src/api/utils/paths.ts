@@ -6,6 +6,7 @@ import { Errors } from "./errors.js";
  *
  * @param value Path to validate.
  * @param allowEmpty Whether the empty path, representing the vault root, is allowed.
+ * @returns The validated path unchanged.
  */
 export function validatePath(value: string, allowEmpty = false): string {
 	if (

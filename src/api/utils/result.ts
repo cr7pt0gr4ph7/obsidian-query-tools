@@ -12,9 +12,11 @@ export interface QueryResult<T> {
 
 /**
  * Create a result envelope, trimming values to the requested limit.
+ *
  * @param generation Index generation used to produce the result.
  * @param values All matching values before applying the result limit.
  * @param limit Maximum number of values to return.
+ * @returns The bounded result envelope and truncation metadata.
  */
 export function result<T>(generation: number, values: T[], limit: number): QueryResult<T> {
 	return {

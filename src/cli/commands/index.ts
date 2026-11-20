@@ -5,6 +5,13 @@ import type { CliCommandSelector } from "./types.js";
 
 export type { CliCommand } from "./types.js";
 
+/**
+ * Create the CLI command tree and connect command actions to the selection callback.
+ *
+ * @param version Version displayed by `--version`.
+ * @param select Callback receiving the selected operation and its options.
+ * @returns The configured Commander program.
+ */
 export function createProgram(version: string, select: CliCommandSelector): Command {
 	const program = new Command()
 		.name("obsidian-query-tools")

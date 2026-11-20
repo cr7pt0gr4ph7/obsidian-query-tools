@@ -4,6 +4,15 @@ import { Errors } from "../../utils/errors.js";
 import type { Config, VaultIndex } from "../types.js";
 import { compare } from "./files.js";
 
+/**
+ * Resolve pending links, validate targets, add implied edges, and sort the index.
+ *
+ * @param files Indexed vault-relative Markdown paths.
+ * @param edges Declared edges, updated with resolved targets and implied edges.
+ * @param pending Edges whose targets need wikilink resolution.
+ * @param config Validated graph and vault configuration.
+ * @returns The completed vault index.
+ */
 export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>, config: Config): VaultIndex {
 	files.sort(compare);
 	const paths = new Set(files);

@@ -6,6 +6,13 @@ import { edgeTypes, type GraphConfig } from "./config.js";
 import type { CyclesOptions, Edge, GraphStats, NodesOptions, PathOptions, Sibling, SiblingsOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
+/**
+ * Validate and select graph edge types.
+ *
+ * @param config Graph configuration defining available edge types.
+ * @param types Optional requested edge types; defaults to all configured types.
+ * @returns The selected edge types.
+ */
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
 	const selected = types ?? edgeTypes(config);
 	if (!Array.isArray(selected) || selected.some((type) => !edgeTypes(config).includes(type))) {
@@ -14,6 +21,13 @@ export function selectTypes(config: GraphConfig, types?: string[]): string[] {
 	return selected;
 }
 
+/**
+ * Validate a vault-relative path and ensure it names an indexed node.
+ *
+ * @param index Current graph index.
+ * @param node Vault-relative Markdown path to check.
+ * @returns Nothing when the path identifies an indexed node.
+ */
 export function requireNode(index: GraphIndex, node: string): void {
 	validatePath(node);
 	if (!index.files.includes(node)) {
@@ -21,7 +35,19 @@ export function requireNode(index: GraphIndex, node: string): void {
 	}
 }
 
-/** Shortest outgoing (or incoming) edge path between two nodes; empty data when unreachable. */
+/**
+ * Find the shortest outgoing or incoming edge path between two nodes.
+ * The result data is empty when the destination is unreachable or equals the start.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration defining available edge types.
+ * @param maxResults Maximum configured result count.
+ * @param from Starting vault-relative Markdown path.
+ * @param to Destination vault-relative Markdown path.
+ * @param options Direction, edge-type, and result-limit filters.
+ * @returns The shortest edge chain and result metadata.
+ */
 export function shortestPath(
 	index: GraphIndex,
 	generation: number,
@@ -72,7 +98,15 @@ export function shortestPath(
 	return result(generation, from === to || !seen.has(to) ? [] : path, limit);
 }
 
-/** Summary counts for the selected edge types. */
+/**
+ * Count nodes, selected edges, and node roles in the graph.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration defining available edge types.
+ * @param types Optional edge types to include; defaults to all configured types.
+ * @returns Graph counts and per-type edge totals.
+ */
 export function graphStats(index: GraphIndex, generation: number, config: GraphConfig, types?: string[]): GraphStats {
 	const selected = selectTypes(config, types);
 	const edges = index.edges.filter((edge) => selected.includes(edge.type));
@@ -121,7 +155,16 @@ export function graphStats(index: GraphIndex, generation: number, config: GraphC
 
 const roles = ["all", "sources", "sinks", "isolated"] as const;
 
-/** Sorted node paths filtered by their role in the selected edges. */
+/**
+ * List sorted node paths, optionally filtered by role and edge types.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration defining available edge types.
+ * @param maxResults Maximum configured result count.
+ * @param options Node-role, edge-type, and result-limit filters.
+ * @returns Matching vault-relative Markdown paths and result metadata.
+ */
 export function listNodes(
 	index: GraphIndex,
 	generation: number,
@@ -161,7 +204,16 @@ export function listNodes(
 	return result(generation, values, limit);
 }
 
-/** Groups of mutually reachable nodes (including self-loops), via iterative Tarjan. */
+/**
+ * Find groups of mutually reachable nodes, including self-loops, using iterative Tarjan traversal.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration defining available edge types.
+ * @param maxResults Maximum configured result count.
+ * @param options Edge-type and result-limit filters.
+ * @returns Sorted cycle groups and result metadata.
+ */
 export function findCycles(
 	index: GraphIndex,
 	generation: number,
@@ -239,7 +291,17 @@ export function findCycles(
 	return result(generation, groups, limit);
 }
 
-/** Notes sharing a target ("parent") with a node through the same edge type. */
+/**
+ * Find notes that share an outgoing target with the queried node through the same edge type.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration defining available edge types.
+ * @param maxResults Maximum configured result count.
+ * @param node Vault-relative Markdown path whose siblings are requested.
+ * @param options Edge-type and result-limit filters.
+ * @returns Matching sibling, shared-parent, and edge-type records.
+ */
 export function findSiblings(
 	index: GraphIndex,
 	generation: number,

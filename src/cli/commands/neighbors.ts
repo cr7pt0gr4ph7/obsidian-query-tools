@@ -2,6 +2,12 @@ import { type Command, Option } from "commander";
 import { createNeighborAction } from "./helpers.js";
 import type { CliCommandSelector } from "./types.js";
 
+/**
+ * Register the direct-neighbors command and its supported filters.
+ *
+ * @param program Commander program to extend.
+ * @param select Callback receiving the selected command.
+ */
 export function registerNeighborsCommand(program: Command, select: CliCommandSelector): void {
 	program
 		.command("neighbors <path>")

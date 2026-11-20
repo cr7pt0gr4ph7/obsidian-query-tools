@@ -16,6 +16,7 @@ import { optionsForOpen } from "./validation.js";
 
 /**
  * Open and index a local Obsidian vault for read-only queries.
+ *
  * @param root Path to the vault directory.
  * @param options Optional edge-field configuration and resource limits.
  * @returns A vault API context with an initial index generation.
@@ -183,20 +184,37 @@ export interface VaultOptions {
 export interface Vault {
 	/**
 	 * List Markdown paths using the supported `LIST FROM "<folder>"` subset.
+	 *
 	 * @param query Query text.
 	 * @param options Result limit and optional validated file context.
+	 * @returns Matching paths and result metadata.
 	 */
 	list(query: string, options?: ListOptions): QueryResult<string>;
 	/**
 	 * UNSAFE: execute caller-supplied JavaScript with a read-only `dv` helper.
 	 * Fails with `UNSUPPORTED_FEATURE` unless opened with `unsafeJavaScript: true`.
+	 *
 	 * @param source Async function body; its returned value is the result.
+	 * @param options Result limit, optional file context, and execution timeout.
+	 * @returns Script results and metadata for the current index generation.
 	 */
 	script(source: string, options?: ScriptOptions): Promise<QueryResult<unknown>>;
-	/** Obtain a graph view that follows the vault's current generation and closes with the vault. */
+	/**
+	 * Obtain a graph view that follows the vault's current generation and closes with the vault.
+	 *
+	 * @returns A graph-query interface for this vault.
+	 */
 	graph(): VaultGraph;
-	/** Build and publish a replacement index, returning its new generation number. */
+	/**
+	 * Build and publish a replacement index, returning its new generation number.
+	 *
+	 * @returns The generation number of the newly published index.
+	 */
 	refresh(): Promise<number>;
-	/** Close the vault and invalidate subsequent operations. */
+	/**
+	 * Close the vault and invalidate subsequent operations.
+	 *
+	 * @returns Nothing.
+	 */
 	close(): void;
 }

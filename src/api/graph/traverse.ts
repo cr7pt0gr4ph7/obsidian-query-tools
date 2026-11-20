@@ -11,6 +11,14 @@ const maxDepthLimit = 1000;
 /**
  * Breadth-first walk of directed edges from a node, visiting each node once.
  * Edges are returned in discovery order: by depth, then sorted edge order.
+ *
+ * @param index Current graph index.
+ * @param generation Index generation used by the query.
+ * @param config Graph configuration, including indexed edge fields.
+ * @param maxResults Maximum configured result count.
+ * @param node Vault-relative Markdown path from which to walk.
+ * @param options Direction, edge-type, depth, and result-limit filters.
+ * @returns Discovered edges and result metadata.
  */
 export function traverse(
 	index: GraphIndex,

@@ -19,6 +19,11 @@ substantive decisions change.
   versions and representative, non-sensitive fixtures. Do not claim parity
   without evidence.
 - Keep design documents in sync with substantive implementation decisions.
+- Document every exported function and every method on exported interfaces or
+  classes with JSDoc. Start with a concise summary, then put a blank line
+  before any `@param` and `@returns` tags; describe each parameter and return
+  value. Do not add individual method documentation to methods nested in the
+  `Errors` object.
 - Indent JavaScript in Markdown code blocks with four spaces.
 - Store research and other project notes in `design/notes/` using filenames
   that begin with `YYYY-MM-` (for example, `2026-11-upstream.md`).

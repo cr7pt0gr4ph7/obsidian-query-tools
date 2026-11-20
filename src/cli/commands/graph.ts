@@ -10,6 +10,12 @@ function requireEdgeFields(command: Command, options: { edgeField?: string[] }) 
 	}
 }
 
+/**
+ * Register graph analysis, traversal, and export commands.
+ *
+ * @param program Commander program to extend.
+ * @param select Callback receiving the selected operation and options.
+ */
 export function registerGraphCommands(program: Command, select: CliCommandSelector): void {
 	const graph = program.command("graph").description("Run a graph operation.");
 

@@ -4,7 +4,12 @@ import { Errors, type VaultOptions } from "../api/index.js";
 const maxConfigBytes = 65_536;
 const allowedKeys = ["edgeFields", "oppositeFields", "allowWikilinks", "limits"];
 
-/** Load trusted open options from an explicitly named JSON file. */
+/**
+ * Load trusted open options from an explicitly named JSON file.
+ *
+ * @param file Path to a bounded JSON configuration file.
+ * @returns Parsed vault-opening options.
+ */
 export async function loadConfig(file: string): Promise<VaultOptions> {
 	let text: string;
 	try {
@@ -33,7 +38,13 @@ export async function loadConfig(file: string): Promise<VaultOptions> {
 	return parsed as VaultOptions;
 }
 
-/** Combine file settings with command-line flags; flags add to or override the file. */
+/**
+ * Combine file settings with command-line flags; flags add to or override the file.
+ *
+ * @param file Options loaded from the configuration file.
+ * @param flags Options supplied by command-line flags.
+ * @returns The merged vault-opening options.
+ */
 export function mergeOptions(file: VaultOptions, flags: VaultOptions): VaultOptions {
 	const edgeFields = [...(file.edgeFields ?? [])];
 	for (const field of flags.edgeFields ?? []) {

@@ -5,14 +5,36 @@ import { lstat, open } from "node:fs/promises";
 import path from "node:path";
 import { Errors } from "../../utils/errors.js";
 
+/**
+ * Compare strings using deterministic code-unit ordering.
+ *
+ * @param a First string.
+ * @param b Second string.
+ * @returns A negative number when `a` sorts first, zero when equal, or a positive number when `b` sorts first.
+ */
 export const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 const fdPath = (handle: FileHandle): string => `/proc/self/fd/${handle.fd}`;
 
+/**
+ * Create a stable signature from filesystem metadata.
+ *
+ * @param stat File or directory metadata.
+ * @returns A string representing device, inode, size, and change timestamps.
+ */
 export function signature(stat: Stats): string {
 	return `${stat.dev}:${stat.ino}:${stat.size}:${stat.mtimeMs}:${stat.ctimeMs}`;
 }
 
+/**
+ * Read a Markdown file through its open parent directory without following symlinks.
+ *
+ * @param parent Open handle for the containing directory.
+ * @param name Entry name relative to the parent directory.
+ * @param relativePath Vault-relative path used in diagnostics.
+ * @param limit Maximum allowed file size in bytes.
+ * @returns The file contents decoded as UTF-8.
+ */
 export async function readMarkdownFile(
 	parent: FileHandle,
 	name: string,

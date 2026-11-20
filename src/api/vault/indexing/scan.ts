@@ -17,6 +17,13 @@ export interface ScannedIndex {
 
 const fdPath = (handle: FileHandle): string => `/proc/self/fd/${handle.fd}`;
 
+/**
+ * Scan a vault directory, reading bounded Markdown files and extracting edges.
+ *
+ * @param root Canonical local vault directory.
+ * @param config Validated index settings and resource limits.
+ * @returns Discovered paths and edges, including pending wikilink resolution.
+ */
 export async function scanVault(root: string, config: Config): Promise<ScannedIndex> {
 	const files: string[] = [];
 	const edges: Edge[] = [];

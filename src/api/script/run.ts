@@ -22,11 +22,26 @@ export interface RunScriptOptions {
 
 /** Host operations exposed to a script as the `dv` object. */
 export interface ScriptHost {
-	/** Run a supported `LIST FROM` query and return its paths. */
+	/**
+	 * Run a supported `LIST FROM` query and return its paths.
+	 *
+	 * @param query Supported folder-list query text.
+	 * @returns Matching vault-relative Markdown paths.
+	 */
 	list(query: string): string[];
-	/** Return all indexed Markdown paths. */
+	/**
+	 * Return all indexed Markdown paths.
+	 *
+	 * @returns Sorted vault-relative Markdown paths.
+	 */
 	paths(): string[];
-	/** Return direct edges incident to a path. */
+	/**
+	 * Return direct edges incident to a path.
+	 *
+	 * @param path Vault-relative Markdown path to query.
+	 * @param options Direction and edge-type filters.
+	 * @returns Matching directed edges.
+	 */
 	neighbors(
 		path: string,
 		options?: { direction?: "incoming" | "outgoing"; types?: string[] },
@@ -45,6 +60,7 @@ function validateTimeout(options: RunScriptOptions) {
 
 /**
  * Check if an error is a script timeout error.
+ *
  * @param error The error to check.
  * @returns True if the error is a script timeout error, false otherwise.
  */
@@ -56,6 +72,11 @@ function isTimeoutError(error: unknown) {
 /**
  * Evaluate caller-supplied JavaScript. This is NOT a security sandbox: `node:vm`
  * contexts can be escaped. Only run scripts the caller fully trusts.
+ *
+ * @param source Async function body to evaluate.
+ * @param host Read-only query operations exposed to the script as `dv`.
+ * @param options Script execution timeout.
+ * @returns JSON-serializable script results as an array.
  */
 export async function runScript(
 	source: string,

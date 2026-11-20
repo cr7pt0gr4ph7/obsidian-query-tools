@@ -49,7 +49,12 @@ export interface ConsoleResult {
 export interface ConsoleDependencies {
 	/** Shared API adapter invoked for supported queries. */
 	api: {
-		/** Execute the request through the shared query API. */
+		/**
+		 * Execute the request through the shared query API.
+		 *
+		 * @param request Query parameters for the selected vault and operation.
+		 * @returns The query result, immediately or as a promise.
+		 */
 		query(request: ConsoleRequest): Promise<ConsoleResult> | ConsoleResult;
 	};
 	/** Optional UTF-8 query input stream used with `--stdin`. */
@@ -174,7 +179,13 @@ function outputError(stderr: ConsoleDependencies["stderr"], error: unknown, quer
 	return 1;
 }
 
-/** Parse, execute, and format one console query command. */
+/**
+ * Parse, execute, and format one console query command.
+ *
+ * @param arguments_ Arguments passed to the console query command.
+ * @param dependencies API adapter and input/output streams used by the command.
+ * @returns The process exit code.
+ */
 export async function runConsole(arguments_: string[], dependencies: ConsoleDependencies): Promise<number> {
 	let source: string | undefined;
 	try {

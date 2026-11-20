@@ -51,7 +51,12 @@ async function executeGraphCommand(vault: Vault, command: CliCommand): Promise<u
 	}
 }
 
-/** Run the CLI with user arguments, writing results and diagnostics to process streams. */
+/**
+ * Run the CLI with user arguments, writing results and diagnostics to process streams.
+ *
+ * @param args Arguments passed after the executable name.
+ * @returns The process exit code.
+ */
 export async function runCli(args: string[]): Promise<number> {
 	if (args.length === 1 && args[0] === "describe") {
 		process.stdout.write(`${JSON.stringify(describe())}\n`);

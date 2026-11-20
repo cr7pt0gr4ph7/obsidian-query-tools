@@ -16,7 +16,12 @@ export interface GraphConfig {
 	limits: GraphLimits;
 }
 
-/** Every edge type that can appear: configured fields plus implied opposite types. */
+/**
+ * Return every edge type that can appear, including implied opposite types.
+ *
+ * @param config Graph configuration containing declared and opposite fields.
+ * @returns Unique configured edge types, preserving first occurrence.
+ */
 export function edgeTypes(config: GraphConfig): string[] {
 	return [...new Set([...config.edgeFields, ...Object.values(config.opposites)])];
 }

@@ -12,10 +12,12 @@ export interface ListOptions {
 
 /**
  * Evaluate the supported `LIST FROM "<folder>"` query against indexed paths.
+ *
  * @param files Sorted vault-relative Markdown paths.
  * @param generation Index generation used by the query.
  * @param query Query text; other query forms are rejected.
  * @param limit Maximum number of paths to return.
+ * @returns A bounded result containing matching paths.
  */
 export function list(files: readonly string[], generation: number, query: string, limit: number): QueryResult<string> {
 	if (typeof query !== "string") {

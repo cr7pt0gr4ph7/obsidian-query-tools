@@ -18,7 +18,11 @@ export interface Description {
 	openOptions: Record<string, string>;
 }
 
-/** Describe supported operations, options, limits and error codes without opening a vault. */
+/**
+ * Describe supported operations, options, limits and error codes without opening a vault.
+ *
+ * @returns A machine-readable description of supported capabilities.
+ */
 export function describe(): Description {
 	return {
 		operations: [

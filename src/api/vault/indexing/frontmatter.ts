@@ -3,6 +3,18 @@ import type { Edge } from "../../graph/graph.js";
 import { Errors } from "../../utils/errors.js";
 import { validatePath } from "../../utils/paths.js";
 
+/**
+ * Parse configured edge values from a Markdown file's YAML frontmatter.
+ *
+ * @param contents Markdown file contents.
+ * @param relativePath Vault-relative path used in diagnostics and edge sources.
+ * @param fields Frontmatter fields interpreted as edge types.
+ * @param maxEdges Maximum number of declared edges allowed.
+ * @param edges Collection receiving parsed edges.
+ * @param wikilinks Whether supported wikilink values are accepted.
+ * @param pending Edges awaiting wikilink target resolution.
+ * @returns Nothing; appends parsed edges to the supplied collections.
+ */
 export function readEdges(
 	contents: string,
 	relativePath: string,
