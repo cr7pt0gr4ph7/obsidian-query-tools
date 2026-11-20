@@ -9,10 +9,10 @@
 	"linter": {
 		"rules": {
 			"style": {
-				"useBlockStatements": "warn",
+				"useBlockStatements": "warn"
 			},
 			"correctness": {
-				"noUnusedFunctionParameters": "off",
+				"noUnusedFunctionParameters": "off"
 			}
 		}
 	}
