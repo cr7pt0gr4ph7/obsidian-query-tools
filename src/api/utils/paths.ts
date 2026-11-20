@@ -15,7 +15,7 @@ export function validatePath(value: string, allowEmpty = false): string {
 		value.includes("\0") ||
 		value.startsWith("/") ||
 		/^[a-z]:/i.test(value) ||
-		value?.split("/").some((part) => !part || part === "." || part === "..")
+		(value !== "" && value.split("/").some((part) => !part || part === "." || part === ".."))
 	) {
 		throw new VaultQueryError(ErrorCode.INVALID_PATH, "Expected a vault-relative POSIX path.");
 	}
