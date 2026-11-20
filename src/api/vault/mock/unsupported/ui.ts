@@ -91,30 +91,3 @@ export class Notice {
 	 */
 	hide(): void;
 }
-
-/**
- * Options for opening a file in a leaf.
- * @public
- */
-export interface OpenViewState {
-	/**
-	 * The view state.
-	 * @public
-	 */
-	state?: Record<string, unknown>;
-	/**
-	 * The ephemeral state.
-	 * @public
-	 */
-	eState?: Record<string, unknown>;
-	/**
-	 * Whether to make the leaf active. Omit to follow the user's preference.
-	 * @public
-	 */
-	active?: boolean;
-	/**
-	 * A leaf to link this leaf with. See {@link WorkspaceLeaf.setGroupMember}.
-	 * @public
-	 */
-	group?: WorkspaceLeaf;
-}
