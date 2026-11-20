@@ -390,12 +390,11 @@ export abstract class TextFileView extends EditableFileView {
 	abstract clear(): void;
 }
 
-
 /**
  * CodeMirror {@link ViewPlugin} for Live Preview.
  * @public
  */
-export const livePreviewState: ViewPlugin<LivePreviewStateType, undefined>;
+export declare const livePreviewState: ViewPlugin<LivePreviewStateType, undefined>;
 
 /**
  * The object stored in the view plugin {@link livePreviewState}.
@@ -414,8 +413,7 @@ export interface LivePreviewStateType {
  * This is the editor for Obsidian Mobile as well as the WYSIWYG editor.
  * @public
  */
-export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownFileInfo {
-
+export declare class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownFileInfo {
 	/**
 	 * The app instance.
 	 * @public
@@ -475,7 +473,6 @@ export class MarkdownEditView implements MarkdownSubView, HoverParent, MarkdownF
 	 * @public
 	 */
 	applyScroll(scroll: number): void;
-
 }
 
 /**
@@ -505,9 +502,7 @@ export interface MarkdownFileInfo extends HoverParent {
  * The events of the Markdown preview.
  * @public
  */
-export interface MarkdownPreviewEvents extends Component {
-
-}
+export interface MarkdownPreviewEvents extends Component {}
 
 /**
  * The renderer of the Markdown preview.
@@ -538,16 +533,17 @@ export class MarkdownPreviewRenderer {
 	 * @public
 	 * @since 0.12.11
 	 */
-	static createCodeBlockPostProcessor(language: string, handler: (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => Promise<any> | void): (el: HTMLElement, ctx: MarkdownPostProcessorContext) => void;
-
+	static createCodeBlockPostProcessor(
+		language: string,
+		handler: (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => Promise<any> | void,
+	): (el: HTMLElement, ctx: MarkdownPostProcessorContext) => void;
 }
 
 /**
  * The reading mode of a {@link MarkdownView}.
  * @public
  */
-export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSubView, MarkdownPreviewEvents {
-
+export declare class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSubView, MarkdownPreviewEvents {
 	/**
 	 * The container element.
 	 * @public
@@ -596,9 +592,7 @@ export class MarkdownPreviewView extends MarkdownRenderer implements MarkdownSub
 	 * @public
 	 */
 	applyScroll(scroll: number): void;
-
 }
-
 
 /**
  * A renderer for Markdown.
@@ -647,14 +641,11 @@ export abstract class MarkdownRenderer extends MarkdownRenderChild implements Ma
 	static render(app: App, markdown: string, el: HTMLElement, sourcePath: string, component: Component): Promise<void>;
 }
 
-
-
 /**
  * A sub view of the Markdown view.
  * @public
  */
 export interface MarkdownSubView {
-
 	/**
 	 * Get the scroll position.
 	 * @public
@@ -679,7 +670,6 @@ export interface MarkdownSubView {
 	 * @public
 	 */
 	set(data: string, clear: boolean): void;
-
 }
 
 /**
@@ -687,7 +677,6 @@ export interface MarkdownSubView {
  * @public
  */
 export class MarkdownView extends TextFileView implements MarkdownFileInfo {
-
 	/**
 	 * The editor.
 	 * @public
@@ -752,11 +741,10 @@ export class MarkdownView extends TextFileView implements MarkdownFileInfo {
 	 * @public
 	 */
 	showSearch(replace?: boolean): void;
-
 }
 
 /**
  * The mode of the Markdown view.
  * @public
  */
-export type MarkdownViewModeType = 'source' | 'preview';
+export type MarkdownViewModeType = "source" | "preview";

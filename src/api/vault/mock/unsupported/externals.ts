@@ -1,4 +1,4 @@
-import * as Moment from 'moment';
+import * as Moment from "moment";
 
 /**
  * The `Moment.js` library.
@@ -12,7 +12,7 @@ export const moment: typeof Moment = Moment;
  * @public
  */
 export function loadMathJax(): Promise<void> {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -20,7 +20,7 @@ export function loadMathJax(): Promise<void> {
  * @public
  */
 export function finishRenderMath(): Promise<void> {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -31,7 +31,7 @@ export function finishRenderMath(): Promise<void> {
  * @public
  */
 export function renderMath(source: string, display: boolean): HTMLElement {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -41,7 +41,7 @@ export function renderMath(source: string, display: boolean): HTMLElement {
  * @public
  */
 export function loadMermaid(): Promise<any> {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -51,7 +51,7 @@ export function loadMermaid(): Promise<any> {
  * @public
  */
 export function loadPdfJs(): Promise<any> {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -61,5 +61,5 @@ export function loadPdfJs(): Promise<any> {
  * @public
  */
 export function loadPrism(): Promise<any> {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }

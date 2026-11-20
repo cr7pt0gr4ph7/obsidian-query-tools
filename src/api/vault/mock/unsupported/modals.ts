@@ -11,50 +11,50 @@ type ConfirmationButton = Placeholder;
  * @public
  */
 export class Modal implements HistoryHandler {
-    /**
-     * The app instance.
-     * @public
-     */
-    app: App;
-    /**
-     * The keymap scope that is active while the modal is open.
-     * @public
-     */
-    scope: Scope;
-    /**
-     * The outermost element of the modal. Contains the modal (`.modal`) and the modal background element (`.modal-bg`).
-     * @public
-     */
-    containerEl: HTMLElement;
-    /**
-     * The outermost element of the popup itself.
-     * @public
-     */
-    modalEl: HTMLElement;
+	/**
+	 * The app instance.
+	 * @public
+	 */
+	app: App;
+	/**
+	 * The keymap scope that is active while the modal is open.
+	 * @public
+	 */
+	scope: Scope;
+	/**
+	 * The outermost element of the modal. Contains the modal (`.modal`) and the modal background element (`.modal-bg`).
+	 * @public
+	 */
+	containerEl: HTMLElement;
+	/**
+	 * The outermost element of the popup itself.
+	 * @public
+	 */
+	modalEl: HTMLElement;
 
-    /**
-     * The title element.
-     * @public
-     */
-    titleEl: HTMLElement;
-    /**
-     * The content element.
-     * @public
-     */
-    contentEl: HTMLElement;
+	/**
+	 * The title element.
+	 * @public
+	 */
+	titleEl: HTMLElement;
+	/**
+	 * The content element.
+	 * @public
+	 */
+	contentEl: HTMLElement;
 
-    /**
-     * Whether to save the text selection when the modal is opened, and restore it when the modal is closed.
-     * @public
-     * @since 0.9.16
-     */
-    shouldRestoreSelection: boolean;
+	/**
+	 * Whether to save the text selection when the modal is opened, and restore it when the modal is closed.
+	 * @public
+	 * @since 0.9.16
+	 */
+	shouldRestoreSelection: boolean;
 
-    /**
-     * @param app The app instance.
-     * @public
-     */
-    constructor(app: App) {
+	/**
+	 * @param app The app instance.
+	 * @public
+	 */
+	constructor(app: App) {
 		this.app = app;
 		this.scope = placeholder;
 		this.containerEl = placeholder;
@@ -64,77 +64,77 @@ export class Modal implements HistoryHandler {
 		this.shouldRestoreSelection = false;
 	}
 
-    /**
-     * Show the modal on the active window. On phones, the modal will animate on screen.
-     * @public
-     */
-    open(): void {
+	/**
+	 * Show the modal on the active window. On phones, the modal will animate on screen.
+	 * @public
+	 */
+	open(): void {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * @inheritDoc
-     * @public
-     */
-    onHistoryBack(): void {
+	/**
+	 * @inheritDoc
+	 * @public
+	 */
+	onHistoryBack(): void {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * Close the modal.
-     * @public
-     */
-    close(): void {
+	/**
+	 * Close the modal.
+	 * @public
+	 */
+	close(): void {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * Called when the modal is opened.
-     * @public
-     */
-    onOpen(): Promise<void> | void {
+	/**
+	 * Called when the modal is opened.
+	 * @public
+	 */
+	onOpen(): Promise<void> | void {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * Called when the modal is closed.
-     * @public
-     */
-    onClose(): void {
+	/**
+	 * Called when the modal is closed.
+	 * @public
+	 */
+	onClose(): void {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * Set the title of the modal.
-     * @param title The title.
-     * @public
-     */
-    setTitle(title: string): this {
+	/**
+	 * Set the title of the modal.
+	 * @param title The title.
+	 * @public
+	 */
+	setTitle(title: string): this {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * Set the content of the modal.
-     * @param content The content.
-     * @example
-     * ```ts
-     * modal.setContent('foo');
-     *
-     * const fragment = createFragment();
-     * fragment.createEl('strong', { text: 'foo' });
-     * modal.setContent(fragment);
-     * ```
-     * @public
-     */
-    setContent(content: string | DocumentFragment): this {
+	/**
+	 * Set the content of the modal.
+	 * @param content The content.
+	 * @example
+	 * ```ts
+	 * modal.setContent('foo');
+	 *
+	 * const fragment = createFragment();
+	 * fragment.createEl('strong', { text: 'foo' });
+	 * modal.setContent(fragment);
+	 * ```
+	 * @public
+	 */
+	setContent(content: string | DocumentFragment): this {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * @public
-     * @since 1.10.0
-     */
-    setCloseCallback(callback: () => any): this {
+	/**
+	 * @public
+	 * @since 1.10.0
+	 */
+	setCloseCallback(callback: () => any): this {
 		throw new Error("Method not implemented.");
 	}
 }
@@ -185,7 +185,7 @@ export class ConfirmationModal extends Modal {
 	addButton(cb: (btn: ConfirmationButton) => any): this {
 		throw new Error("Method not implemented.");
 	}
-	
+
 	/**
 	 * @public
 	 * @since 1.13.0
@@ -239,17 +239,16 @@ export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> 
 		this.emptyStateText = "";
 		this.inputEl = placeholder;
 		this.resultContainerEl = placeholder;
-	
-}
+	}
 	/**
 	 * Set the placeholder text.
 	 * @param placeholder The placeholder text.
 	 * @public
 	 * @since 0.9.20
 	 */
-			setPlaceholder(placeholder: string): void {
-				throw new Error("Method not implemented.");
-			}
+	setPlaceholder(placeholder: string): void {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Set the instructions shown in the modal.
@@ -269,7 +268,7 @@ export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> 
 	onNoSuggestion(): void {
 		throw new Error("Method not implemented.");
 	}
-	
+
 	/**
 	 * Select a suggestion.
 	 * @param value The suggestion.
@@ -280,7 +279,7 @@ export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> 
 	selectSuggestion(value: T, evt: MouseEvent | KeyboardEvent): void {
 		throw new Error("Method not implemented.");
 	}
-	
+
 	/**
 	 * Select the active suggestion.
 	 * @param evt The event that triggered the selection.
@@ -331,7 +330,7 @@ export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> 
 	 * @since 1.5.7
 	 */
 	abstract renderSuggestion(value: T, el: HTMLElement): void;
-	
+
 	/**
 	 * Called when the user chooses a suggestion.
 	 * @param item The chosen suggestion.

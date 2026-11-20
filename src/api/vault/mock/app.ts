@@ -18,7 +18,7 @@ export class App {
 	 * @since 0.9.7
 	 */
 	keymap: Keymap;
-	
+
 	/**
 	 * The root keymap scope of the app.
 	 * @public

@@ -14,16 +14,16 @@ import { CacheItem, SubpathResult } from "./types.js";
  * @public
  */
 export interface FootnoteCache extends CacheItem {
-    /**
-     * The footnote ID.
-     * @example
-     * ```ts
-     * console.log(footnoteCache.id); // 1
-     * console.log(footnoteCache.id); // qux
-     * ```
-     * @public
-     */
-    id: string;
+	/**
+	 * The footnote ID.
+	 * @example
+	 * ```ts
+	 * console.log(footnoteCache.id); // 1
+	 * console.log(footnoteCache.id); // qux
+	 * ```
+	 * @public
+	 */
+	id: string;
 }
 
 /**
@@ -40,16 +40,16 @@ export interface FootnoteCache extends CacheItem {
  * @public
  */
 export interface FootnoteRefCache extends CacheItem {
-    /**
-     * The footnote ID.
-     * @example
-     * ```ts
-     * console.log(footnoteRefCache.id); // 1
-     * console.log(footnoteRefCache.id); // qux
-     * ```
-     * @public
-     */
-    id: string;
+	/**
+	 * The footnote ID.
+	 * @example
+	 * ```ts
+	 * console.log(footnoteRefCache.id); // 1
+	 * console.log(footnoteRefCache.id); // qux
+	 * ```
+	 * @public
+	 */
+	id: string;
 }
 
 /**
@@ -58,14 +58,14 @@ export interface FootnoteRefCache extends CacheItem {
  * @since 1.7.2
  */
 export interface FootnoteSubpathResult extends SubpathResult {
-    /**
-     * The type of the subpath result.
-     * @public
-     */
-    type: "footnote";
-    /**
-     * The footnote.
-     * @public
-     */
-    footnote: FootnoteCache;
+	/**
+	 * The type of the subpath result.
+	 * @public
+	 */
+	type: "footnote";
+	/**
+	 * The footnote.
+	 * @public
+	 */
+	footnote: FootnoteCache;
 }

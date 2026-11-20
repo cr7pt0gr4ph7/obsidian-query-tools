@@ -346,7 +346,7 @@ export class Setting {
 	 * @since 0.9.20
 	 */
 	// biome-ignore lint/suspicious/noThenProperty: This is intended for chaining.
-    then(cb: (setting: this) => unknown): this {
+	then(cb: (setting: this) => unknown): this {
 		cb(this);
 		return this;
 	}
@@ -378,8 +378,8 @@ export class DisplayValueComponent {
 	 * @public
 	 */
 	constructor(containerEl: HTMLElement) {
-        this.valueEl = placeholder;
-    }
+		this.valueEl = placeholder;
+	}
 
 	/**
 	 * Set the value label text. Pass an empty string or `null` to clear it.
@@ -387,8 +387,8 @@ export class DisplayValueComponent {
 	 * @since 1.13.1
 	 */
 	setValue(value: string | null): this {
-        throw new Error("Method not implemented.");
-    }
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Show a status indicator on the row. Use `'warning'` when the value needs
@@ -399,6 +399,6 @@ export class DisplayValueComponent {
 	 * @since 1.13.1
 	 */
 	setStatus(status: "warning" | null): this {
-        throw new Error("Method not implemented.");
-    }
+		throw new Error("Method not implemented.");
+	}
 }

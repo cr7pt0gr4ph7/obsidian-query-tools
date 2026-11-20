@@ -142,7 +142,7 @@ export class FileManager {
 	 * @public
 	 * @since 1.1.13
 	 */
-	getNewFileParent(sourcePath: string, newFilePath?: string): TFolder  {
+	getNewFileParent(sourcePath: string, newFilePath?: string): TFolder {
 		throw new Error("Method not implemented.");
 	}
 
@@ -160,7 +160,7 @@ export class FileManager {
 	 * @public
 	 * @since 0.11.0
 	 */
-	renameFile(file: TAbstractFile, newPath: string): Promise<void>{
+	renameFile(file: TAbstractFile, newPath: string): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
 
@@ -171,7 +171,7 @@ export class FileManager {
 	 * @public
 	 * @since 0.15.0
 	 */
-	promptForDeletion(file: TAbstractFile): Promise<boolean>{
+	promptForDeletion(file: TAbstractFile): Promise<boolean> {
 		throw new Error("Method not implemented.");
 	}
 
@@ -189,9 +189,9 @@ export class FileManager {
 	 * @public
 	 * @since 1.6.6
 	 */
-	trashFile(file: TAbstractFile): Promise<void>{
+	trashFile(file: TAbstractFile): Promise<void> {
 		throw new Error("Method not implemented.");
-	}	
+	}
 
 	/**
 	 * Generate a Markdown link based on the user's preferences.
@@ -209,7 +209,7 @@ export class FileManager {
 	 * @public
 	 * @since 0.12.0
 	 */
-	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string{
+	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
 		throw new Error("Method not implemented.");
 	}
 
@@ -233,7 +233,7 @@ export class FileManager {
 	 * @public
 	 * @since 1.4.4
 	 */
-	processFrontMatter(file: TFile, fn: (frontmatter: any) => void, options?: DataWriteOptions): Promise<void>{
+	processFrontMatter(file: TFile, fn: (frontmatter: any) => void, options?: DataWriteOptions): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
 
@@ -247,7 +247,7 @@ export class FileManager {
 	 * @public
 	 * @since 1.5.7
 	 */
-	getAvailablePathForAttachment(filename: string, sourcePath?: string): Promise<string>{
+	getAvailablePathForAttachment(filename: string, sourcePath?: string): Promise<string> {
 		throw new Error("Method not implemented.");
 	}
 }

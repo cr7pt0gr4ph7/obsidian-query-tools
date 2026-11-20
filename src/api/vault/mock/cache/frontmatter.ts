@@ -11,16 +11,16 @@ import { Reference } from "./types.js";
  * @public
  */
 export interface FrontMatterCache {
-    /**
-     * The frontmatter properties.
-     * @example
-     * ```ts
-     * console.log(frontmatterCache['key1']); // value1
-     * console.log(frontmatterCache['key2']); // 42
-     * ```
-     * @public
-     */
-    [key: string]: any;
+	/**
+	 * The frontmatter properties.
+	 * @example
+	 * ```ts
+	 * console.log(frontmatterCache['key1']); // value1
+	 * console.log(frontmatterCache['key2']); // 42
+	 * ```
+	 * @public
+	 */
+	[key: string]: any;
 }
 
 /**
@@ -34,16 +34,16 @@ export interface FrontMatterCache {
  * @public
  */
 export interface FrontmatterLinkCache extends Reference {
-    /**
-     * The frontmatter property that contains the link.
-     * @example
-     * ```ts
-     * console.log(frontmatterLinkCache.key); // key1
-     * console.log(frontmatterLinkCache.key); // key2
-     * ```
-     * @public
-     */
-    key: string;
+	/**
+	 * The frontmatter property that contains the link.
+	 * @example
+	 * ```ts
+	 * console.log(frontmatterLinkCache.key); // key1
+	 * console.log(frontmatterLinkCache.key); // key2
+	 * ```
+	 * @public
+	 */
+	key: string;
 }
 
 /**
@@ -63,7 +63,7 @@ export interface FrontmatterLinkCache extends Reference {
  * @since 1.5.7
  */
 export function getFrontMatterInfo(content: string): FrontMatterInfo {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -71,29 +71,29 @@ export function getFrontMatterInfo(content: string): FrontMatterInfo {
  * @public
  */
 export interface FrontMatterInfo {
-    /**
-     * Whether this file has a frontmatter block.
-     * @public
-     */
-    exists: boolean;
-    /**
-     * String representation of the frontmatter.
-     * @public
-     */
-    frontmatter: string;
-    /**
-     * Start offset of the frontmatter contents (excluding the ---).
-     * @public
-     */
-    from: number;
-    /**
-     * End offset of the frontmatter contents (excluding the ---).
-     * @public
-     */
-    to: number;
-    /**
-     * Offset where the frontmatter block ends (including the ---).
-     * @public
-     */
-    contentStart: number;
+	/**
+	 * Whether this file has a frontmatter block.
+	 * @public
+	 */
+	exists: boolean;
+	/**
+	 * String representation of the frontmatter.
+	 * @public
+	 */
+	frontmatter: string;
+	/**
+	 * Start offset of the frontmatter contents (excluding the ---).
+	 * @public
+	 */
+	from: number;
+	/**
+	 * End offset of the frontmatter contents (excluding the ---).
+	 * @public
+	 */
+	to: number;
+	/**
+	 * Offset where the frontmatter block ends (including the ---).
+	 * @public
+	 */
+	contentStart: number;
 }

@@ -70,11 +70,11 @@ export interface SettingControlBase<V, K extends string = string> {
  * @since 1.13.0
  */
 export interface SettingToggleControl<K extends string = string> extends SettingControlBase<boolean, K> {
-    /**
-     * @public
-     * @since 1.13.0
-     */
-    type: "toggle";
+	/**
+	 * @public
+	 * @since 1.13.0
+	 */
+	type: "toggle";
 }
 
 /**

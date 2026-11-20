@@ -31,7 +31,6 @@ export interface ISettingsPlugin_ {
 	addSettingTab(settingTab: PluginSettingTab): void;
 }
 
-
 /**
  * A setting tab.
  * @public

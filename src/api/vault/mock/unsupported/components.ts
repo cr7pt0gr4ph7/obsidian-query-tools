@@ -732,7 +732,6 @@ export class MomentFormatComponent extends TextComponent {
 	updateSample(): void {}
 }
 
-
 /**
  * A button component.
  * @public

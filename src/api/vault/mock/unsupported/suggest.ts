@@ -47,77 +47,77 @@ export interface ISuggestOwner<T> {
  * @public
  */
 export abstract class PopoverSuggest<T> implements ISuggestOwner<T>, HistoryHandler {
-    /**
-     * The app instance.
-     * @public
-     */
-    app: App;
+	/**
+	 * The app instance.
+	 * @public
+	 */
+	app: App;
 
-    /**
-     * The keymap scope that is active while the popover is open.
-     * @public
-     */
-    scope: Scope;
+	/**
+	 * The keymap scope that is active while the popover is open.
+	 * @public
+	 */
+	scope: Scope;
 
-    /**
-     * @param app The app instance.
-     * @param scope The parent keymap scope. Defaults to the app scope.
-     * @public
-     */
-    constructor(app: App, scope?: Scope) {
+	/**
+	 * @param app The app instance.
+	 * @param scope The parent keymap scope. Defaults to the app scope.
+	 * @public
+	 */
+	constructor(app: App, scope?: Scope) {
 		this.app = app;
 		this.scope = scope ?? app.scope;
 	}
 
-    /**
-     * @inheritDoc
-     * @public
-     */
-    onHistoryBack(): void {
+	/**
+	 * @inheritDoc
+	 * @public
+	 */
+	onHistoryBack(): void {
 		// Ignored.
 	}
 
-    /**
-     * Opens the popover.
-     * @public
-     */
-    open(): void{
+	/**
+	 * Opens the popover.
+	 * @public
+	 */
+	open(): void {
 		// Ignored.
 	}
 
-    /**
-     * Closes the popover.
-     * @public
-     */
-    close(): void {
+	/**
+	 * Closes the popover.
+	 * @public
+	 */
+	close(): void {
 		// Ignored.
 	}
 
-    /**
-     * Render the suggestion.
-     * @param value The suggestion.
-     * @param el The element to render into.
-     * @example
-     * ```ts
-     * class MyPopoverSuggest extends PopoverSuggest<string> {
-     *     public override renderSuggestion(value: string, el: HTMLElement): void {
-     *         el.createEl('strong', { text: value });
-     *     }
-     * }
-     * ```
-     * @inheritDoc
-     * @public
-     */
-    abstract renderSuggestion(value: T, el: HTMLElement): void;
+	/**
+	 * Render the suggestion.
+	 * @param value The suggestion.
+	 * @param el The element to render into.
+	 * @example
+	 * ```ts
+	 * class MyPopoverSuggest extends PopoverSuggest<string> {
+	 *     public override renderSuggestion(value: string, el: HTMLElement): void {
+	 *         el.createEl('strong', { text: value });
+	 *     }
+	 * }
+	 * ```
+	 * @inheritDoc
+	 * @public
+	 */
+	abstract renderSuggestion(value: T, el: HTMLElement): void;
 
-    /**
-     * Select the suggestion.
-     * @param value The suggestion.
-     * @param evt The event that triggered the selection.
-     * @inheritDoc
-     * @public
-     */
-    abstract selectSuggestion(value: T, evt: MouseEvent | KeyboardEvent): void;
+	/**
+	 * Select the suggestion.
+	 * @param value The suggestion.
+	 * @param evt The event that triggered the selection.
+	 * @inheritDoc
+	 * @public
+	 */
+	abstract selectSuggestion(value: T, evt: MouseEvent | KeyboardEvent): void;
 }
 
 /**
@@ -187,7 +187,7 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 * @since 1.5.7
 	 */
 	protected abstract getSuggestions(query: string): T[] | Promise<T[]>;
-	
+
 	/**
 	 * @public
 	 * @since 1.6.6

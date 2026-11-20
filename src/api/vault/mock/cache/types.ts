@@ -3,21 +3,21 @@
  * @public
  */
 export interface Loc {
-    /**
-     * Line number. 0-based.
-     * @public
-     */
-    line: number;
-    /**
-     * Column number. 0-based.
-     * @public
-     */
-    col: number;
-    /**
-     * Number of characters from the beginning of the file.
-     * @public
-     */
-    offset: number;
+	/**
+	 * Line number. 0-based.
+	 * @public
+	 */
+	line: number;
+	/**
+	 * Column number. 0-based.
+	 * @public
+	 */
+	col: number;
+	/**
+	 * Number of characters from the beginning of the file.
+	 * @public
+	 */
+	offset: number;
 }
 
 /**
@@ -25,16 +25,16 @@ export interface Loc {
  * @public
  */
 export interface Pos {
-    /**
-     * Starting location.
-     * @public
-     */
-    start: Loc;
-    /**
-     * End location.
-     * @public
-     */
-    end: Loc;
+	/**
+	 * Starting location.
+	 * @public
+	 */
+	start: Loc;
+	/**
+	 * End location.
+	 * @public
+	 */
+	end: Loc;
 }
 
 /**
@@ -54,36 +54,36 @@ export interface CacheItem {
  * @public
  */
 export interface Reference {
-    /**
-     * Link destination.
-     * @public
-     */
-    link: string;
-    /**
-     * Contains the text as it's written in the document. Not available on Publish.
-     * @public
-     */
-    original: string;
-    /**
-     * Display text of the link.
-     * @example
-     * For the following links:
-     * ```md
-     * [[foo|bar]]
-     * [[foo]]
-     * [foo](bar.md)
-     * ![](bar.jpg)
-     * ```
-     * `displayText` will be:
-     * ```
-     * 'bar'
-     * 'foo'
-     * 'foo'
-     * ''
-     * ```
-     * @public
-     */
-    displayText?: string;
+	/**
+	 * Link destination.
+	 * @public
+	 */
+	link: string;
+	/**
+	 * Contains the text as it's written in the document. Not available on Publish.
+	 * @public
+	 */
+	original: string;
+	/**
+	 * Display text of the link.
+	 * @example
+	 * For the following links:
+	 * ```md
+	 * [[foo|bar]]
+	 * [[foo]]
+	 * [foo](bar.md)
+	 * ![](bar.jpg)
+	 * ```
+	 * `displayText` will be:
+	 * ```
+	 * 'bar'
+	 * 'foo'
+	 * 'foo'
+	 * ''
+	 * ```
+	 * @public
+	 */
+	displayText?: string;
 }
 
 /**
@@ -108,13 +108,13 @@ export interface SubpathResult {
  * @public
  */
 export type FrontmatterValue =
-    | string
-    | number
-    | boolean
-    | undefined
-    | null
-    | {
-            /** @public */
-            [key: string]: FrontmatterValue;
-      }
-    | Array<FrontmatterValue>;
+	| string
+	| number
+	| boolean
+	| undefined
+	| null
+	| {
+			/** @public */
+			[key: string]: FrontmatterValue;
+	  }
+	| Array<FrontmatterValue>;

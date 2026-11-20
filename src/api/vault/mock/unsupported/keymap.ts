@@ -100,7 +100,7 @@ export class Keymap {
 	 */
 	static isModEvent(evt?: UserEvent | null): PaneType | boolean {
 		throw new Error("Method not implemented.");
-	}	
+	}
 }
 
 /**

@@ -10,24 +10,24 @@ import { CacheItem, SubpathResult } from "./types.js";
  * @public
  */
 export interface HeadingCache extends CacheItem {
-    /**
-     * The heading text.
-     * @example
-     * ```ts
-     * console.log(headingCache.heading); // foo
-     * ```
-     * @public
-     */
-    heading: string;
-    /**
-     * Number between 1 and 6.
-     * @example
-     * ```ts
-     * console.log(headingCache.level); // 1
-     * ```
-     * @public
-     */
-    level: number;
+	/**
+	 * The heading text.
+	 * @example
+	 * ```ts
+	 * console.log(headingCache.heading); // foo
+	 * ```
+	 * @public
+	 */
+	heading: string;
+	/**
+	 * Number between 1 and 6.
+	 * @example
+	 * ```ts
+	 * console.log(headingCache.level); // 1
+	 * ```
+	 * @public
+	 */
+	level: number;
 }
 
 /**
@@ -40,22 +40,22 @@ export interface HeadingCache extends CacheItem {
  * @since 0.9.16
  */
 export interface HeadingSubpathResult extends SubpathResult {
-    /**
-     * The type of the subpath result.
-     * @public
-     * @since 0.9.16
-     */
-    type: 'heading';
-    /**
-     * The heading.
-     * @public
-     * @since 0.9.16
-     */
-    current: HeadingCache;
-    /**
-     * The next heading on the same or a higher level.
-     * @public
-     * @since 0.9.16
-     */
-    next: HeadingCache;
+	/**
+	 * The type of the subpath result.
+	 * @public
+	 * @since 0.9.16
+	 */
+	type: "heading";
+	/**
+	 * The heading.
+	 * @public
+	 * @since 0.9.16
+	 */
+	current: HeadingCache;
+	/**
+	 * The next heading on the same or a higher level.
+	 * @public
+	 * @since 0.9.16
+	 */
+	next: HeadingCache;
 }

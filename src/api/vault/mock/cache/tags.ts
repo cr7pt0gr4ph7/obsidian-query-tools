@@ -15,10 +15,10 @@ import { CacheItem } from "./types.js";
  * @since 0.9.7
  */
 export interface TagCache extends CacheItem {
-    /**
-     * The tag, including the `#`.
-     * @example #foo
-     * @public
-     */
-    tag: string;
+	/**
+	 * The tag, including the `#`.
+	 * @example #foo
+	 * @public
+	 */
+	tag: string;
 }

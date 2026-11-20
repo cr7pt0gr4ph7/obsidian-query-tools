@@ -4,7 +4,7 @@
  * Meta = Cmd on MacOS and Win key on other OS
  * @public
  */
-export type Modifier = 'Mod' | 'Ctrl' | 'Meta' | 'Shift' | 'Alt';
+export type Modifier = "Mod" | "Ctrl" | "Meta" | "Shift" | "Alt";
 
 /**
  * A hotkey.
@@ -15,15 +15,15 @@ export type Modifier = 'Mod' | 'Ctrl' | 'Meta' | 'Shift' | 'Alt';
  * @public
  */
 export interface Hotkey {
-    /**
-     * The modifier keys.
-     * @public
-     */
-    modifiers: Modifier[];
+	/**
+	 * The modifier keys.
+	 * @public
+	 */
+	modifiers: Modifier[];
 
-    /**
-     * The main key.
-     * @public
-     */
-    key: string;
+	/**
+	 * The main key.
+	 * @public
+	 */
+	key: string;
 }

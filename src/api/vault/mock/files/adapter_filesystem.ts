@@ -9,113 +9,113 @@ export class FileSystemAdapter implements DataAdapter {
 	 * @inheritDoc
 	 * @public
 	 */
-	getName(): string{
-        throw new Error("Method not implemented.");
-    }
+	getName(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Get the absolute path to the vault.
 	 * @public
 	 */
-	getBasePath(): string{
-        throw new Error("Method not implemented.");
-    }
+	getBasePath(): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	mkdir(normalizedPath: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	mkdir(normalizedPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	trashSystem(normalizedPath: string): Promise<boolean>{
-        throw new Error("Method not implemented.");
-    }		
+	trashSystem(normalizedPath: string): Promise<boolean> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	trashLocal(normalizedPath: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	trashLocal(normalizedPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	rmdir(normalizedPath: string, recursive: boolean): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	rmdir(normalizedPath: string, recursive: boolean): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	read(normalizedPath: string): Promise<string>{
-        throw new Error("Method not implemented.");
-    }
+	read(normalizedPath: string): Promise<string> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	readBinary(normalizedPath: string): Promise<ArrayBuffer>{
-        throw new Error("Method not implemented.");
-    }
+	readBinary(normalizedPath: string): Promise<ArrayBuffer> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	write(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	write(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	writeBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	writeBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	append(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	append(normalizedPath: string, data: string, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @public
 	 * @since 1.12.3
 	 */
-	appendBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void>{
-        throw new Error("Method not implemented.");
-    }		
+	appendBinary(normalizedPath: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	process(normalizedPath: string, fn: (data: string) => string, options?: DataWriteOptions): Promise<string>{
-        throw new Error("Method not implemented.");
-    }
+	process(normalizedPath: string, fn: (data: string) => string, options?: DataWriteOptions): Promise<string> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	getResourcePath(normalizedPath: string): string{
-        throw new Error("Method not implemented.");
-    }
+	getResourcePath(normalizedPath: string): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Returns the `file://` URL of a file.
@@ -127,57 +127,57 @@ export class FileSystemAdapter implements DataAdapter {
 	 * @public
 	 * @since 0.14.3
 	 */
-	getFilePath(normalizedPath: string): string{
-        throw new Error("Method not implemented.");
-    }
+	getFilePath(normalizedPath: string): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	remove(normalizedPath: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	remove(normalizedPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	rename(normalizedPath: string, normalizedNewPath: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	rename(normalizedPath: string, normalizedNewPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	copy(normalizedPath: string, normalizedNewPath: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	copy(normalizedPath: string, normalizedNewPath: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	exists(normalizedPath: string, sensitive?: boolean): Promise<boolean>{
-        throw new Error("Method not implemented.");
-    }
+	exists(normalizedPath: string, sensitive?: boolean): Promise<boolean> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 * @since 0.12.2
 	 */
-	stat(normalizedPath: string): Promise<Stat | null>{
-        throw new Error("Method not implemented.");
-    }
+	stat(normalizedPath: string): Promise<Stat | null> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * @inheritDoc
 	 * @public
 	 */
-	list(normalizedPath: string): Promise<ListedFiles>{
-        throw new Error("Method not implemented.");
-    }
+	list(normalizedPath: string): Promise<ListedFiles> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Gets the absolute path of a file on disk.
@@ -188,25 +188,25 @@ export class FileSystemAdapter implements DataAdapter {
 	 * ```
 	 * @public
 	 */
-	getFullPath(normalizedPath: string): string{
-        throw new Error("Method not implemented.");
-    }
+	getFullPath(normalizedPath: string): string {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Read a local file.
 	 * @param path The absolute path of the file.
 	 * @public
 	 */
-	static readLocalFile(path: string): Promise<ArrayBuffer>{
-        throw new Error("Method not implemented.");
-    }
+	static readLocalFile(path: string): Promise<ArrayBuffer> {
+		throw new Error("Method not implemented.");
+	}
 
 	/**
 	 * Create a new directory, including any missing parent directories.
 	 * @param path The absolute path of the directory.
 	 * @public
 	 */
-	static mkdir(path: string): Promise<void>{
-        throw new Error("Method not implemented.");
-    }
+	static mkdir(path: string): Promise<void> {
+		throw new Error("Method not implemented.");
+	}
 }

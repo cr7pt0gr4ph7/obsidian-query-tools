@@ -39,7 +39,7 @@ function getFrontmatterTags(cache: CachedMetadata) {
 	if (tags === null) {
 		return null;
 	} else if (Array.isArray(tags)) {
-		return tags.map((tag) => !tag || tag.startsWith("#") ? tag : `#${tag}`);
+		return tags.map((tag) => (!tag || tag.startsWith("#") ? tag : `#${tag}`));
 	} else {
 		return [];
 	}
