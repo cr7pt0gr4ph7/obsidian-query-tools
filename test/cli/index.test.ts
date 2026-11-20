@@ -219,3 +219,35 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 	);
 	vault.close();
 });
+
+test("unsafe JavaScript runs only with the explicit flag", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-js-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "# a\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const base = [cli, "query", "--vault", root, "--type", "dataviewjs"];
+	const script =
+		"return dv.list('LIST FROM \"\"').map((p) => p.toUpperCase());";
+	const denied = spawnSync(process.execPath, [...base, "--query", script], {
+		encoding: "utf8",
+	});
+	assert.equal(denied.status, 1);
+	assert.equal(denied.stdout, "");
+	assert.match(denied.stderr, /^UNSUPPORTED_FEATURE:/);
+	const ok = spawnSync(
+		process.execPath,
+		[...base, "--unsafe-allow-js", "--query", script, "--limit", "1"],
+		{ encoding: "utf8" },
+	);
+	assert.equal(ok.status, 0, ok.stderr);
+	const out = JSON.parse(ok.stdout);
+	assert.deepEqual(out.data, ["A.MD"]);
+	assert.equal(out.truncated, true);
+	const loop = spawnSync(
+		process.execPath,
+		[...base, "--unsafe-allow-js", "--query", "while (true) {}"],
+		{ encoding: "utf8", timeout: 20000 },
+	);
+	assert.equal(loop.status, 1);
+	assert.match(loop.stderr, /^INVALID_QUERY|LIMIT_EXCEEDED/);
+});

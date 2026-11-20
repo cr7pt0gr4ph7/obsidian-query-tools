@@ -22,7 +22,8 @@ import type {
 	VaultOptions,
 } from "../../dist/api/index.js";
 import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
-import type { GraphConfig, GraphIndex } from "../../dist/api/graph/types.js";
+import type { GraphConfig } from "../../dist/api/graph/config.js";
+import type { GraphIndex } from "../../dist/api/graph/indexing.js";
 import { optionsForOpen } from "../../dist/api/vault/validation.js";
 import { fileURLToPath } from "node:url";
 
@@ -63,7 +64,9 @@ type VaultLimitKeys = Assert<
 type GraphConfigKeys = Assert<
 	Equal<keyof GraphConfig, "edgeFields" | "limits">
 >;
-type ConfigKeys = Assert<Equal<keyof Config, "graph" | "limits">>;
+type ConfigKeys = Assert<
+	Equal<keyof Config, "graph" | "limits" | "unsafeJavaScript">
+>;
 type GraphIndexKeys = Assert<Equal<keyof GraphIndex, "files" | "edges">>;
 type VaultIndexKeys = Assert<Equal<keyof VaultIndex, "graph">>;
 
@@ -408,4 +411,26 @@ test("invalid UTF-8 is rejected without replacing the current generation", async
 	assert.equal(vault.list('LIST FROM "Tasks"').generation, 1);
 	assert.equal(vault.graph().neighbors("Tasks/a.md").data[0].target, "root.md");
 	vault.close();
+});
+
+test("script() is disabled unless unsafeJavaScript is set", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-script-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nparent: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const safe = await openVault(root);
+	await assert.rejects(safe.script("return 1"), {
+		code: "UNSUPPORTED_FEATURE",
+	});
+	const vault = await openVault(root, {
+		edgeFields: ["parent"],
+		unsafeJavaScript: true,
+	});
+	const r = await vault.script(
+		"return dv.neighbors('a.md').map((e) => e.target);",
+	);
+	assert.deepEqual(r.data, ["b.md"]);
+	await assert.rejects(vault.script("throw new Error('x')"), {
+		code: "INVALID_QUERY",
+	});
 });

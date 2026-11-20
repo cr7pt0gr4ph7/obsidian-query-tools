@@ -68,7 +68,14 @@ interface uses `dataview`/`dql` selectors over the shared
 `Vault.list()` operation; only the project's `LIST FROM "<folder>"` subset is
 supported. It accepts inline or bounded UTF-8 stdin input, validates optional
 current-file context through the API, and defaults to JSON with optional
-Markdown. JavaScript selectors fail as unsupported without execution. The
+Markdown. JavaScript selectors (`dataviewjs`/`dqljs`) fail as unsupported unless
+`--unsafe-allow-js` is passed, which opens the vault with
+`unsafeJavaScript: true` and runs the query text through `Vault.script()`.
+`script()` evaluates an async function body in a `node:vm` context exposing a
+read-only `dv` helper (`current`, `paths()`, `list()`, `neighbors()`), with a
+wall-clock timeout and a JSON-serializable result bounded by the result limit.
+This is not a sandbox; it is for trusted scripts only, and MCP never enables
+it. `query --limit` lowers the result limit. The
 console includes diagnostics and truncation in JSON, and sends diagnostics to
 stderr for Markdown. The preliminary interface makes no upstream parity
 claim.

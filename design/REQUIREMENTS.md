@@ -38,9 +38,12 @@ are excluded. The runtime target is Node.js 24 or later on Linux with procfs;
 Node.js 24.22.3 and 26.13.0 have been tested.
 
 Vault mutation, Obsidian UI/rendering, executing JavaScript embedded in a
-vault or query, remote vault access, multi-user hosting, and replacing
+vault, remote vault access, multi-user hosting, and replacing
 Obsidian's plugin UI are out of scope. Upstream code reuse does not authorize
-execution of user-supplied scripts.
+execution of user-supplied scripts. As the sole exception, the API and CLI
+offer an explicit, off-by-default `unsafeJavaScript` / `--unsafe-allow-js`
+opt-in that runs a caller-supplied script (never vault content) in-process
+without a sandbox; the MCP server never enables it.
 
 ## Non-functional requirements
 

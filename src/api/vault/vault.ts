@@ -1,5 +1,7 @@
 import { lstat, realpath } from "node:fs/promises";
 import { fail, VaultQueryError } from "../utils/errors.js";
+import { runScript } from "../script/run.js";
+import { result } from "../utils/result.js";
 import { list } from "../dataview/list.js";
 import { neighbors } from "../graph/neighbors.js";
 import { requestLimit, validatePath } from "../validation.js";
@@ -49,6 +51,18 @@ export async function openVault(
 			);
 		},
 	};
+	function checkFile(value: string | undefined) {
+		if (value === undefined) return;
+		const file = validatePath(value);
+		if (!file.toLowerCase().endsWith(".md"))
+			fail("INVALID_PATH", "Current-file context must be a Markdown path.");
+		if (!index.graph.files.includes(file))
+			fail(
+				"NOT_FOUND",
+				"Current-file context was not found in the vault.",
+				file,
+			);
+	}
 	return {
 		list(query, options = {}) {
 			ensureOpen();
@@ -56,18 +70,44 @@ export async function openVault(
 				"limit",
 				"file",
 			]);
-			if (options.file !== undefined) {
-				const file = validatePath(options.file);
-				if (!file.toLowerCase().endsWith(".md"))
-					fail("INVALID_PATH", "Current-file context must be a Markdown path.");
-				if (!index.graph.files.includes(file))
-					fail(
-						"NOT_FOUND",
-						"Current-file context was not found in the vault.",
-						file,
-					);
-			}
+			checkFile(options.file);
 			return list(index.graph.files, generation, query, limit);
+		},
+		async script(source, options = {}) {
+			ensureOpen();
+			if (!config.unsafeJavaScript)
+				fail(
+					"UNSUPPORTED_FEATURE",
+					"JavaScript execution is disabled; open the vault with unsafeJavaScript to enable it.",
+				);
+			const { timeoutMs, ...rest } = options;
+			const limit = requestLimit(rest, config.limits.maxResults, [
+				"limit",
+				"file",
+			]);
+			checkFile(options.file);
+			const files = index.graph.files;
+			const at = generation;
+			const values = await runScript(
+				source,
+				{
+					...(options.file === undefined ? {} : { current: options.file }),
+					paths: () => [...files],
+					list: (query) =>
+						list(files, at, query, config.limits.maxResults).data,
+					neighbors: (path, opts = {}) =>
+						neighbors(
+							index.graph,
+							at,
+							config.graph,
+							config.limits.maxResults,
+							path,
+							opts,
+						).data,
+				},
+				timeoutMs,
+			);
+			return result(at, values, limit);
 		},
 		graph() {
 			ensureOpen();

@@ -2,11 +2,16 @@ import { parseArgs } from "node:util";
 
 const maxQueryBytes = 1_048_576;
 const modes = ["dataview", "dql", "dataviewjs", "dqljs"] as const;
-const help = `Usage: obsidian-query query --vault <directory> --type <mode> (--query <source> | --stdin) [--file <vault-relative-path>] [--format <json|markdown>]
+const help = `Usage: obsidian-query query --vault <directory> --type <mode> (--query <source> | --stdin) [--file <vault-relative-path>] [--format <json|markdown>] [--limit <count>] [--unsafe-allow-js]
 
 Modes: dataview, dql, dataviewjs, dqljs
 Formats: json (default), markdown
-Query input is limited to 1 MiB. JavaScript modes are currently unsupported.
+Query input is limited to 1 MiB.
+JavaScript modes (dataviewjs, dqljs) run only with --unsafe-allow-js. UNSAFE: the
+script runs in-process without a sandbox and can compromise this machine; use
+only scripts you fully trust. Scripts get a read-only "dv" helper
+(dv.current, dv.paths(), dv.list(query), dv.neighbors(path, options)) and
+return a JSON-serializable value.
 `;
 
 /** Query mode names accepted by the preliminary console interface. */
@@ -18,6 +23,10 @@ export interface ConsoleRequest {
 	vault: string;
 	/** Supported non-JavaScript query mode. */
 	type: "dataview" | "dataviewjs";
+	/** Maximum results, lowering the API default. */
+	limit?: number;
+	/** Explicit opt-in to unsafe in-process JavaScript execution. */
+	unsafeJs?: boolean;
 	/** Query source text. */
 	query: string;
 	/** Optional vault-relative Markdown file context. */
@@ -75,6 +84,8 @@ function parse(arguments_: string[]) {
 				stdin: { type: "boolean" },
 				file: { type: "string" },
 				format: { type: "string" },
+				limit: { type: "string" },
+				"unsafe-allow-js": { type: "boolean" },
 				help: { type: "boolean", short: "h" },
 				version: { type: "boolean", short: "v" },
 			},
@@ -272,17 +283,28 @@ export async function runConsole(
 		}
 
 		const javascript = values.type === "dataviewjs" || values.type === "dqljs";
-		if (javascript) {
+		if (javascript && values["unsafe-allow-js"] !== true) {
 			throw new ConsoleError(
 				"UNSUPPORTED_FEATURE",
-				"JavaScript query modes are disabled.",
+				"JavaScript query modes are disabled; pass --unsafe-allow-js to run trusted scripts.",
+			);
+		}
+		if (
+			values.limit !== undefined &&
+			!/^[1-9][0-9]{0,15}$/.test(values.limit)
+		) {
+			throw new ConsoleError(
+				"INVALID_OPTIONS",
+				"--limit must be a positive integer.",
 			);
 		}
 		const result = await dependencies.api.query({
 			vault: values.vault,
-			type: "dataview",
+			type: javascript ? "dataviewjs" : "dataview",
 			query: source,
 			...(values.file === undefined ? {} : { file: values.file }),
+			...(values.limit === undefined ? {} : { limit: Number(values.limit) }),
+			...(javascript ? { unsafeJs: true } : {}),
 		});
 		const format = values.format ?? "json";
 		if (format === "json") {
