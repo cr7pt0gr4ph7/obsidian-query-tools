@@ -135,12 +135,7 @@ export class Component {
 		options?: boolean | AddEventListenerOptions,
 	): void;
 
-	registerDomEvent(
-		el: any,
-		type: string,
-		callback: Function,
-		options?: boolean | AddEventListenerOptions,
-	): void {
+	registerDomEvent(el: any, type: string, callback: Function, options?: boolean | AddEventListenerOptions): void {
 		throw new Error("Method not implemented.");
 	}
 
