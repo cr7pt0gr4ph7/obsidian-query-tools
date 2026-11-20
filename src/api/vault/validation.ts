@@ -16,7 +16,11 @@ export function optionsForOpen(options: VaultOptions): Config {
 		throw new VaultQueryError("INVALID_OPTIONS", "Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
-		if (!["edgeFields", "limits", "unsafeJavaScript"].includes(key))
+		if (
+			!["edgeFields", "oppositeFields", "limits", "unsafeJavaScript"].includes(
+				key,
+			)
+		)
 			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
 	}
 	if (
@@ -39,6 +43,29 @@ export function optionsForOpen(options: VaultOptions): Config {
 			"edgeFields must be an array of unique nonempty strings.",
 		);
 	}
+	const opposites = options.oppositeFields ?? {};
+	if (!opposites || typeof opposites !== "object" || Array.isArray(opposites)) {
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
+			"oppositeFields must be an object.",
+		);
+	}
+	const reverse = Object.values(opposites);
+	if (
+		Object.entries(opposites).some(
+			([field, opposite]) =>
+				!edgeFields.includes(field) ||
+				typeof opposite !== "string" ||
+				!opposite.trim() ||
+				edgeFields.includes(opposite),
+		) ||
+		new Set(reverse).size !== reverse.length
+	) {
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
+			"oppositeFields must map configured fields to unique new nonempty type names.",
+		);
+	}
 	const limits = options.limits ?? {};
 	if (!limits || typeof limits !== "object" || Array.isArray(limits)) {
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "limits must be an object.");
@@ -56,6 +83,10 @@ export function optionsForOpen(options: VaultOptions): Config {
 	return {
 		limits: vaultLimits,
 		unsafeJavaScript: options.unsafeJavaScript === true,
-		graph: { edgeFields: [...edgeFields], limits: { maxEdges } },
+		graph: {
+			edgeFields: [...edgeFields],
+			opposites: { ...opposites },
+			limits: { maxEdges },
+		},
 	};
 }

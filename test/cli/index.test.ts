@@ -266,3 +266,31 @@ test("unsafe JavaScript runs only with the explicit flag", async (t) => {
 	assert.equal(loop.status, 1);
 	assert.match(loop.stderr, /^INVALID_QUERY|LIMIT_EXCEEDED/);
 });
+
+test("--opposite adds implied edges in the CLI", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-opp-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const run = (...extra: string[]) =>
+		spawnSync(
+			process.execPath,
+			[cli, "--vault", root, "--edge-field", "up", ...extra],
+			{ encoding: "utf8" },
+		);
+	const ok = run(
+		"--opposite",
+		"up:down",
+		"neighbors",
+		"b.md",
+		"--edge-type",
+		"down",
+	);
+	assert.equal(ok.status, 0, ok.stderr);
+	assert.deepEqual(JSON.parse(ok.stdout).data, [
+		{ source: "b.md", target: "a.md", type: "down", implied: true },
+	]);
+	const bad = run("--opposite", "nocolon", "neighbors", "b.md");
+	assert.equal(bad.status, 1);
+	assert.equal(JSON.parse(bad.stderr).error.code, "INVALID_OPTIONS");
+});

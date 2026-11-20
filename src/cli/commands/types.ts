@@ -19,6 +19,7 @@ export type CliCommand =
 export interface RootOptions {
 	vault?: string;
 	edgeField: string[];
+	opposite: string[];
 }
 
 export interface NeighborCliOptions {

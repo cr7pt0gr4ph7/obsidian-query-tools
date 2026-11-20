@@ -62,7 +62,7 @@ type VaultLimitKeys = Assert<
 	>
 >;
 type GraphConfigKeys = Assert<
-	Equal<keyof GraphConfig, "edgeFields" | "limits">
+	Equal<keyof GraphConfig, "edgeFields" | "opposites" | "limits">
 >;
 type ConfigKeys = Assert<
 	Equal<keyof Config, "graph" | "limits" | "unsafeJavaScript">
@@ -77,6 +77,7 @@ test("graph options are separated from vault limits without changing open option
 	});
 	assert.deepEqual(config.graph, {
 		edgeFields: ["parent"],
+		opposites: {},
 		limits: { maxEdges: 3 },
 	});
 	assert.equal(config.limits.maxFiles, 3);
@@ -535,4 +536,35 @@ test("cycles finds mutually reachable groups and self-loops", async (t) => {
 	const g = (await openVault(root, { edgeFields: ["up"] })).graph();
 	assert.deepEqual(g.cycles().data, [["a.md", "b.md", "c.md"], ["d.md"]]);
 	assert.equal(g.cycles({ limit: 1 }).truncated, true);
+});
+
+test("opposite fields add flagged implied edges within limits", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-opposite-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\ndown: a\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nup: b\n---\n");
+	const vault = await openVault(root, {
+		edgeFields: ["up", "down"],
+		oppositeFields: { up: "below" },
+	});
+	const g = vault.graph();
+	assert.deepEqual(g.neighbors("b.md", { types: ["below"] }).data, [
+		{ source: "b.md", target: "a.md", type: "below", implied: true },
+		{ source: "b.md", target: "c.md", type: "below", implied: true },
+	]);
+	assert.equal(g.neighbors("a.md").data[0].implied, undefined);
+	assert.equal(g.stats().edgeCount, 5);
+	await assert.rejects(
+		openVault(root, { edgeFields: ["up"], oppositeFields: { x: "y" } }),
+		code("INVALID_OPTIONS"),
+	);
+	await assert.rejects(
+		openVault(root, {
+			edgeFields: ["up"],
+			oppositeFields: { up: "r" },
+			limits: { maxEdges: 3 },
+		}),
+		code("LIMIT_EXCEEDED"),
+	);
 });

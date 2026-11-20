@@ -1,7 +1,7 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
-import type { GraphConfig } from "./config.js";
+import { edgeTypes, type GraphConfig } from "./config.js";
 import type {
 	CyclesOptions,
 	Edge,
@@ -12,10 +12,10 @@ import type {
 import type { GraphIndex } from "./indexing.js";
 
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
-	const selected = types ?? config.edgeFields;
+	const selected = types ?? edgeTypes(config);
 	if (
 		!Array.isArray(selected) ||
-		selected.some((type) => !config.edgeFields.includes(type))
+		selected.some((type) => !edgeTypes(config).includes(type))
 	)
 		throw new VaultQueryError(
 			EC.INVALID_OPTIONS,

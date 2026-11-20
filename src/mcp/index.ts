@@ -36,6 +36,7 @@ async function main() {
 			options: {
 				vault: { type: "string" },
 				"edge-field": { type: "string", multiple: true },
+				opposite: { type: "string", multiple: true },
 			},
 		});
 	} catch {
@@ -52,6 +53,17 @@ async function main() {
 	}
 	const vault = await openVault(parsed.values.vault, {
 		edgeFields: parsed.values["edge-field"] ?? [],
+		oppositeFields: Object.fromEntries(
+			(parsed.values.opposite ?? []).map((pair) => {
+				const at = pair.indexOf(":");
+				if (at < 1 || at === pair.length - 1)
+					throw new VaultQueryError(
+						"INVALID_OPTIONS",
+						"--opposite expects <field:type>.",
+					);
+				return [pair.slice(0, at), pair.slice(at + 1)];
+			}),
+		),
 	});
 	const server = new McpServer({
 		name: "obsidian-query-tools",

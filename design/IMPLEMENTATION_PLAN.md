@@ -30,6 +30,9 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - `VaultGraph.traverse()` and `export()` (json, csv, dot, mermaid, graphml)
   with CLI `graph traverse`/`graph export` and MCP `traverse`/`export` tools.
 
+- Graph analysis (`path`, `stats`, `nodes`, `cycles`) and opposite/implied
+  edges via `oppositeFields`.
+
 ## Remaining work
 
 - Breadcrumbs integration: pin an upstream revision, then define edge-field

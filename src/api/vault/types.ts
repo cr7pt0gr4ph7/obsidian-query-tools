@@ -21,6 +21,11 @@ export interface VaultLimits {
 export interface VaultOptions {
 	/** Frontmatter fields whose values are interpreted as directed Markdown edges. */
 	edgeFields?: string[];
+	/**
+	 * Maps configured fields to opposite types; each `A -field-> B` also yields an
+	 * implied `B -opposite-> A` edge (flagged `implied`), unless already declared.
+	 */
+	oppositeFields?: Record<string, string>;
 	/** Positive resource-limit overrides; each value may lower or raise its default. */
 	limits?: Partial<VaultLimits & GraphLimits>;
 	/**
