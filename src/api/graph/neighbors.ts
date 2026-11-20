@@ -37,10 +37,17 @@ export function neighbors(
 		!Array.isArray(types) ||
 		types.some((type) => !config.edgeFields.includes(type))
 	) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+		throw new VaultQueryError(
+			EC.INVALID_OPTIONS,
+			"types must contain configured edge fields.",
+		);
 	}
 	if (!index.files.includes(node)) {
-		throw new VaultQueryError(EC.NOT_FOUND, "Node is not an indexed Markdown file.", node);
+		throw new VaultQueryError(
+			EC.NOT_FOUND,
+			"Node is not an indexed Markdown file.",
+			node,
+		);
 	}
 	const values = index.edges.filter(
 		(edge) =>
