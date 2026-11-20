@@ -1,5 +1,5 @@
 import { Command, Option } from "commander";
-import type { TraverseOptions } from "../../api/index.js";
+import type { PathOptions, TraverseOptions } from "../../api/index.js";
 import {
 	createNeighborAction,
 	invalidArguments,
@@ -90,6 +90,33 @@ export function registerGraphCommands(
 			if (options.limit !== undefined)
 				traverseOptions.limit = positiveInteger(options.limit, "--limit");
 			select({ operation: "traverse", path, options: traverseOptions });
+		});
+
+	graph
+		.command("path <from> <to>")
+		.description("Find the shortest edge path between two nodes.")
+		.addOption(
+			new Option(
+				"--direction <direction>",
+				"Follow edges in a direction",
+			).choices(["incoming", "outgoing"]),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((from: string, to: string, options, command: Command) => {
+			requireEdgeFields(command, options);
+			const pathOptions: PathOptions = {};
+			if (options.direction !== undefined)
+				pathOptions.direction = options.direction;
+			if (options.edgeType.length) pathOptions.types = options.edgeType;
+			if (options.limit !== undefined)
+				pathOptions.limit = positiveInteger(options.limit, "--limit");
+			select({ operation: "path", from, to, options: pathOptions });
 		});
 
 	graph
