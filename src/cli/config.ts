@@ -14,20 +14,20 @@ export async function loadConfig(file: string): Promise<VaultOptions> {
 		}
 		text = await readFile(file, "utf8");
 	} catch {
-		throw Errors.Options.Invalid("--config must name a readable JSON file of at most 64 KiB.");
+		throw Errors.Options.InvalidOptions("--config must name a readable JSON file of at most 64 KiB.");
 	}
 	let parsed: unknown;
 	try {
 		parsed = JSON.parse(text);
 	} catch {
-		throw Errors.Options.Invalid("Config is not valid JSON.");
+		throw Errors.Options.InvalidOptions("Config is not valid JSON.");
 	}
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-		throw Errors.Options.Invalid("Config must be an object.");
+		throw Errors.Options.InvalidOptions("Config must be an object.");
 	}
 	for (const key of Object.keys(parsed)) {
 		if (!allowedKeys.includes(key)) {
-			throw Errors.Options.Invalid(`Unsupported config key: ${key}`);
+			throw Errors.Options.InvalidOptions(`Unsupported config key: ${key}`);
 		}
 	}
 	return parsed as VaultOptions;

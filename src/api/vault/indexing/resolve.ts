@@ -19,7 +19,7 @@ export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>,
 			}
 			const matches = byName.get(edge.target.toLowerCase()) ?? [];
 			if (matches.length > 1) {
-				throw Errors.Edges.Invalid("Wikilink target is ambiguous; use a vault-relative path.", edge.source);
+				throw Errors.Graph.InvalidEdge("Wikilink target is ambiguous; use a vault-relative path.", edge.source);
 			}
 			if (matches.length === 1) {
 				edge.target = matches[0];
@@ -28,7 +28,7 @@ export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>,
 	}
 	for (const edge of edges) {
 		if (!paths.has(edge.target)) {
-			throw Errors.Edges.Unresolved("Edge target is not an indexed Markdown file.", edge.source);
+			throw Errors.Graph.UnresolvedEdgeTarget("Edge target is not an indexed Markdown file.", edge.source);
 		}
 	}
 	const declared = new Set(edges.map((e) => `${e.source}\0${e.target}\0${e.type}`));

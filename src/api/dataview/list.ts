@@ -19,11 +19,11 @@ export interface ListOptions {
  */
 export function list(files: readonly string[], generation: number, query: string, limit: number): QueryResult<string> {
 	if (typeof query !== "string") {
-		throw Errors.Query.Invalid('Expected LIST FROM "<folder>".');
+		throw Errors.Query.InvalidQuery('Expected LIST FROM "<folder>".');
 	}
 	const match = /^\s*list\s+from\s+"([^"]*)"\s*$/i.exec(query);
 	if (!match) {
-		throw Errors.Query.Invalid('Only LIST FROM "<folder>" is supported.');
+		throw Errors.Query.InvalidQuery('Only LIST FROM "<folder>" is supported.');
 	}
 	const folder = validatePath(match[1], true);
 	const values = files.filter((file) => !folder || file.startsWith(`${folder}/`));

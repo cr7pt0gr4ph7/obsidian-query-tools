@@ -9,7 +9,7 @@ import type { GraphIndex } from "./indexing.js";
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
 	const selected = types ?? edgeTypes(config);
 	if (!Array.isArray(selected) || selected.some((type) => !edgeTypes(config).includes(type))) {
-		throw Errors.Options.Invalid("types must contain configured edge fields.");
+		throw Errors.Options.InvalidOptions("types must contain configured edge fields.");
 	}
 	return selected;
 }
@@ -17,7 +17,7 @@ export function selectTypes(config: GraphConfig, types?: string[]): string[] {
 export function requireNode(index: GraphIndex, node: string): void {
 	validatePath(node);
 	if (!index.files.includes(node)) {
-		throw Errors.Nodes.NotFound("Node is not an indexed Markdown file.", node);
+		throw Errors.Graph.UnresolvedNode("Node is not an indexed Markdown file.", node);
 	}
 }
 
@@ -34,7 +34,7 @@ export function shortestPath(
 	const limit = requestLimit(options, maxResults, ["limit", "direction", "types"]);
 	const direction = options.direction ?? "outgoing";
 	if (!["outgoing", "incoming"].includes(direction)) {
-		throw Errors.Options.Invalid("Invalid direction.");
+		throw Errors.Options.InvalidOptions("Invalid direction.");
 	}
 	const types = selectTypes(config, options.types);
 	requireNode(index, from);
@@ -132,7 +132,7 @@ export function listNodes(
 	const limit = requestLimit(options, maxResults, ["limit", "types", "role"]);
 	const role = options.role ?? "all";
 	if (!roles.includes(role)) {
-		throw Errors.Options.Invalid("Invalid node role.");
+		throw Errors.Options.InvalidOptions("Invalid node role.");
 	}
 	const types = selectTypes(config, options.types);
 	const out = new Set<string>();

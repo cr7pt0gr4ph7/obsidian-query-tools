@@ -27,14 +27,14 @@ export function neighbors(
 	validatePath(node);
 	const direction = options.direction ?? "outgoing";
 	if (!["outgoing", "incoming"].includes(direction)) {
-		throw Errors.Options.Invalid("Invalid direction.");
+		throw Errors.Options.InvalidOptions("Invalid direction.");
 	}
 	const types = options.types ?? edgeTypes(config);
 	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
-		throw Errors.Options.Invalid("types must contain configured edge fields.");
+		throw Errors.Options.InvalidOptions("types must contain configured edge fields.");
 	}
 	if (!index.files.includes(node)) {
-		throw Errors.Nodes.NotFound("Node is not an indexed Markdown file.", node);
+		throw Errors.Graph.UnresolvedNode("Node is not an indexed Markdown file.", node);
 	}
 	const values = index.edges.filter(
 		(edge) => edge[direction === "outgoing" ? "source" : "target"] === node && types.includes(edge.type),

@@ -9,12 +9,12 @@ import { Errors } from "./errors.js";
  */
 export function requestLimit(options: ListOptions, max: number, keys: string[]): number {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
-		throw Errors.Options.Invalid("Options must be an object.");
+		throw Errors.Options.InvalidOptions("Options must be an object.");
 	}
 	validateOptions(options, keys as (keyof ListOptions)[]);
 	const limit = options.limit ?? max;
 	if (!Number.isSafeInteger(limit) || limit < 1 || limit > max) {
-		throw Errors.Options.Invalid("Invalid result limit.");
+		throw Errors.Options.InvalidOptions("Invalid result limit.");
 	}
 	return limit;
 }
@@ -27,7 +27,7 @@ export function requestLimit(options: ListOptions, max: number, keys: string[]):
 export function validateOptions<T extends {}>(options: T, keys: (keyof T)[]) {
 	for (const key of Object.keys(options)) {
 		if (!keys.includes(key as keyof T)) {
-			throw Errors.Options.Invalid(`Unknown option: ${key}`);
+			throw Errors.Options.InvalidOptions(`Unknown option: ${key}`);
 		}
 	}
 }

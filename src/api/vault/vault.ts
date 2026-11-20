@@ -22,20 +22,20 @@ import { optionsForOpen } from "./validation.js";
  */
 export async function openVault(root: string, options: VaultOptions = {}): Promise<Vault> {
 	if (typeof root !== "string" || !root) {
-		throw Errors.Vault.Invalid("A vault root is required.");
+		throw Errors.Vault.InvalidVault("A vault root is required.");
 	}
 	const config = optionsForOpen(options);
 	let canonical: string;
 	try {
 		canonical = await realpath(root);
 		if (!(await lstat(canonical)).isDirectory()) {
-			throw Errors.Vault.Invalid("Vault root must be a directory.");
+			throw Errors.Vault.InvalidVault("Vault root must be a directory.");
 		}
 	} catch (error) {
 		if (Errors.is(error)) {
 			throw error;
 		}
-		throw Errors.Vault.Invalid("Vault root is not an accessible directory.");
+		throw Errors.Vault.InvalidVault("Vault root is not an accessible directory.");
 	}
 	let index = await buildIndex(canonical, config);
 	let generation = 1;
@@ -43,7 +43,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 	let refreshing = false;
 	function ensureOpen() {
 		if (closed) {
-			throw Errors.Vault.Closed("Vault is closed.");
+			throw Errors.Vault.VaultIsClosed("Vault is closed.");
 		}
 	}
 	const graph: VaultGraph = {
@@ -89,7 +89,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 			throw Errors.Files.InvalidPath("Current-file context must be a Markdown path.");
 		}
 		if (!index.graph.files.includes(file)) {
-			throw Errors.Nodes.NotFound("Current-file context was not found in the vault.", file);
+			throw Errors.Graph.UnresolvedNode("Current-file context was not found in the vault.", file);
 		}
 	}
 	return {
@@ -102,7 +102,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		async script(source, options = {}) {
 			ensureOpen();
 			if (!config.unsafeJavaScript) {
-				throw Errors.Features.Unsupported(
+				throw Errors.General.UnsupportedFeature(
 					"JavaScript execution is disabled; open the vault with unsafeJavaScript to enable it.",
 				);
 			}

@@ -43,12 +43,12 @@ export async function scanVault(root: string, config: Config): Promise<ScannedIn
 				const child = await open(anchored, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 				try {
 					if (signature(original) !== signature(await child.stat())) {
-						throw Errors.Vault.Changed("Directory changed while indexing.", name);
+						throw Errors.Vault.VaultChangedWhileIndexing("Directory changed while indexing.", name);
 					}
 					await visit(child, name);
 					const current = await lstat(anchored);
 					if (!current.isDirectory() || signature(current) !== signature(await child.stat())) {
-						throw Errors.Vault.Changed("Directory changed while indexing.", name);
+						throw Errors.Vault.VaultChangedWhileIndexing("Directory changed while indexing.", name);
 					}
 				} finally {
 					await child.close();
@@ -77,22 +77,22 @@ export async function scanVault(root: string, config: Config): Promise<ScannedIn
 		}
 		const after = await directory.stat();
 		if (signature(before) !== signature(after)) {
-			throw Errors.Vault.Changed("Directory changed while indexing.", relativePath);
+			throw Errors.Vault.VaultChangedWhileIndexing("Directory changed while indexing.", relativePath);
 		}
 	}
 	try {
 		if (process.platform !== "linux" || constants.O_NOFOLLOW === undefined || constants.O_DIRECTORY === undefined) {
-			throw Errors.Platform.Unsupported("Linux with /proc/self/fd and O_NOFOLLOW is required.");
+			throw Errors.General.UnsupportedPlatform("Linux with /proc/self/fd and O_NOFOLLOW is required.");
 		}
 		const original = await lstat(root);
 		const directory = await open(root, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 		try {
 			if (signature(original) !== signature(await directory.stat())) {
-				throw Errors.Vault.Changed("Vault root changed while indexing.");
+				throw Errors.Vault.VaultChangedWhileIndexing("Vault root changed while indexing.");
 			}
 			await visit(directory, "");
 			if (signature(await lstat(root)) !== signature(await directory.stat())) {
-				throw Errors.Vault.Changed("Vault root changed while indexing.");
+				throw Errors.Vault.VaultChangedWhileIndexing("Vault root changed while indexing.");
 			}
 		} finally {
 			await directory.close();

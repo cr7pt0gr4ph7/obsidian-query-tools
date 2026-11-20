@@ -43,22 +43,9 @@ const ErrorCode = {
 } as const;
 
 export const Errors = {
-	Edges: {
-		Invalid(message = "Invalid edge.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.INVALID_EDGE, message, relativePath);
-		},
-		Unresolved(message = "Edge target is not indexed.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.UNRESOLVED_EDGE, message, relativePath);
-		},
-	},
-	Features: {
-		Unsupported(message = "This feature is not supported.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.UNSUPPORTED_FEATURE, message, relativePath);
-		},
-	},
 	Files: {
-		SizeExceeded(message = "File size exceeded.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message, relativePath);
+		UnsafePath(message = "Unsafe path.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSAFE_PATH, message, relativePath);
 		},
 		InvalidPath(message = "Expected a vault-relative POSIX path.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_PATH, message, relativePath);
@@ -66,16 +53,22 @@ export const Errors = {
 		InvalidEncoding(message = "Invalid text encoding.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_ENCODING, message, relativePath);
 		},
-		UnsafePath(message = "Unsafe path.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.UNSAFE_PATH, message, relativePath);
+		SizeExceeded(message = "File size exceeded.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message, relativePath);
 		},
 	},
 	Frontmatter: {
-		Invalid(message = "Invalid frontmatter.", relativePath?: string) {
+		InvalidFrontmatter(message = "Invalid frontmatter.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, message, relativePath);
 		},
 	},
 	General: {
+		UnsupportedFeature(message = "This feature is not supported.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSUPPORTED_FEATURE, message, relativePath);
+		},
+		UnsupportedPlatform(message = "This platform is not supported.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSUPPORTED_PLATFORM, message, relativePath);
+		},
 		InternalError(message = "An unexpected error occurred.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INTERNAL_ERROR, message, relativePath);
 		},
@@ -85,34 +78,35 @@ export const Errors = {
 			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message, relativePath);
 		},
 	},
-	Nodes: {
-		NotFound(message = "The requested item was not found.", relativePath?: string) {
+	Graph: {
+		InvalidEdge(message = "Invalid edge.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_EDGE, message, relativePath);
+		},
+		UnresolvedEdgeTarget(message = "Edge target is not indexed.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNRESOLVED_EDGE, message, relativePath);
+		},
+		UnresolvedNode(message = "The requested item was not found.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.NOT_FOUND, message, relativePath);
 		},
 	},
 	Options: {
-		Invalid(message = "Invalid options.", relativePath?: string) {
+		InvalidOptions(message = "Invalid options.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_OPTIONS, message, relativePath);
 		},
 	},
-	Platform: {
-		Unsupported(message = "This platform is not supported.", relativePath?: string) {
-			return new VaultQueryError(ErrorCode.UNSUPPORTED_PLATFORM, message, relativePath);
-		},
-	},
 	Query: {
-		Invalid(message = "Invalid query.", relativePath?: string) {
+		InvalidQuery(message = "Invalid query.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_QUERY, message, relativePath);
 		},
 	},
 	Vault: {
-		Changed(message = "The vault changed while indexing.", relativePath?: string) {
+		VaultChangedWhileIndexing(message = "The vault changed while indexing.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.VAULT_CHANGED, message, relativePath);
 		},
-		Closed(message = "The vault is closed.", relativePath?: string) {
+		VaultIsClosed(message = "The vault is closed.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.VAULT_CLOSED, message, relativePath);
 		},
-		Invalid(message = "Invalid vault.", relativePath?: string) {
+		InvalidVault(message = "Invalid vault.", relativePath?: string) {
 			return new VaultQueryError(ErrorCode.INVALID_VAULT, message, relativePath);
 		},
 		ReadError(message = "Could not read the vault.", relativePath?: string) {

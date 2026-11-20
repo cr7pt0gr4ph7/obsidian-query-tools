@@ -25,32 +25,32 @@ export function exportGraph(
 	options: ExportOptions = {},
 ): GraphExport {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
-		throw Errors.Options.Invalid("Options must be an object.");
+		throw Errors.Options.InvalidOptions("Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
 		if (!["format", "types", "root", "maxDepth", "direction"].includes(key)) {
-			throw Errors.Options.Invalid(`Unknown option: ${key}`);
+			throw Errors.Options.InvalidOptions(`Unknown option: ${key}`);
 		}
 	}
 	const format = options.format ?? "json";
 	if (!exportFormats.includes(format)) {
-		throw Errors.Options.Invalid("Unsupported export format.");
+		throw Errors.Options.InvalidOptions("Unsupported export format.");
 	}
 	const types = options.types ?? edgeTypes(config);
 	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
-		throw Errors.Options.Invalid("types must contain configured edge fields.");
+		throw Errors.Options.InvalidOptions("types must contain configured edge fields.");
 	}
 	let edges = index.edges.filter((edge) => types.includes(edge.type));
 	let files = index.files;
 	if (options.root === undefined) {
 		if (options.maxDepth !== undefined || options.direction !== undefined) {
-			throw Errors.Options.Invalid("maxDepth and direction require root.");
+			throw Errors.Options.InvalidOptions("maxDepth and direction require root.");
 		}
 	} else {
 		requireNode(index, options.root);
 		const direction = options.direction ?? "both";
 		if (!["outgoing", "incoming", "both"].includes(direction)) {
-			throw Errors.Options.Invalid("Invalid direction.");
+			throw Errors.Options.InvalidOptions("Invalid direction.");
 		}
 		const directions = direction === "both" ? (["outgoing", "incoming"] as const) : [direction];
 		const keep = new Set([options.root]);

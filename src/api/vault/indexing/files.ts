@@ -31,7 +31,7 @@ export async function readMarkdownFile(
 	try {
 		const before = await file.stat();
 		if (!before.isFile() || signature(stat) !== signature(before)) {
-			throw Errors.Vault.Changed("File changed while indexing.", relativePath);
+			throw Errors.Vault.VaultChangedWhileIndexing("File changed while indexing.", relativePath);
 		}
 		const buffer = Buffer.alloc(before.size + 1);
 		let length = 0;
@@ -48,7 +48,7 @@ export async function readMarkdownFile(
 		const after = await file.stat();
 		const current = await lstat(anchored);
 		if (!current.isFile() || signature(before) !== signature(after) || signature(after) !== signature(current)) {
-			throw Errors.Vault.Changed("File changed while indexing.", relativePath);
+			throw Errors.Vault.VaultChangedWhileIndexing("File changed while indexing.", relativePath);
 		}
 		try {
 			return new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, length));

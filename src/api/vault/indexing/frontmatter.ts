@@ -18,25 +18,25 @@ export function readEdges(
 	}
 	const end = lines.indexOf("---", 1);
 	if (end < 0) {
-		throw Errors.Frontmatter.Invalid("Unclosed frontmatter.", relativePath);
+		throw Errors.Frontmatter.InvalidFrontmatter("Unclosed frontmatter.", relativePath);
 	}
 	const document = parseDocument(lines.slice(1, end).join("\n"), {
 		uniqueKeys: true,
 	});
 	if (document.errors.length || document.warnings.length) {
-		throw Errors.Frontmatter.Invalid("Invalid or unsupported YAML frontmatter.", relativePath);
+		throw Errors.Frontmatter.InvalidFrontmatter("Invalid or unsupported YAML frontmatter.", relativePath);
 	}
 	let frontmatter: unknown;
 	try {
 		frontmatter = document.toJS({ maxAliasCount: 0 });
 	} catch {
-		throw Errors.Frontmatter.Invalid("Unsupported YAML frontmatter.", relativePath);
+		throw Errors.Frontmatter.InvalidFrontmatter("Unsupported YAML frontmatter.", relativePath);
 	}
 	if (frontmatter === null) {
 		return;
 	}
 	if (typeof frontmatter !== "object" || Array.isArray(frontmatter)) {
-		throw Errors.Frontmatter.Invalid("Frontmatter must be a mapping.", relativePath);
+		throw Errors.Frontmatter.InvalidFrontmatter("Frontmatter must be a mapping.", relativePath);
 	}
 	for (const type of fields) {
 		if (!Object.hasOwn(frontmatter, type)) {
@@ -53,13 +53,13 @@ export function readEdges(
 				}
 			}
 			if (link === undefined && (typeof target !== "string" || target.includes("[[") || target.includes("]]"))) {
-				throw Errors.Edges.Invalid("Edge fields must contain vault-relative Markdown paths.", relativePath);
+				throw Errors.Graph.InvalidEdge("Edge fields must contain vault-relative Markdown paths.", relativePath);
 			}
 			let normalized: string;
 			try {
 				normalized = validatePath(link ?? (target as string));
 			} catch {
-				throw Errors.Edges.Invalid("Edge fields must contain vault-relative Markdown paths.", relativePath);
+				throw Errors.Graph.InvalidEdge("Edge fields must contain vault-relative Markdown paths.", relativePath);
 			}
 			if (!normalized.toLowerCase().endsWith(".md")) {
 				normalized += ".md";

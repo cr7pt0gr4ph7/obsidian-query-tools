@@ -46,14 +46,14 @@ function parseMcpServerArgs() {
 			},
 		});
 	} catch {
-		throw Errors.Options.Invalid("Invalid MCP server arguments.");
+		throw Errors.Options.InvalidOptions("Invalid MCP server arguments.");
 	}
 }
 
 async function main() {
 	const parsed = parseMcpServerArgs();
 	if (!parsed.values.vault) {
-		throw Errors.Options.Invalid("Expected --vault <path> at server startup.");
+		throw Errors.Options.InvalidOptions("Expected --vault <path> at server startup.");
 	}
 	const fileOptions = parsed.values.config ? await loadConfig(parsed.values.config) : {};
 	const vault = await openVault(
@@ -65,7 +65,7 @@ async function main() {
 				(parsed.values.opposite ?? []).map((pair) => {
 					const at = pair.indexOf(":");
 					if (at < 1 || at === pair.length - 1) {
-						throw Errors.Options.Invalid("--opposite expects <field:type>.");
+						throw Errors.Options.InvalidOptions("--opposite expects <field:type>.");
 					}
 					return [pair.slice(0, at), pair.slice(at + 1)];
 				}),

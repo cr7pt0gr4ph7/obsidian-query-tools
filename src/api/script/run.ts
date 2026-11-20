@@ -38,7 +38,7 @@ export interface ScriptHost {
 function validateTimeout(options: RunScriptOptions) {
 	const timeoutMs = options.timeoutMs ?? defaultRunScriptOptions.timeoutMs;
 	if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1) {
-		throw Errors.Options.Invalid("Invalid script timeout.");
+		throw Errors.Options.InvalidOptions("Invalid script timeout.");
 	}
 	return timeoutMs;
 }
@@ -63,7 +63,7 @@ export async function runScript(
 	options: RunScriptOptions = defaultRunScriptOptions,
 ): Promise<unknown[]> {
 	if (typeof source !== "string" || !source.trim()) {
-		throw Errors.Query.Invalid("Script must not be empty.");
+		throw Errors.Query.InvalidQuery("Script must not be empty.");
 	}
 	const timeoutMs = validateTimeout(options);
 	const plain = <T>(value: T): T => structuredClone(value);
@@ -85,7 +85,7 @@ export async function runScript(
 		}
 		const json = JSON.stringify(value);
 		if (json === undefined) {
-			throw Errors.Query.Invalid("Script result must be JSON-serializable.");
+			throw Errors.Query.InvalidQuery("Script result must be JSON-serializable.");
 		}
 		const parsed: unknown = JSON.parse(json);
 		return Array.isArray(parsed) ? parsed : [parsed];
@@ -97,7 +97,7 @@ export async function runScript(
 			throw Errors.Limits.Exceeded("Script timed out.");
 		}
 		const name = error && typeof error === "object" && "name" in error ? String(error.name) : "Error";
-		throw Errors.Query.Invalid(
+		throw Errors.Query.InvalidQuery(
 			name === "SyntaxError" || name === "Error" || /Error$/.test(name) ? `Script failed: ${name}.` : "Script failed.",
 		);
 	}

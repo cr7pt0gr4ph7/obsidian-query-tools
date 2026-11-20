@@ -11,7 +11,7 @@ import { loadConfig, mergeOptions } from "./config.js";
 const version = createRequire(import.meta.url)("../../package.json").version;
 
 function invalidArguments(message: string): never {
-	throw Errors.Options.Invalid(message);
+	throw Errors.Options.InvalidOptions(message);
 }
 
 function serializeError(error: unknown): string {
@@ -135,7 +135,7 @@ export async function runCli(args: string[]): Promise<number> {
 		}
 		if (error instanceof CommanderError) {
 			const message = error.message.replace(/^error: /, "");
-			process.stderr.write(`${serializeError(Errors.Options.Invalid(message))}\n`);
+			process.stderr.write(`${serializeError(Errors.Options.InvalidOptions(message))}\n`);
 			return 1;
 		}
 		process.stderr.write(`${serializeError(error)}\n`);
