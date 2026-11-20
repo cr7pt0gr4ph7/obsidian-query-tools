@@ -45,6 +45,12 @@ serializes every Markdown file as a node plus the selected edges as `json`,
 `csv` (formula-prefix guarded), `dot`, `mermaid`, or `graphml` with escaping.
 The CLI exposes these as `graph traverse` and `graph export`; MCP exposes
 `traverse` and `export`.
+`VaultGraph` further provides `path()` (shortest chain), `stats()`, `nodes()`
+(sources, sinks, isolated), and `cycles()` (strongly connected groups).
+The optional `oppositeFields` open option (CLI/MCP `--opposite field:type`)
+adds a Breadcrumbs-inspired implied reverse edge, flagged `implied: true`,
+for each configured edge unless the same edge is declared; implied edges count
+toward the edge limit. This is project-defined behavior, not Breadcrumbs parity.
 `refresh()` publishes a new generation on success; `close()` invalidates the
 context.
 Results contain `{ generation, data, diagnostics, truncated }`; errors are

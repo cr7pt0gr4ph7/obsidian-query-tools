@@ -1,5 +1,5 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
-import type { GraphConfig } from "./config.js";
+import { edgeTypes, type GraphConfig } from "./config.js";
 import type { ExportFormat, ExportOptions, GraphExport } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
@@ -42,10 +42,10 @@ export function exportGraph(
 	const format = options.format ?? "json";
 	if (!exportFormats.includes(format))
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Unsupported export format.");
-	const types = options.types ?? config.edgeFields;
+	const types = options.types ?? edgeTypes(config);
 	if (
 		!Array.isArray(types) ||
-		types.some((type) => !config.edgeFields.includes(type))
+		types.some((type) => !edgeTypes(config).includes(type))
 	)
 		throw new VaultQueryError(
 			EC.INVALID_OPTIONS,

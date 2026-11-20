@@ -20,6 +20,12 @@ export function createProgram(
 			(value: string, previous: string[]) => [...previous, value],
 			[],
 		)
+		.option(
+			"--opposite <field:type>",
+			"Imply a reverse edge of <type> for every <field> edge (repeatable)",
+			(value: string, previous: string[]) => [...previous, value],
+			[],
+		)
 		.allowExcessArguments(false)
 		.exitOverride()
 		.configureOutput({

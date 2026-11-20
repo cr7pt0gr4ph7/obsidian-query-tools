@@ -1,7 +1,7 @@
 import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
-import type { GraphConfig } from "./config.js";
+import { edgeTypes, type GraphConfig } from "./config.js";
 import type { Edge, TraverseOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
@@ -29,10 +29,10 @@ export function traverse(
 	const direction = options.direction ?? "outgoing";
 	if (!["outgoing", "incoming"].includes(direction))
 		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
-	const types = options.types ?? config.edgeFields;
+	const types = options.types ?? edgeTypes(config);
 	if (
 		!Array.isArray(types) ||
-		types.some((type) => !config.edgeFields.includes(type))
+		types.some((type) => !edgeTypes(config).includes(type))
 	)
 		throw new VaultQueryError(
 			EC.INVALID_OPTIONS,

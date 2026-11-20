@@ -78,8 +78,10 @@ export interface Edge {
 	source: string;
 	/** Vault-relative Markdown path referenced by the relationship. */
 	target: string;
-	/** Frontmatter field that declared the relationship. */
+	/** Frontmatter field that declared the relationship, or the opposite type for implied edges. */
 	type: string;
+	/** True when the edge was derived from an opposite-field mapping rather than declared. */
+	implied?: true;
 }
 
 /** Direct-neighbor queries over the vault's current graph generation. */

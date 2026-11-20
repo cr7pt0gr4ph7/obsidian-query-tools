@@ -90,9 +90,23 @@ export async function runCli(args: string[]): Promise<number> {
 		if (selectedCommand === undefined) {
 			invalidArguments("Specify a supported operation.");
 		}
-		const options = program.opts<{ vault?: string; edgeField: string[] }>();
+		const options = program.opts<{
+			vault?: string;
+			edgeField: string[];
+			opposite: string[];
+		}>();
 		if (!options.vault) invalidArguments("--vault is required.");
-		vault = await openVault(options.vault, { edgeFields: options.edgeField });
+		const oppositeFields: Record<string, string> = {};
+		for (const pair of options.opposite) {
+			const at = pair.indexOf(":");
+			if (at < 1 || at === pair.length - 1)
+				invalidArguments("--opposite expects <field:type>.");
+			oppositeFields[pair.slice(0, at)] = pair.slice(at + 1);
+		}
+		vault = await openVault(options.vault, {
+			edgeFields: options.edgeField,
+			oppositeFields,
+		});
 		const result = await execute(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);
 		return 0;
