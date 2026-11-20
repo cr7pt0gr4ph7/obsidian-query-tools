@@ -30,10 +30,9 @@ async function handle(operation: () => object | Promise<object>) {
 	}
 }
 
-async function main() {
-	let parsed;
+function parseMcpServerArgs() {
 	try {
-		parsed = parseArgs({
+		return parseArgs({
 			options: {
 				vault: { type: "string" },
 				"edge-field": { type: "string", multiple: true },
@@ -48,6 +47,10 @@ async function main() {
 			"Invalid MCP server arguments.",
 		);
 	}
+}
+
+async function main() {
+	const parsed = parseMcpServerArgs();
 	if (!parsed.values.vault) {
 		throw new VaultQueryError(
 			"INVALID_OPTIONS",

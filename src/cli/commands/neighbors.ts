@@ -1,4 +1,4 @@
-import { Command, Option } from "commander";
+import { type Command, Option } from "commander";
 import { createNeighborAction } from "./helpers.js";
 import type { CliCommandSelector } from "./types.js";
 

@@ -1,4 +1,4 @@
-import { Edge } from "./graph.js";
+import type { Edge } from "./graph.js";
 
 /** Indexed Markdown files and their configured directed relationships. */
 

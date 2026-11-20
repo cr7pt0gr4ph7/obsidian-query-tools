@@ -152,7 +152,7 @@ function readEdges(
 			let link: string | undefined;
 			if (wikilinks && typeof target === "string") {
 				const match =
-					/^\[\[([^\[\]|#]+)(?:#[^\[\]|]*)?(?:\|[^\[\]]*)?\]\]$/.exec(
+					/^\[\[([^[\]|#]+)(?:#[^[\]|]*)?(?:\|[^[\]]*)?\]\]$/.exec(
 						target.trim(),
 					);
 				if (match) link = match[1].trim();
@@ -169,7 +169,7 @@ function readEdges(
 					relativePath,
 				);
 			}
-			let normalized;
+			let normalized: string;
 			try {
 				normalized = validatePath(link ?? (target as string));
 			} catch {

@@ -1,4 +1,4 @@
-import { Command, Option } from "commander";
+import { type Command, Option } from "commander";
 import type {
 	CyclesOptions,
 	NodesOptions,

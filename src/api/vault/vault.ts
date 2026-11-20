@@ -33,7 +33,7 @@ export async function openVault(
 	if (typeof root !== "string" || !root)
 		fail("INVALID_VAULT", "A vault root is required.");
 	const config = optionsForOpen(options);
-	let canonical;
+	let canonical: string;
 	try {
 		canonical = await realpath(root);
 		if (!(await lstat(canonical)).isDirectory())

@@ -1,4 +1,4 @@
-import { Command, CommanderError } from "commander";
+import { CommanderError } from "commander";
 import { createRequire } from "node:module";
 import { VaultQueryError, describe, openVault } from "../api/index.js";
 import type { Vault } from "../api/index.js";

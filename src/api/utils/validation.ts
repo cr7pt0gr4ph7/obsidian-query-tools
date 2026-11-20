@@ -33,4 +33,3 @@ export function validateOptions<T extends {}>(options: T, keys: (keyof T)[]) {
 		}
 	}
 }
-

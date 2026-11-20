@@ -13,8 +13,7 @@ export function validatePath(value: string, allowEmpty = false): string {
 		value.includes("\0") ||
 		value.startsWith("/") ||
 		/^[a-z]:/i.test(value) ||
-		(value &&
-			value.split("/").some((part) => !part || part === "." || part === ".."))
+		(value?.split("/").some((part) => !part || part === "." || part === ".."))
 	) {
 		throw new VaultQueryError(
 			ErrorCode.INVALID_PATH,
