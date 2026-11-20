@@ -24,7 +24,7 @@ export type {
 	VaultGraph,
 } from "./graph/graph.js";
 export type { ScriptOptions } from "./script/run.js";
-export { VaultQueryError } from "./utils/errors.js";
+export { Errors, VaultQueryError } from "./utils/errors.js";
 
 /** Standard result envelope returned by query operations. */
 export type { QueryResult } from "./utils/result.js";

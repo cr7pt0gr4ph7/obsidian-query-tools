@@ -3,7 +3,7 @@ import { parseArgs } from "node:util";
 import { McpServer } from "@modelcontextprotocol/server";
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod/v4";
-import { openVault, VaultQueryError } from "../api/index.js";
+import { Errors, openVault } from "../api/index.js";
 import { loadConfig, mergeOptions } from "../cli/config.js";
 
 function reply(data: Record<string, unknown>) {
@@ -13,19 +13,23 @@ function reply(data: Record<string, unknown>) {
 	};
 }
 
+function unexpectedErrorDetails(message: string) {
+	const error = Errors.General.InternalError(message);
+	return { code: error.code, message: error.message };
+}
+
 async function handle(operation: () => object | Promise<object>) {
 	try {
 		const data = await operation();
 		return reply({ ...data });
 	} catch (error) {
-		const details =
-			error instanceof VaultQueryError
-				? {
-						code: error.code,
-						message: error.message,
-						...(error.path === undefined ? {} : { path: error.path }),
-					}
-				: { code: "INTERNAL_ERROR", message: "Unexpected internal error." };
+		const details = Errors.is(error)
+			? {
+					code: error.code,
+					message: error.message,
+					...(error.path === undefined ? {} : { path: error.path }),
+				}
+			: unexpectedErrorDetails("Unexpected internal error.");
 		return { ...reply({ error: details }), isError: true };
 	}
 }
@@ -42,14 +46,14 @@ function parseMcpServerArgs() {
 			},
 		});
 	} catch {
-		throw new VaultQueryError("INVALID_OPTIONS", "Invalid MCP server arguments.");
+		throw Errors.Options.Invalid("Invalid MCP server arguments.");
 	}
 }
 
 async function main() {
 	const parsed = parseMcpServerArgs();
 	if (!parsed.values.vault) {
-		throw new VaultQueryError("INVALID_OPTIONS", "Expected --vault <path> at server startup.");
+		throw Errors.Options.Invalid("Expected --vault <path> at server startup.");
 	}
 	const fileOptions = parsed.values.config ? await loadConfig(parsed.values.config) : {};
 	const vault = await openVault(
@@ -61,7 +65,7 @@ async function main() {
 				(parsed.values.opposite ?? []).map((pair) => {
 					const at = pair.indexOf(":");
 					if (at < 1 || at === pair.length - 1) {
-						throw new VaultQueryError("INVALID_OPTIONS", "--opposite expects <field:type>.");
+						throw Errors.Options.Invalid("--opposite expects <field:type>.");
 					}
 					return [pair.slice(0, at), pair.slice(at + 1)];
 				}),
@@ -209,10 +213,9 @@ async function main() {
 try {
 	await main();
 } catch (error) {
-	const details =
-		error instanceof VaultQueryError
-			? { code: error.code, message: error.message }
-			: { code: "INTERNAL_ERROR", message: "Unexpected internal error." };
+	const details = Errors.is(error)
+		? { code: error.code, message: error.message }
+		: unexpectedErrorDetails("Unexpected internal error.");
 	process.stderr.write(`${JSON.stringify({ error: details })}\n`);
 	process.exitCode = 1;
 }

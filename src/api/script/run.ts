@@ -1,5 +1,5 @@
 import vm from "node:vm";
-import { ErrorCode, VaultQueryError } from "../utils/errors.js";
+import { Errors } from "../utils/errors.js";
 
 /** Options for unsafe script evaluation. */
 export interface ScriptOptions {
@@ -38,7 +38,7 @@ export interface ScriptHost {
 function validateTimeout(options: RunScriptOptions) {
 	const timeoutMs = options.timeoutMs ?? defaultRunScriptOptions.timeoutMs;
 	if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1) {
-		throw new VaultQueryError(ErrorCode.INVALID_OPTIONS, "Invalid script timeout.");
+		throw Errors.Options.Invalid("Invalid script timeout.");
 	}
 	return timeoutMs;
 }
@@ -63,7 +63,7 @@ export async function runScript(
 	options: RunScriptOptions = defaultRunScriptOptions,
 ): Promise<unknown[]> {
 	if (typeof source !== "string" || !source.trim()) {
-		throw new VaultQueryError(ErrorCode.INVALID_QUERY, "Script must not be empty.");
+		throw Errors.Query.Invalid("Script must not be empty.");
 	}
 	const timeoutMs = validateTimeout(options);
 	const plain = <T>(value: T): T => structuredClone(value);
@@ -85,20 +85,19 @@ export async function runScript(
 		}
 		const json = JSON.stringify(value);
 		if (json === undefined) {
-			throw new VaultQueryError(ErrorCode.INVALID_QUERY, "Script result must be JSON-serializable.");
+			throw Errors.Query.Invalid("Script result must be JSON-serializable.");
 		}
 		const parsed: unknown = JSON.parse(json);
 		return Array.isArray(parsed) ? parsed : [parsed];
 	} catch (error) {
-		if (error instanceof VaultQueryError) {
+		if (Errors.is(error)) {
 			throw error;
 		}
 		if (isTimeoutError(error)) {
-			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.");
+			throw Errors.Limits.Exceeded("Script timed out.");
 		}
 		const name = error && typeof error === "object" && "name" in error ? String(error.name) : "Error";
-		throw new VaultQueryError(
-			ErrorCode.INVALID_QUERY,
+		throw Errors.Query.Invalid(
 			name === "SyntaxError" || name === "Error" || /Error$/.test(name) ? `Script failed: ${name}.` : "Script failed.",
 		);
 	}

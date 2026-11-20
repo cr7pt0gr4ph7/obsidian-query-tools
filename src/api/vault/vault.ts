@@ -7,7 +7,7 @@ import type { VaultGraph } from "../graph/graph.js";
 import { neighbors } from "../graph/neighbors.js";
 import { traverse } from "../graph/traverse.js";
 import { runScript, type ScriptOptions } from "../script/run.js";
-import { ErrorCode, VaultQueryError } from "../utils/errors.js";
+import { Errors } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import { type QueryResult, result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
@@ -22,20 +22,20 @@ import { optionsForOpen } from "./validation.js";
  */
 export async function openVault(root: string, options: VaultOptions = {}): Promise<Vault> {
 	if (typeof root !== "string" || !root) {
-		throw new VaultQueryError(ErrorCode.INVALID_VAULT, "A vault root is required.");
+		throw Errors.Vault.Invalid("A vault root is required.");
 	}
 	const config = optionsForOpen(options);
 	let canonical: string;
 	try {
 		canonical = await realpath(root);
 		if (!(await lstat(canonical)).isDirectory()) {
-			throw new VaultQueryError(ErrorCode.INVALID_VAULT, "Vault root must be a directory.");
+			throw Errors.Vault.Invalid("Vault root must be a directory.");
 		}
 	} catch (error) {
-		if (error instanceof VaultQueryError) {
+		if (Errors.is(error)) {
 			throw error;
 		}
-		throw new VaultQueryError(ErrorCode.INVALID_VAULT, "Vault root is not an accessible directory.");
+		throw Errors.Vault.Invalid("Vault root is not an accessible directory.");
 	}
 	let index = await buildIndex(canonical, config);
 	let generation = 1;
@@ -43,7 +43,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 	let refreshing = false;
 	function ensureOpen() {
 		if (closed) {
-			throw new VaultQueryError(ErrorCode.VAULT_CLOSED, "Vault is closed.");
+			throw Errors.Vault.Closed("Vault is closed.");
 		}
 	}
 	const graph: VaultGraph = {
@@ -86,10 +86,10 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		}
 		const file = validatePath(value);
 		if (!file.toLowerCase().endsWith(".md")) {
-			throw new VaultQueryError(ErrorCode.INVALID_PATH, "Current-file context must be a Markdown path.");
+			throw Errors.Files.InvalidPath("Current-file context must be a Markdown path.");
 		}
 		if (!index.graph.files.includes(file)) {
-			throw new VaultQueryError(ErrorCode.NOT_FOUND, "Current-file context was not found in the vault.", file);
+			throw Errors.Nodes.NotFound("Current-file context was not found in the vault.", file);
 		}
 	}
 	return {
@@ -102,8 +102,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		async script(source, options = {}) {
 			ensureOpen();
 			if (!config.unsafeJavaScript) {
-				throw new VaultQueryError(
-					ErrorCode.UNSUPPORTED_FEATURE,
+				throw Errors.Features.Unsupported(
 					"JavaScript execution is disabled; open the vault with unsafeJavaScript to enable it.",
 				);
 			}
@@ -132,7 +131,7 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		async refresh() {
 			ensureOpen();
 			if (refreshing) {
-				throw new VaultQueryError(ErrorCode.REFRESH_IN_PROGRESS, "A refresh is already in progress.");
+				throw Errors.Vault.RefreshInProgress("A refresh is already in progress.");
 			}
 			refreshing = true;
 			try {

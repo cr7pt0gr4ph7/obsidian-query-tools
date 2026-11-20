@@ -1,8 +1,7 @@
 import { createRequire } from "node:module";
 import { CommanderError } from "commander";
 import type { Vault } from "../api/index.js";
-import { describe, openVault, VaultQueryError } from "../api/index.js";
-import { ErrorCode } from "../api/utils/errors.js";
+import { describe, Errors, openVault } from "../api/index.js";
 import type { ConsoleRequest } from "../console.js";
 import { runConsole } from "../console.js";
 import type { CliCommand } from "./commands/index.js";
@@ -12,11 +11,11 @@ import { loadConfig, mergeOptions } from "./config.js";
 const version = createRequire(import.meta.url)("../../package.json").version;
 
 function invalidArguments(message: string): never {
-	throw new VaultQueryError(ErrorCode.INVALID_OPTIONS, message);
+	throw Errors.Options.Invalid(message);
 }
 
 function serializeError(error: unknown): string {
-	if (error instanceof VaultQueryError) {
+	if (Errors.is(error)) {
 		const detail: { code: string; message: string; path?: string } = {
 			code: error.code,
 			message: error.message,
@@ -26,12 +25,8 @@ function serializeError(error: unknown): string {
 		}
 		return JSON.stringify({ error: detail });
 	}
-	return JSON.stringify({
-		error: {
-			code: ErrorCode.INTERNAL_ERROR,
-			message: "An unexpected error occurred.",
-		},
-	});
+	const internalError = Errors.General.InternalError("An unexpected error occurred.");
+	return JSON.stringify({ error: { code: internalError.code, message: internalError.message } });
 }
 
 async function executeGraphCommand(vault: Vault, command: CliCommand): Promise<unknown> {
@@ -140,7 +135,7 @@ export async function runCli(args: string[]): Promise<number> {
 		}
 		if (error instanceof CommanderError) {
 			const message = error.message.replace(/^error: /, "");
-			process.stderr.write(`${serializeError(new VaultQueryError(ErrorCode.INVALID_OPTIONS, message))}\n`);
+			process.stderr.write(`${serializeError(Errors.Options.Invalid(message))}\n`);
 			return 1;
 		}
 		process.stderr.write(`${serializeError(error)}\n`);

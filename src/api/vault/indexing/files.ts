@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import type { FileHandle } from "node:fs/promises";
 import { lstat, open } from "node:fs/promises";
 import path from "node:path";
-import { ErrorCode, Errors, VaultQueryError } from "../../utils/errors.js";
+import { Errors } from "../../utils/errors.js";
 
 export const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
@@ -22,7 +22,7 @@ export async function readMarkdownFile(
 	const anchored = path.join(fdPath(parent), name);
 	const stat = await lstat(anchored);
 	if (!stat.isFile() || stat.isSymbolicLink()) {
-		throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks and special files are not allowed.", relativePath);
+		throw Errors.Files.UnsafePath("Symlinks and special files are not allowed.", relativePath);
 	}
 	if (stat.size > limit) {
 		throw Errors.Files.SizeExceeded("Markdown file exceeds the byte limit.", relativePath);
@@ -31,7 +31,7 @@ export async function readMarkdownFile(
 	try {
 		const before = await file.stat();
 		if (!before.isFile() || signature(stat) !== signature(before)) {
-			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "File changed while indexing.", relativePath);
+			throw Errors.Vault.Changed("File changed while indexing.", relativePath);
 		}
 		const buffer = Buffer.alloc(before.size + 1);
 		let length = 0;
@@ -43,17 +43,17 @@ export async function readMarkdownFile(
 			length += bytesRead;
 		}
 		if (length > limit) {
-			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file exceeds the byte limit.", relativePath);
+			throw Errors.Files.SizeExceeded("Markdown file exceeds the byte limit.", relativePath);
 		}
 		const after = await file.stat();
 		const current = await lstat(anchored);
 		if (!current.isFile() || signature(before) !== signature(after) || signature(after) !== signature(current)) {
-			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "File changed while indexing.", relativePath);
+			throw Errors.Vault.Changed("File changed while indexing.", relativePath);
 		}
 		try {
 			return new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, length));
 		} catch {
-			throw new VaultQueryError(ErrorCode.INVALID_ENCODING, "Markdown file is not valid UTF-8.", relativePath);
+			throw Errors.Files.InvalidEncoding("Markdown file is not valid UTF-8.", relativePath);
 		}
 	} finally {
 		await file.close();

@@ -21,7 +21,7 @@ export class VaultQueryError extends Error {
 	}
 }
 
-export const ErrorCode = {
+const ErrorCode = {
 	INTERNAL_ERROR: "INTERNAL_ERROR",
 	INVALID_EDGE: "INVALID_EDGE",
 	INVALID_ENCODING: "INVALID_ENCODING",
@@ -43,16 +43,89 @@ export const ErrorCode = {
 } as const;
 
 export const Errors = {
+	Edges: {
+		Invalid(message = "Invalid edge.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_EDGE, message, relativePath);
+		},
+		Unresolved(message = "Edge target is not indexed.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNRESOLVED_EDGE, message, relativePath);
+		},
+	},
+	Features: {
+		Unsupported(message = "This feature is not supported.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSUPPORTED_FEATURE, message, relativePath);
+		},
+	},
 	Files: {
-		SizeExceeded(message?: string, relativePath?: string) {
-			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message ?? "File size exceeded.", relativePath);
+		SizeExceeded(message = "File size exceeded.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message, relativePath);
 		},
-		InvalidPath(message?: string, relativePath?: string) {
-			return new VaultQueryError(
-				ErrorCode.INVALID_PATH,
-				message ?? "Expected a vault-relative POSIX path.",
-				relativePath,
-			);
+		InvalidPath(message = "Expected a vault-relative POSIX path.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_PATH, message, relativePath);
 		},
+		InvalidEncoding(message = "Invalid text encoding.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_ENCODING, message, relativePath);
+		},
+		UnsafePath(message = "Unsafe path.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSAFE_PATH, message, relativePath);
+		},
+	},
+	Frontmatter: {
+		Invalid(message = "Invalid frontmatter.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_FRONTMATTER, message, relativePath);
+		},
+	},
+	General: {
+		InternalError(message = "An unexpected error occurred.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INTERNAL_ERROR, message, relativePath);
+		},
+	},
+	Limits: {
+		Exceeded(message = "Resource limit exceeded.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, message, relativePath);
+		},
+	},
+	Nodes: {
+		NotFound(message = "The requested item was not found.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.NOT_FOUND, message, relativePath);
+		},
+	},
+	Options: {
+		Invalid(message = "Invalid options.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_OPTIONS, message, relativePath);
+		},
+	},
+	Platform: {
+		Unsupported(message = "This platform is not supported.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.UNSUPPORTED_PLATFORM, message, relativePath);
+		},
+	},
+	Query: {
+		Invalid(message = "Invalid query.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_QUERY, message, relativePath);
+		},
+	},
+	Vault: {
+		Changed(message = "The vault changed while indexing.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.VAULT_CHANGED, message, relativePath);
+		},
+		Closed(message = "The vault is closed.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.VAULT_CLOSED, message, relativePath);
+		},
+		Invalid(message = "Invalid vault.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.INVALID_VAULT, message, relativePath);
+		},
+		ReadError(message = "Could not read the vault.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.VAULT_READ_ERROR, message, relativePath);
+		},
+		RefreshInProgress(message = "A refresh is already in progress.", relativePath?: string) {
+			return new VaultQueryError(ErrorCode.REFRESH_IN_PROGRESS, message, relativePath);
+		},
+	},
+	is(error: unknown): error is VaultQueryError {
+		return error instanceof VaultQueryError;
+	},
+	codes(): string[] {
+		return Object.values(ErrorCode).sort();
 	},
 };

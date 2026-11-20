@@ -1,6 +1,6 @@
 import type { Edge } from "../../graph/graph.js";
 import type { GraphIndex } from "../../graph/indexing.js";
-import { ErrorCode, VaultQueryError } from "../../utils/errors.js";
+import { Errors } from "../../utils/errors.js";
 import type { Config, VaultIndex } from "../types.js";
 import { compare } from "./files.js";
 
@@ -19,11 +19,7 @@ export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>,
 			}
 			const matches = byName.get(edge.target.toLowerCase()) ?? [];
 			if (matches.length > 1) {
-				throw new VaultQueryError(
-					ErrorCode.INVALID_EDGE,
-					"Wikilink target is ambiguous; use a vault-relative path.",
-					edge.source,
-				);
+				throw Errors.Edges.Invalid("Wikilink target is ambiguous; use a vault-relative path.", edge.source);
 			}
 			if (matches.length === 1) {
 				edge.target = matches[0];
@@ -32,7 +28,7 @@ export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>,
 	}
 	for (const edge of edges) {
 		if (!paths.has(edge.target)) {
-			throw new VaultQueryError(ErrorCode.UNRESOLVED_EDGE, "Edge target is not an indexed Markdown file.", edge.source);
+			throw Errors.Edges.Unresolved("Edge target is not an indexed Markdown file.", edge.source);
 		}
 	}
 	const declared = new Set(edges.map((e) => `${e.source}\0${e.target}\0${e.type}`));
@@ -47,7 +43,7 @@ export function resolveIndex(files: string[], edges: Edge[], pending: Set<Edge>,
 		}
 		declared.add(key);
 		if (edges.length >= config.graph.limits.maxEdges) {
-			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Edge limit exceeded.", edge.source);
+			throw Errors.Limits.Exceeded("Edge limit exceeded.", edge.source);
 		}
 		edges.push({
 			source: edge.target,

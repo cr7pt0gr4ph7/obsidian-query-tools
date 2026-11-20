@@ -3,7 +3,7 @@ import type { FileHandle } from "node:fs/promises";
 import { lstat, open, opendir } from "node:fs/promises";
 import path from "node:path";
 import type { Edge } from "../../graph/graph.js";
-import { ErrorCode, VaultQueryError } from "../../utils/errors.js";
+import { Errors } from "../../utils/errors.js";
 import { validatePath } from "../../utils/paths.js";
 import type { Config } from "../types.js";
 import { readMarkdownFile, signature } from "./files.js";
@@ -27,28 +27,28 @@ export async function scanVault(root: string, config: Config): Promise<ScannedIn
 		const dir = await opendir(fdPath(directory));
 		for await (const entry of dir) {
 			if (++entries > config.limits.maxEntries) {
-				throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Directory entry limit exceeded.");
+				throw Errors.Limits.Exceeded("Directory entry limit exceeded.");
 			}
 			const name = relativePath ? `${relativePath}/${entry.name}` : entry.name;
 			validatePath(name);
 			if (entry.isSymbolicLink()) {
-				throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks are not allowed.", name);
+				throw Errors.Files.UnsafePath("Symlinks are not allowed.", name);
 			}
 			if (entry.isDirectory()) {
 				const anchored = path.join(fdPath(directory), entry.name);
 				const original = await lstat(anchored);
 				if (!original.isDirectory() || original.isSymbolicLink()) {
-					throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Symlinks and special files are not allowed.", name);
+					throw Errors.Files.UnsafePath("Symlinks and special files are not allowed.", name);
 				}
 				const child = await open(anchored, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 				try {
 					if (signature(original) !== signature(await child.stat())) {
-						throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", name);
+						throw Errors.Vault.Changed("Directory changed while indexing.", name);
 					}
 					await visit(child, name);
 					const current = await lstat(anchored);
 					if (!current.isDirectory() || signature(current) !== signature(await child.stat())) {
-						throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", name);
+						throw Errors.Vault.Changed("Directory changed while indexing.", name);
 					}
 				} finally {
 					await child.close();
@@ -58,7 +58,7 @@ export async function scanVault(root: string, config: Config): Promise<ScannedIn
 					continue;
 				}
 				if (files.length >= config.limits.maxFiles) {
-					throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Markdown file limit exceeded.");
+					throw Errors.Limits.Exceeded("Markdown file limit exceeded.");
 				}
 				const contents = await readMarkdownFile(directory, entry.name, name, config.limits.maxFileBytes);
 				files.push(name);
@@ -72,39 +72,36 @@ export async function scanVault(root: string, config: Config): Promise<ScannedIn
 					pending,
 				);
 			} else {
-				throw new VaultQueryError(ErrorCode.UNSAFE_PATH, "Special files are not allowed.", name);
+				throw Errors.Files.UnsafePath("Special files are not allowed.", name);
 			}
 		}
 		const after = await directory.stat();
 		if (signature(before) !== signature(after)) {
-			throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Directory changed while indexing.", relativePath);
+			throw Errors.Vault.Changed("Directory changed while indexing.", relativePath);
 		}
 	}
 	try {
 		if (process.platform !== "linux" || constants.O_NOFOLLOW === undefined || constants.O_DIRECTORY === undefined) {
-			throw new VaultQueryError(ErrorCode.UNSUPPORTED_PLATFORM, "Linux with /proc/self/fd and O_NOFOLLOW is required.");
+			throw Errors.Platform.Unsupported("Linux with /proc/self/fd and O_NOFOLLOW is required.");
 		}
 		const original = await lstat(root);
 		const directory = await open(root, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW);
 		try {
 			if (signature(original) !== signature(await directory.stat())) {
-				throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Vault root changed while indexing.");
+				throw Errors.Vault.Changed("Vault root changed while indexing.");
 			}
 			await visit(directory, "");
 			if (signature(await lstat(root)) !== signature(await directory.stat())) {
-				throw new VaultQueryError(ErrorCode.VAULT_CHANGED, "Vault root changed while indexing.");
+				throw Errors.Vault.Changed("Vault root changed while indexing.");
 			}
 		} finally {
 			await directory.close();
 		}
 	} catch (error) {
-		if (error instanceof VaultQueryError) {
+		if (Errors.is(error)) {
 			throw error;
 		}
-		throw new VaultQueryError(
-			ErrorCode.VAULT_READ_ERROR,
-			"Could not read the vault; it may be unreadable or changing.",
-		);
+		throw Errors.Vault.ReadError("Could not read the vault; it may be unreadable or changing.");
 	}
 	return { files, edges, pending };
 }

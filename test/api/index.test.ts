@@ -10,7 +10,7 @@ import { promisify } from "node:util";
 import type { GraphConfig } from "../../dist/api/graph/config.js";
 import type { GraphIndex } from "../../dist/api/graph/indexing.js";
 import type { GraphLimits, VaultGraph, VaultLimits, VaultOptions } from "../../dist/api/index.js";
-import { openVault, VaultQueryError } from "../../dist/api/index.js";
+import { Errors, openVault } from "../../dist/api/index.js";
 import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
 import { optionsForOpen } from "../../dist/api/vault/validation.js";
 
@@ -25,8 +25,8 @@ async function fixture(t: TestContext) {
 }
 
 const code = (expected: string) => (error: unknown) => {
-	assert.ok(error instanceof VaultQueryError);
-	assert.equal((error as VaultQueryError).code, expected);
+	assert.ok(Errors.is(error));
+	assert.equal(error.code, expected);
 	return true;
 };
 
@@ -65,10 +65,12 @@ test("graph options are separated from vault limits without changing open option
 });
 
 test("vault errors only expose a path when one is supplied", () => {
-	const withoutPath = new VaultQueryError("INVALID_QUERY", "Invalid query.");
+	const withoutPath = Errors.Query.Invalid("Invalid query.");
 	assert.equal(Object.hasOwn(withoutPath, "path"), false);
-	const withPath = new VaultQueryError("UNSAFE_PATH", "Unsafe path.", "note.md");
+	const withPath = Errors.Files.UnsafePath("Unsafe path.", "note.md");
 	assert.equal(withPath.path, "note.md");
+	assert.equal(Errors.Options.Invalid().message, "Invalid options.");
+	assert.ok(Errors.codes().includes("INVALID_OPTIONS"));
 });
 
 test("folder query and configured directed edges share an index", async (t) => {
@@ -202,7 +204,7 @@ test("a Markdown symlink cannot expose a file outside the vault", async (t) => {
 	await writeFile(path.join(outside, "secret.md"), "private contents\n");
 	await symlink(path.join(outside, "secret.md"), path.join(root, "linked.md"));
 	await assert.rejects(openVault(root), (error) => {
-		assert.ok(error instanceof VaultQueryError);
+		assert.ok(Errors.is(error));
 		assert.equal(error.code, "UNSAFE_PATH");
 		assert.equal(error.path, "linked.md");
 		assert.ok(!error.message.includes("private contents"));

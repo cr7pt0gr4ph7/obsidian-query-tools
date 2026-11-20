@@ -1,4 +1,4 @@
-import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
+import { Errors } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import { type QueryResult, result } from "../utils/result.js";
 
@@ -19,11 +19,11 @@ export interface ListOptions {
  */
 export function list(files: readonly string[], generation: number, query: string, limit: number): QueryResult<string> {
 	if (typeof query !== "string") {
-		throw new VaultQueryError(EC.INVALID_QUERY, 'Expected LIST FROM "<folder>".');
+		throw Errors.Query.Invalid('Expected LIST FROM "<folder>".');
 	}
 	const match = /^\s*list\s+from\s+"([^"]*)"\s*$/i.exec(query);
 	if (!match) {
-		throw new VaultQueryError(EC.INVALID_QUERY, 'Only LIST FROM "<folder>" is supported.');
+		throw Errors.Query.Invalid('Only LIST FROM "<folder>" is supported.');
 	}
 	const folder = validatePath(match[1], true);
 	const values = files.filter((file) => !folder || file.startsWith(`${folder}/`));

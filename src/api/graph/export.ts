@@ -1,4 +1,4 @@
-import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
+import { Errors } from "../utils/errors.js";
 import { requireNode } from "./analysis.js";
 import { edgeTypes, type GraphConfig } from "./config.js";
 import type { ExportFormat, ExportOptions, GraphExport } from "./graph.js";
@@ -25,32 +25,32 @@ export function exportGraph(
 	options: ExportOptions = {},
 ): GraphExport {
 	if (!options || typeof options !== "object" || Array.isArray(options)) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "Options must be an object.");
+		throw Errors.Options.Invalid("Options must be an object.");
 	}
 	for (const key of Object.keys(options)) {
 		if (!["format", "types", "root", "maxDepth", "direction"].includes(key)) {
-			throw new VaultQueryError(EC.INVALID_OPTIONS, `Unknown option: ${key}`);
+			throw Errors.Options.Invalid(`Unknown option: ${key}`);
 		}
 	}
 	const format = options.format ?? "json";
 	if (!exportFormats.includes(format)) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "Unsupported export format.");
+		throw Errors.Options.Invalid("Unsupported export format.");
 	}
 	const types = options.types ?? edgeTypes(config);
 	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+		throw Errors.Options.Invalid("types must contain configured edge fields.");
 	}
 	let edges = index.edges.filter((edge) => types.includes(edge.type));
 	let files = index.files;
 	if (options.root === undefined) {
 		if (options.maxDepth !== undefined || options.direction !== undefined) {
-			throw new VaultQueryError(EC.INVALID_OPTIONS, "maxDepth and direction require root.");
+			throw Errors.Options.Invalid("maxDepth and direction require root.");
 		}
 	} else {
 		requireNode(index, options.root);
 		const direction = options.direction ?? "both";
 		if (!["outgoing", "incoming", "both"].includes(direction)) {
-			throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
+			throw Errors.Options.Invalid("Invalid direction.");
 		}
 		const directions = direction === "both" ? (["outgoing", "incoming"] as const) : [direction];
 		const keep = new Set([options.root]);

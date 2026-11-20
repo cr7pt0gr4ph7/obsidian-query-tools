@@ -1,6 +1,5 @@
 import { readFile, stat } from "node:fs/promises";
-import type { VaultOptions } from "../api/index.js";
-import { VaultQueryError } from "../api/index.js";
+import { Errors, type VaultOptions } from "../api/index.js";
 
 const maxConfigBytes = 65_536;
 const allowedKeys = ["edgeFields", "oppositeFields", "allowWikilinks", "limits"];
@@ -15,20 +14,20 @@ export async function loadConfig(file: string): Promise<VaultOptions> {
 		}
 		text = await readFile(file, "utf8");
 	} catch {
-		throw new VaultQueryError("INVALID_OPTIONS", "--config must name a readable JSON file of at most 64 KiB.");
+		throw Errors.Options.Invalid("--config must name a readable JSON file of at most 64 KiB.");
 	}
 	let parsed: unknown;
 	try {
 		parsed = JSON.parse(text);
 	} catch {
-		throw new VaultQueryError("INVALID_OPTIONS", "Config is not valid JSON.");
+		throw Errors.Options.Invalid("Config is not valid JSON.");
 	}
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-		throw new VaultQueryError("INVALID_OPTIONS", "Config must be an object.");
+		throw Errors.Options.Invalid("Config must be an object.");
 	}
 	for (const key of Object.keys(parsed)) {
 		if (!allowedKeys.includes(key)) {
-			throw new VaultQueryError("INVALID_OPTIONS", `Unsupported config key: ${key}`);
+			throw Errors.Options.Invalid(`Unsupported config key: ${key}`);
 		}
 	}
 	return parsed as VaultOptions;

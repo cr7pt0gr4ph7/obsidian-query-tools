@@ -1,4 +1,4 @@
-import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
+import { Errors } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import { type QueryResult, result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
@@ -27,14 +27,14 @@ export function neighbors(
 	validatePath(node);
 	const direction = options.direction ?? "outgoing";
 	if (!["outgoing", "incoming"].includes(direction)) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid direction.");
+		throw Errors.Options.Invalid("Invalid direction.");
 	}
 	const types = options.types ?? edgeTypes(config);
 	if (!Array.isArray(types) || types.some((type) => !edgeTypes(config).includes(type))) {
-		throw new VaultQueryError(EC.INVALID_OPTIONS, "types must contain configured edge fields.");
+		throw Errors.Options.Invalid("types must contain configured edge fields.");
 	}
 	if (!index.files.includes(node)) {
-		throw new VaultQueryError(EC.NOT_FOUND, "Node is not an indexed Markdown file.", node);
+		throw Errors.Nodes.NotFound("Node is not an indexed Markdown file.", node);
 	}
 	const values = index.edges.filter(
 		(edge) => edge[direction === "outgoing" ? "source" : "target"] === node && types.includes(edge.type),

@@ -1,5 +1,5 @@
 import { exportFormats } from "./graph/export.js";
-import { ErrorCode } from "./utils/errors.js";
+import { Errors } from "./utils/errors.js";
 import { defaultLimits } from "./vault/validation.js";
 
 /** Machine-readable summary of what this tool supports. */
@@ -59,7 +59,7 @@ export function describe(): Description {
 		],
 		exportFormats: [...exportFormats],
 		defaultLimits: { ...defaultLimits },
-		errorCodes: Object.values(ErrorCode).sort(),
+		errorCodes: Errors.codes(),
 		queryGrammar: ['LIST FROM "<folder>"'],
 		openOptions: {
 			edgeFields: "frontmatter fields interpreted as edges (--edge-field)",
