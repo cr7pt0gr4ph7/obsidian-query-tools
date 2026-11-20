@@ -8,6 +8,8 @@ import type {
 	GraphStats,
 	NodesOptions,
 	PathOptions,
+	Sibling,
+	SiblingsOptions,
 } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
@@ -238,4 +240,43 @@ export function findCycles(
 	}
 	groups.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 	return result(generation, groups, limit);
+}
+
+/** Notes sharing a target ("parent") with a node through the same edge type. */
+export function findSiblings(
+	index: GraphIndex,
+	generation: number,
+	config: GraphConfig,
+	maxResults: number,
+	node: string,
+	options: SiblingsOptions = {},
+): QueryResult<Sibling> {
+	const limit = requestLimit(options, maxResults, ["limit", "types"]);
+	const types = selectTypes(config, options.types);
+	requireNode(index, node);
+	const parents = index.edges.filter(
+		(edge) => edge.source === node && types.includes(edge.type),
+	);
+	const values: Sibling[] = [];
+	for (const parent of parents) {
+		for (const edge of index.edges) {
+			if (
+				edge.target === parent.target &&
+				edge.type === parent.type &&
+				edge.source !== node
+			)
+				values.push({
+					node: edge.source,
+					parent: parent.target,
+					type: parent.type,
+				});
+		}
+	}
+	values.sort(
+		(a, b) =>
+			(a.node < b.node ? -1 : a.node > b.node ? 1 : 0) ||
+			(a.parent < b.parent ? -1 : a.parent > b.parent ? 1 : 0) ||
+			(a.type < b.type ? -1 : a.type > b.type ? 1 : 0),
+	);
+	return result(generation, values, limit);
 }

@@ -46,6 +46,7 @@ test("MCP stdio tools use the bound vault and shared API", async (t) => {
 			"nodes",
 			"path",
 			"refresh",
+			"siblings",
 			"stats",
 			"traverse",
 		]);
