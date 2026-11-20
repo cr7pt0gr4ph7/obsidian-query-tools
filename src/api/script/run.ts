@@ -46,24 +46,6 @@ function validateTimeout(options: RunScriptOptions) {
 	return timeoutMs;
 }
 
-async function runWithTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-	let timer: NodeJS.Timeout | undefined;
-	try {
-		const timeout = new Promise<never>((_, reject) => {
-			timer = setTimeout(
-				() =>
-					reject(
-						new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out."),
-					),
-				timeoutMs,
-			);
-		});
-		return await Promise.race([promise, timeout]);
-	} finally {
-		clearTimeout(timer);
-	}
-}
-
 /**
  * Evaluate caller-supplied JavaScript. This is NOT a security sandbox: `node:vm`
  * contexts can be escaped. Only run scripts the caller fully trusts.
@@ -87,7 +69,6 @@ export async function runScript(
 		neighbors: (path: string, options?: object) =>
 			plain(host.neighbors(path, options)),
 	};
-	let timer: NodeJS.Timeout | undefined;
 	try {
 		const context = vm.createContext(
 			{ dv },
@@ -118,6 +99,10 @@ export async function runScript(
 		return Array.isArray(parsed) ? parsed : [parsed];
 	} catch (error) {
 		if (error instanceof VaultQueryError) throw error;
+		// WORKAROUND: Detect timeout error
+		if (error instanceof Error && error.message === "Script execution timed out.") {
+			throw new VaultQueryError(ErrorCode.LIMIT_EXCEEDED, "Script timed out.");
+		} 
 		const name =
 			error && typeof error === "object" && "name" in error
 				? String(error.name)
@@ -128,7 +113,5 @@ export async function runScript(
 				? `Script failed: ${name}.`
 				: "Script failed.",
 		);
-	} finally {
-		clearTimeout(timer);
 	}
 }
