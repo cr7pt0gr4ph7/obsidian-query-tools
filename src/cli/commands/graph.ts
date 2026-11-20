@@ -1,5 +1,9 @@
 import { Command, Option } from "commander";
-import type { PathOptions, TraverseOptions } from "../../api/index.js";
+import type {
+	NodesOptions,
+	PathOptions,
+	TraverseOptions,
+} from "../../api/index.js";
 import {
 	createNeighborAction,
 	invalidArguments,
@@ -117,6 +121,32 @@ export function registerGraphCommands(
 			if (options.limit !== undefined)
 				pathOptions.limit = positiveInteger(options.limit, "--limit");
 			select({ operation: "path", from, to, options: pathOptions });
+		});
+
+	graph
+		.command("nodes")
+		.description(
+			"List Markdown paths, optionally only sources, sinks or isolated nodes.",
+		)
+		.addOption(
+			new Option("--role <role>", "Select nodes by role")
+				.choices(["all", "sources", "sinks", "isolated"])
+				.default("all"),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((options, command: Command) => {
+			requireEdgeFields(command, options);
+			const nodeOptions: NodesOptions = { role: options.role };
+			if (options.edgeType.length) nodeOptions.types = options.edgeType;
+			if (options.limit !== undefined)
+				nodeOptions.limit = positiveInteger(options.limit, "--limit");
+			select({ operation: "nodes", options: nodeOptions });
 		});
 
 	graph

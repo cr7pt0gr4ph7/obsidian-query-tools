@@ -2,7 +2,7 @@ import { ErrorCode as EC, VaultQueryError } from "../utils/errors.js";
 import { result, type QueryResult } from "../utils/result.js";
 import { requestLimit, validatePath } from "../validation.js";
 import type { GraphConfig } from "./config.js";
-import type { Edge, GraphStats, PathOptions } from "./graph.js";
+import type { Edge, GraphStats, NodesOptions, PathOptions } from "./graph.js";
 import type { GraphIndex } from "./indexing.js";
 
 export function selectTypes(config: GraphConfig, types?: string[]): string[] {
@@ -122,4 +122,43 @@ export function graphStats(
 		],
 		truncated: false,
 	};
+}
+
+const roles = ["all", "sources", "sinks", "isolated"] as const;
+
+/** Sorted node paths filtered by their role in the selected edges. */
+export function listNodes(
+	index: GraphIndex,
+	generation: number,
+	config: GraphConfig,
+	maxResults: number,
+	options: NodesOptions = {},
+): QueryResult<string> {
+	const limit = requestLimit(options, maxResults, ["limit", "types", "role"]);
+	const role = options.role ?? "all";
+	if (!roles.includes(role))
+		throw new VaultQueryError(EC.INVALID_OPTIONS, "Invalid node role.");
+	const types = selectTypes(config, options.types);
+	const out = new Set<string>();
+	const into = new Set<string>();
+	for (const edge of index.edges) {
+		if (!types.includes(edge.type)) continue;
+		out.add(edge.source);
+		into.add(edge.target);
+	}
+	const values = index.files.filter((file) => {
+		const hasOut = out.has(file);
+		const hasIn = into.has(file);
+		switch (role) {
+			case "sources":
+				return hasOut && !hasIn;
+			case "sinks":
+				return hasIn && !hasOut;
+			case "isolated":
+				return !hasOut && !hasIn;
+			default:
+				return true;
+		}
+	});
+	return result(generation, values, limit);
 }

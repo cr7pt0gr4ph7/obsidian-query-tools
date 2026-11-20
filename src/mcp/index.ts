@@ -119,6 +119,20 @@ async function main() {
 			handle(() => vault.graph().path(from, to, options)),
 	);
 	server.registerTool(
+		"nodes",
+		{
+			description:
+				"List Markdown paths, optionally only graph sources, sinks, or isolated nodes.",
+			inputSchema: z.strictObject({
+				role: z.enum(["all", "sources", "sinks", "isolated"]).optional(),
+				types: z.array(z.string().max(256)).max(100).optional(),
+				limit,
+			}),
+			annotations,
+		},
+		async (options) => handle(() => vault.graph().nodes(options)),
+	);
+	server.registerTool(
 		"stats",
 		{
 			description:

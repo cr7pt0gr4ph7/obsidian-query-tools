@@ -35,6 +35,14 @@ export interface GraphStats {
 	truncated: boolean;
 }
 
+/** Filters for listing nodes by role. */
+export interface NodesOptions extends ListOptions {
+	/** `sources` have only outgoing edges, `sinks` only incoming, `isolated` none (default `all`). */
+	role?: "all" | "sources" | "sinks" | "isolated";
+	/** Configured edge fields that define the roles (default all). */
+	types?: string[];
+}
+
 /** Supported graph serialization formats. */
 export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
 
@@ -86,6 +94,8 @@ export interface VaultGraph {
 	 * target is unreachable or equals the start.
 	 */
 	path(from: string, to: string, options?: PathOptions): QueryResult<Edge>;
+	/** List sorted Markdown paths, optionally only sources, sinks, or isolated nodes. */
+	nodes(options?: NodesOptions): QueryResult<string>;
 	/** Count nodes and edges, optionally limited to some edge types. */
 	stats(options?: { types?: string[] }): GraphStats;
 	/** Serialize the whole graph (all Markdown files as nodes) in a chosen format. */

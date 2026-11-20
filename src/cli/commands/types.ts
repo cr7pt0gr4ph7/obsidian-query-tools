@@ -1,6 +1,7 @@
 import type {
 	ExportOptions,
 	NeighborOptions,
+	NodesOptions,
 	PathOptions,
 	TraverseOptions,
 } from "../../api/index.js";
@@ -9,6 +10,7 @@ export type CliCommand =
 	| { operation: "neighbors"; path: string; options: NeighborOptions }
 	| { operation: "traverse"; path: string; options: TraverseOptions }
 	| { operation: "path"; from: string; to: string; options: PathOptions }
+	| { operation: "nodes"; options: NodesOptions }
 	| { operation: "stats"; options: { types?: string[] } }
 	| { operation: "export"; options: ExportOptions };
 

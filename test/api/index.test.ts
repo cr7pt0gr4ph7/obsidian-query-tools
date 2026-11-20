@@ -509,3 +509,17 @@ test("stats counts nodes, edges and node roles", async (t) => {
 	assert.deepEqual(s.edgesByType, { see: 1, up: 1 });
 	assert.equal(g.stats({ types: ["up"] }).isolated, 2);
 });
+
+test("nodes filters by role", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-nodes-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	await writeFile(path.join(root, "c.md"), "# c\n");
+	const g = (await openVault(root, { edgeFields: ["up"] })).graph();
+	assert.deepEqual(g.nodes({ role: "sources" }).data, ["a.md"]);
+	assert.deepEqual(g.nodes({ role: "sinks" }).data, ["b.md"]);
+	assert.deepEqual(g.nodes({ role: "isolated" }).data, ["c.md"]);
+	assert.equal(g.nodes({ limit: 2 }).truncated, true);
+	assert.throws(() => g.nodes({ role: "x" as "all" }), code("INVALID_OPTIONS"));
+});

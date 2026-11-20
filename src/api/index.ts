@@ -13,6 +13,7 @@ export type {
 	GraphExport,
 	GraphStats,
 	NeighborOptions,
+	NodesOptions,
 	PathOptions,
 	TraverseOptions,
 	VaultGraph,
