@@ -2,6 +2,7 @@ import { createRequire } from "node:module";
 import { CommanderError } from "commander";
 import type { Vault } from "../api/index.js";
 import { describe, openVault, VaultQueryError } from "../api/index.js";
+import { ErrorCode } from "../api/utils/errors.js";
 import type { ConsoleRequest } from "../console.js";
 import { runConsole } from "../console.js";
 import type { CliCommand } from "./commands/index.js";
@@ -11,7 +12,7 @@ import { loadConfig, mergeOptions } from "./config.js";
 const version = createRequire(import.meta.url)("../../package.json").version;
 
 function invalidArguments(message: string): never {
-	throw new VaultQueryError("INVALID_OPTIONS", message);
+	throw new VaultQueryError(ErrorCode.INVALID_OPTIONS, message);
 }
 
 function serializeError(error: unknown): string {
@@ -25,13 +26,16 @@ function serializeError(error: unknown): string {
 	}
 	return JSON.stringify({
 		error: {
-			code: "INTERNAL_ERROR",
+			code: ErrorCode.INTERNAL_ERROR,
 			message: "An unexpected error occurred.",
 		},
 	});
 }
 
-async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
+async function executeGraphCommand(
+	vault: Vault,
+	command: CliCommand,
+): Promise<unknown> {
 	const graph = vault.graph();
 	switch (command.operation) {
 		case "neighbors":
@@ -126,7 +130,7 @@ export async function runCli(args: string[]): Promise<number> {
 		if (!merged.edgeFields?.length)
 			invalidArguments("Specify at least one edge field.");
 		vault = await openVault(options.vault, merged);
-		const result = await execute(vault, selectedCommand);
+		const result = await executeGraphCommand(vault, selectedCommand);
 		process.stdout.write(`${JSON.stringify(result)}\n`);
 		return 0;
 	} catch (error) {
@@ -134,7 +138,7 @@ export async function runCli(args: string[]): Promise<number> {
 		if (error instanceof CommanderError) {
 			const message = error.message.replace(/^error: /, "");
 			process.stderr.write(
-				`${serializeError(new VaultQueryError("INVALID_OPTIONS", message))}\n`,
+				`${serializeError(new VaultQueryError(ErrorCode.INVALID_OPTIONS, message))}\n`,
 			);
 			return 1;
 		}

@@ -12,7 +12,7 @@ import type { VaultGraph } from "../graph/graph.js";
 import { neighbors } from "../graph/neighbors.js";
 import { traverse } from "../graph/traverse.js";
 import { runScript } from "../script/run.js";
-import { fail, VaultQueryError } from "../utils/errors.js";
+import { ErrorCode, VaultQueryError } from "../utils/errors.js";
 import { validatePath } from "../utils/paths.js";
 import { result } from "../utils/result.js";
 import { requestLimit } from "../utils/validation.js";
@@ -31,23 +31,33 @@ export async function openVault(
 	options: VaultOptions = {},
 ): Promise<Vault> {
 	if (typeof root !== "string" || !root)
-		fail("INVALID_VAULT", "A vault root is required.");
+		throw new VaultQueryError(
+			ErrorCode.INVALID_VAULT,
+			"A vault root is required.",
+		);
 	const config = optionsForOpen(options);
 	let canonical: string;
 	try {
 		canonical = await realpath(root);
 		if (!(await lstat(canonical)).isDirectory())
-			fail("INVALID_VAULT", "Vault root must be a directory.");
+			throw new VaultQueryError(
+				ErrorCode.INVALID_VAULT,
+				"Vault root must be a directory.",
+			);
 	} catch (error) {
 		if (error instanceof VaultQueryError) throw error;
-		fail("INVALID_VAULT", "Vault root is not an accessible directory.");
+		throw new VaultQueryError(
+			ErrorCode.INVALID_VAULT,
+			"Vault root is not an accessible directory.",
+		);
 	}
 	let index = await buildIndex(canonical, config);
 	let generation = 1;
 	let closed = false;
 	let refreshing = false;
 	function ensureOpen() {
-		if (closed) fail("VAULT_CLOSED", "Vault is closed.");
+		if (closed)
+			throw new VaultQueryError(ErrorCode.VAULT_CLOSED, "Vault is closed.");
 	}
 	const graph: VaultGraph = {
 		traverse(node, options = {}) {
@@ -128,10 +138,13 @@ export async function openVault(
 		if (value === undefined) return;
 		const file = validatePath(value);
 		if (!file.toLowerCase().endsWith(".md"))
-			fail("INVALID_PATH", "Current-file context must be a Markdown path.");
+			throw new VaultQueryError(
+				ErrorCode.INVALID_PATH,
+				"Current-file context must be a Markdown path.",
+			);
 		if (!index.graph.files.includes(file))
-			fail(
-				"NOT_FOUND",
+			throw new VaultQueryError(
+				ErrorCode.NOT_FOUND,
 				"Current-file context was not found in the vault.",
 				file,
 			);
@@ -149,8 +162,8 @@ export async function openVault(
 		async script(source, options = {}) {
 			ensureOpen();
 			if (!config.unsafeJavaScript)
-				fail(
-					"UNSUPPORTED_FEATURE",
+				throw new VaultQueryError(
+					ErrorCode.UNSUPPORTED_FEATURE,
 					"JavaScript execution is disabled; open the vault with unsafeJavaScript to enable it.",
 				);
 			const { timeoutMs, ...rest } = options;
@@ -189,7 +202,10 @@ export async function openVault(
 		async refresh() {
 			ensureOpen();
 			if (refreshing)
-				fail("REFRESH_IN_PROGRESS", "A refresh is already in progress.");
+				throw new VaultQueryError(
+					ErrorCode.REFRESH_IN_PROGRESS,
+					"A refresh is already in progress.",
+				);
 			refreshing = true;
 			try {
 				const next = await buildIndex(canonical, config);

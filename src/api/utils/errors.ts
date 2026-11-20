@@ -1,3 +1,5 @@
+import { INTERNAL_ERROR } from "@modelcontextprotocol/server";
+
 /** An actionable error raised by the shared vault-query API. */
 export class VaultQueryError extends Error {
 	/** Stable machine-readable error category. */
@@ -20,6 +22,7 @@ export class VaultQueryError extends Error {
 }
 
 export const ErrorCode = {
+	INTERNAL_ERROR: INTERNAL_ERROR,
 	LIMIT_EXCEEDED: "LIMIT_EXCEEDED",
 	VAULT_CHANGED: "VAULT_CHANGED",
 	INVALID_ENCODING: "INVALID_ENCODING",
@@ -33,18 +36,7 @@ export const ErrorCode = {
 	UNRESOLVED_EDGE: "UNRESOLVED_EDGE",
 	UNSUPPORTED_PLATFORM: "UNSUPPORTED_PLATFORM",
 	VAULT_READ_ERROR: "VAULT_READ_ERROR",
+	REFRESH_IN_PROGRESS: "REFRESH_IN_PROGRESS",
+	INVALID_VAULT: "INVALID_VAULT",
+	VAULT_CLOSED: "VAULT_CLOSED",
 } as const;
-
-/**
- * Throw a `VaultQueryError` with the supplied details.
- * @param code Stable machine-readable error category.
- * @param message Human-readable explanation.
- * @param relativePath Vault-relative path associated with the error, if any.
- */
-export function fail(
-	code: string,
-	message: string,
-	relativePath?: string,
-): never {
-	throw new VaultQueryError(code, message, relativePath);
-}
