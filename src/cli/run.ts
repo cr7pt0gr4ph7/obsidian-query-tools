@@ -31,7 +31,15 @@ function serializeError(error: unknown): string {
 }
 
 async function execute(vault: Vault, command: CliCommand): Promise<unknown> {
-	return vault.graph().neighbors(command.path, command.options);
+	const graph = vault.graph();
+	switch (command.operation) {
+		case "neighbors":
+			return graph.neighbors(command.path, command.options);
+		case "traverse":
+			return graph.traverse(command.path, command.options);
+		case "export":
+			return graph.export(command.options);
+	}
 }
 
 /** Run the CLI with user arguments, writing results and diagnostics to process streams. */

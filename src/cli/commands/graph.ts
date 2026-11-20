@@ -1,7 +1,20 @@
 import { Command, Option } from "commander";
-import { VaultQueryError } from "../../api/index.js";
-import { createNeighborAction, invalidArguments } from "./helpers.js";
+import type { TraverseOptions } from "../../api/index.js";
+import {
+	createNeighborAction,
+	invalidArguments,
+	positiveInteger,
+} from "./helpers.js";
 import type { CliCommandSelector, RootOptions } from "./types.js";
+
+function requireEdgeFields(
+	command: Command,
+	options: { edgeField?: string[] },
+) {
+	const globalOptions = command.optsWithGlobals<RootOptions>();
+	if ([...globalOptions.edgeField, ...(options.edgeField ?? [])].length === 0)
+		invalidArguments("Graph operations require at least one --edge-field.");
+}
 
 export function registerGraphCommands(
 	program: Command,
@@ -45,15 +58,64 @@ export function registerGraphCommands(
 			createNeighborAction(select)(path, options);
 		});
 
-	for (const operation of ["traverse", "export"]) {
-		graph
-			.command(`${operation} [arguments...]`)
-			.description(`Graph ${operation} is not available in the shared API.`)
-			.action(() => {
-				throw new VaultQueryError(
-					"UNSUPPORTED_FEATURE",
-					`The graph ${operation} command requires shared API support that is not available.`,
+	const collect = (value: string, previous: string[]) => [...previous, value];
+	graph
+		.command("traverse <path>")
+		.description("Walk edges reachable from a node (breadth-first).")
+		.addOption(
+			new Option(
+				"--direction <direction>",
+				"Follow edges in a direction",
+			).choices(["incoming", "outgoing"]),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.option("--max-depth <count>", "Maximum number of hops")
+		.option("--limit <count>", "Lower the API's default result limit")
+		.action((path: string, options, command: Command) => {
+			requireEdgeFields(command, options);
+			const traverseOptions: TraverseOptions = {};
+			if (options.direction !== undefined)
+				traverseOptions.direction = options.direction;
+			if (options.edgeType.length) traverseOptions.types = options.edgeType;
+			if (options.maxDepth !== undefined)
+				traverseOptions.maxDepth = positiveInteger(
+					options.maxDepth,
+					"--max-depth",
 				);
+			if (options.limit !== undefined)
+				traverseOptions.limit = positiveInteger(options.limit, "--limit");
+			select({ operation: "traverse", path, options: traverseOptions });
+		});
+
+	graph
+		.command("export")
+		.description(
+			"Export the whole graph as json, csv, dot, mermaid, or graphml.",
+		)
+		.addOption(
+			new Option("--format <format>", "Output format")
+				.choices(["json", "csv", "dot", "mermaid", "graphml"])
+				.default("json"),
+		)
+		.option(
+			"--edge-type <type>",
+			"Filter by edge type (repeatable)",
+			collect,
+			[],
+		)
+		.action((options, command: Command) => {
+			requireEdgeFields(command, options);
+			select({
+				operation: "export",
+				options: {
+					format: options.format,
+					...(options.edgeType.length ? { types: options.edgeType } : {}),
+				},
 			});
-	}
+		});
 }

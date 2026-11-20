@@ -205,17 +205,32 @@ test("CLI results match the shared API and errors do not corrupt stdout", async 
 			return true;
 		},
 	);
+	const traversed = await exec(process.execPath, [
+		...common,
+		"graph",
+		"traverse",
+		"a.md",
+		"--max-depth",
+		"2",
+	]);
+	assert.deepEqual(
+		JSON.parse(traversed.stdout),
+		vault.graph().traverse("a.md", { maxDepth: 2 }),
+	);
+	for (const format of ["json", "csv", "dot", "mermaid", "graphml"]) {
+		const exported = await exec(process.execPath, [
+			...common,
+			"graph",
+			"export",
+			"--format",
+			format,
+		]);
+		const expected = vault.graph().export({ format: format as "json" });
+		assert.deepEqual(JSON.parse(exported.stdout), expected);
+		assert.ok(expected.content.length > 0);
+	}
 	await assert.rejects(
-		exec(process.execPath, [...common, "graph", "traverse", "b.md"]),
-		(error) => {
-			assert.ok(
-				error instanceof Error && "stdout" in error && "stderr" in error,
-			);
-			assert.ok(typeof error.stderr === "string");
-			assert.equal(error.stdout, "");
-			assert.equal(JSON.parse(error.stderr).error.code, "UNSUPPORTED_FEATURE");
-			return true;
-		},
+		exec(process.execPath, [...common, "graph", "export", "--format", "pdf"]),
 	);
 	vault.close();
 });

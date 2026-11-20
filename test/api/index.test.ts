@@ -434,3 +434,39 @@ test("script() is disabled unless unsafeJavaScript is set", async (t) => {
 		code: "INVALID_QUERY",
 	});
 });
+
+test("traverse walks reachability and export serializes escaped formats", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "query-graph-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "---\nup: b\n---\n");
+	await writeFile(path.join(root, "b.md"), "---\nup: c\n---\n");
+	await writeFile(path.join(root, "c.md"), "---\nup: a\n---\n");
+	await writeFile(path.join(root, 'd"&<.md'), "# d\n");
+	const vault = await openVault(root, { edgeFields: ["up"] });
+	const g = vault.graph();
+	assert.deepEqual(
+		g.traverse("a.md").data.map((e) => `${e.source}>${e.target}`),
+		["a.md>b.md", "b.md>c.md", "c.md>a.md"],
+	);
+	assert.equal(g.traverse("a.md", { maxDepth: 1 }).data.length, 1);
+	assert.deepEqual(
+		g.traverse("a.md", { direction: "incoming", maxDepth: 1 }).data[0].source,
+		"c.md",
+	);
+	assert.throws(
+		() => g.traverse("a.md", { maxDepth: 0 }),
+		code("INVALID_OPTIONS"),
+	);
+	assert.throws(
+		() => g.export({ format: "pdf" as "json" }),
+		code("INVALID_OPTIONS"),
+	);
+	assert.match(g.export({ format: "dot" }).content, /n0 -> n1 \[label="up"\]/);
+	assert.match(g.export({ format: "graphml" }).content, /d&quot;&amp;&lt;\.md/);
+	assert.match(g.export({ format: "mermaid" }).content, /d#quot;&<\.md/);
+	assert.equal(
+		g.export({ format: "csv" }).content.split("\r\n")[0],
+		"source,target,type",
+	);
+	assert.equal(g.export().edgeCount, 3);
+});

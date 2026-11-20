@@ -27,7 +27,15 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
   [research notes](notes/2026-11-19-upstream.md) and
   [console note](notes/2026-11-19-console-interface.md).
 
+- `VaultGraph.traverse()` and `export()` (json, csv, dot, mermaid, graphml)
+  with CLI `graph traverse`/`graph export` and MCP `traverse`/`export` tools.
+
 ## Remaining work
+
+- Breadcrumbs integration: pin an upstream revision, then define edge-field
+  semantics (implied/opposite edges, transitive rules) as new scoped work with
+  fixtures; current traversal is plain reachability only.
+- Optional list-style CLI command and CLI limit flags beyond `query --limit`.
 
 - Expand filesystem-race coverage and document any newly identified limits.
 - Treat broader query or relationship semantics as new scope: define them,

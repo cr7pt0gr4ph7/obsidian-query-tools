@@ -9,6 +9,35 @@ export interface NeighborOptions extends ListOptions {
 	types?: string[];
 }
 
+/** Filters for a multi-hop traversal. */
+export interface TraverseOptions extends NeighborOptions {
+	/** Maximum number of hops from the start node (default and maximum 1000). */
+	maxDepth?: number;
+}
+
+/** Supported graph serialization formats. */
+export type ExportFormat = "json" | "csv" | "dot" | "mermaid" | "graphml";
+
+/** Options for graph export. */
+export interface ExportOptions {
+	/** Output format (default `json`). */
+	format?: ExportFormat;
+	/** Configured edge fields to include (default all). */
+	types?: string[];
+}
+
+/** A serialized graph document. Export is bounded by the index's edge limit, so it is never truncated. */
+export interface GraphExport {
+	generation: number;
+	format: ExportFormat;
+	/** The serialized graph. */
+	content: string;
+	nodeCount: number;
+	edgeCount: number;
+	diagnostics: { code: string; message: string }[];
+	truncated: boolean;
+}
+
 /** A directed relationship extracted from a configured frontmatter field. */
 export interface Edge {
 	/** Vault-relative Markdown path where the relationship is declared. */
@@ -27,4 +56,11 @@ export interface VaultGraph {
 	 * @param options Direction, edge-type, and result-limit filters.
 	 */
 	neighbors(node: string, options?: NeighborOptions): QueryResult<Edge>;
+	/**
+	 * Breadth-first walk of edges reachable from a node, visiting each node once.
+	 * This is plain reachability, not Breadcrumbs' transitive rules.
+	 */
+	traverse(node: string, options?: TraverseOptions): QueryResult<Edge>;
+	/** Serialize the whole graph (all Markdown files as nodes) in a chosen format. */
+	export(options?: ExportOptions): GraphExport;
 }

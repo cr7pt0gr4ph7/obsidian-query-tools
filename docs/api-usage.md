@@ -206,3 +206,11 @@ Breadcrumbs. See [the design](../design/DESIGN.md) and
 helper (`current`, `paths()`, `list(query)`, `neighbors(path, options)`). It is
 not a sandbox; use only trusted scripts. Without the option it fails with
 `UNSUPPORTED_FEATURE`.
+
+## Traversal and export
+
+`vault.graph().traverse(path, { direction, types, maxDepth, limit })` returns
+edges reachable breadth-first. `vault.graph().export({ format, types })`
+returns `{ generation, format, content, nodeCount, edgeCount, diagnostics,
+truncated }` where `format` is `json`, `csv`, `dot`, `mermaid`, or `graphml`.
+CLI: `graph traverse <path>` and `graph export --format <format>`.

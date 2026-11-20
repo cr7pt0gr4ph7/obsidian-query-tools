@@ -1,6 +1,13 @@
-import type { NeighborOptions } from "../../api/index.js";
+import type {
+	ExportOptions,
+	NeighborOptions,
+	TraverseOptions,
+} from "../../api/index.js";
 
-export type CliCommand = { path: string; options: NeighborOptions };
+export type CliCommand =
+	| { operation: "neighbors"; path: string; options: NeighborOptions }
+	| { operation: "traverse"; path: string; options: TraverseOptions }
+	| { operation: "export"; options: ExportOptions };
 
 export interface RootOptions {
 	vault?: string;
