@@ -20,6 +20,7 @@ export interface RootOptions {
 	vault?: string;
 	edgeField: string[];
 	opposite: string[];
+	config?: string;
 }
 
 export interface NeighborCliOptions {

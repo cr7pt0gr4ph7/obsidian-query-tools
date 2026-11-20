@@ -21,6 +21,10 @@ export function createProgram(
 			[],
 		)
 		.option(
+			"--config <file>",
+			"Read edgeFields, oppositeFields, allowWikilinks and limits from a JSON file",
+		)
+		.option(
 			"--allow-wikilinks",
 			"Accept [[wikilink]] edge values, resolved by path or unique basename",
 		)

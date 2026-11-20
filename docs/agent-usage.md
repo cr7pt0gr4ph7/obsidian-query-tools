@@ -16,6 +16,10 @@ vault, the operations, export formats, default limits and error codes.
   narrow the query. `export` and `stats` return their own envelopes.
 - The vault is only read. All paths are vault-relative with `/` separators.
 
+Instead of repeating flags, pass `--config <file>` (JSON with `edgeFields`,
+`oppositeFields`, `allowWikilinks`, `limits`). The file is never discovered
+inside the vault, cannot enable `unsafeJavaScript`, and flags add to it.
+
 ## Recipes
 
     V="--vault ./notes --edge-field parent --edge-field related"
