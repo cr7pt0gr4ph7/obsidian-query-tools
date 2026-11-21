@@ -1,1 +1,1 @@
-export type { EditorView, ViewPlugin, ViewPlugin as ViewPlugiN } from "@codemirror/view";
+export type { EditorView, ViewPlugin } from "@codemirror/view";
