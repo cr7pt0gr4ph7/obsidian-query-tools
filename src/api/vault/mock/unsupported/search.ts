@@ -1,4 +1,4 @@
-import type { SearchMatches, SearchResult, SearchResultContainer } from "./components.js";
+import type { SearchResult, SearchResultContainer } from "./components/search.js";
 
 /**
  * Construct a fuzzy search callback that runs on a target string.

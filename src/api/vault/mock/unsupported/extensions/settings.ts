@@ -1,18 +1,4 @@
 import type { App } from "../../app.js";
-import { MomentFormatComponent } from "../../unsupported_api.js";
-import {
-	BaseComponent,
-	ButtonComponent,
-	ColorComponent,
-	DropdownComponent,
-	type ExtraButtonComponent,
-	ProgressBarComponent,
-	SearchComponent,
-	SliderComponent,
-	TextAreaComponent,
-	TextComponent,
-	ToggleComponent,
-} from "../components.js";
 import { placeholder } from "../placeholder.js";
 import type { SettingDefinition } from "../settings/definitions.js";
 import type { SettingGroupItem } from "../settings/groups.js";

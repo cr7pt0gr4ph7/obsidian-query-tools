@@ -1,17 +1,14 @@
+import type { ButtonComponent, ExtraButtonComponent } from "../components/button.js";
+import type { BaseComponent } from "../components/component.js";
+import type { SearchComponent } from "../components/search.js";
+import type { MomentFormatComponent, TextAreaComponent, TextComponent } from "../components/text.js";
 import type {
-	BaseComponent,
-	ButtonComponent,
 	ColorComponent,
 	DropdownComponent,
-	ExtraButtonComponent,
-	MomentFormatComponent,
 	ProgressBarComponent,
-	SearchComponent,
 	SliderComponent,
-	TextAreaComponent,
-	TextComponent,
 	ToggleComponent,
-} from "../components.js";
+} from "../components/value.js";
 import { placeholder } from "../placeholder.js";
 import type { TooltipOptions } from "../tooltips.js";
 

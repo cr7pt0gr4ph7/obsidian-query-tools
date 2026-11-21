@@ -1,5 +1,6 @@
 import type { App } from "../app.js";
-import type { ConfirmationButton } from "./components.js";
+import type { ConfirmationButton } from "./components/button.js";
+import type { SearchResult } from "./components/search.js";
 import { HistoryHandler } from "./history.js";
 import { Scope } from "./keymap.js";
 import { placeholder } from "./placeholder.js";

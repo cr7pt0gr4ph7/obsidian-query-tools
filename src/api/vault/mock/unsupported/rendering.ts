@@ -1,3 +1,4 @@
+import type { SearchMatches, SearchResult } from "./components/search.js";
 import type { HoverParent, HoverPopover } from "./extensions/hover.js";
 import type { TooltipOptions } from "./tooltips.js";
 

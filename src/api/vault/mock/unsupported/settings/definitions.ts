@@ -1,4 +1,4 @@
-import type { ExtraButtonComponent } from "../components.js";
+import type { ExtraButtonComponent } from "../components/button.js";
 import type { SettingControl } from "./controls.js";
 import type { SettingGroup } from "./groups.js";
 import type { SettingPage } from "./page.js";

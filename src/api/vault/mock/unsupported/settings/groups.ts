@@ -1,4 +1,5 @@
-import type { ExtraButtonComponent, SearchComponent } from "../components.js";
+import type { ExtraButtonComponent } from "../components/button.js";
+import type { SearchComponent } from "../components/search.js";
 import { placeholder } from "../placeholder.js";
 import type { Setting } from "./setting.js";
 
