@@ -11,7 +11,10 @@ export function displayTooltip(
 	newTargetEl: HTMLElement,
 	content: string | DocumentFragment,
 	options?: TooltipOptions,
-): void;
+): void {
+	const text = typeof content === "string" ? content : (content.textContent ?? "");
+	setTooltip(newTargetEl, text, options);
+}
 
 /**
  * Options for the tooltip.
@@ -51,3 +54,20 @@ export interface TooltipOptions {
  * @public
  */
 export type TooltipPlacement = "bottom" | "right" | "left" | "top";
+
+/**
+ * Set a tooltip on an element.
+ * @param el The element.
+ * @param tooltip The tooltip text.
+ * @param options The tooltip options.
+ * @public
+ * @since 1.4.4
+ */
+export function setTooltip(el: HTMLElement, tooltip: string, options?: TooltipOptions): void {
+	el.setAttribute("title", tooltip);
+	el.setAttribute("aria-label", tooltip);
+	if (options?.placement) el.setAttribute("data-tooltip-position", options.placement);
+	if (options?.delay !== undefined) el.setAttribute("data-tooltip-delay", String(options.delay));
+	if (options?.gap !== undefined) el.setAttribute("data-tooltip-gap", String(options.gap));
+	if (options?.classes) el.setAttribute("data-tooltip-classes", options.classes.join(" "));
+}

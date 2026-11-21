@@ -1,6 +1,5 @@
 import type { SearchMatches, SearchResult } from "./components/search.js";
 import type { HoverParent, HoverPopover } from "./extensions/hover.js";
-import type { TooltipOptions } from "./tooltips.js";
 
 /**
  * Converts HTML to a Markdown string.
@@ -63,13 +62,3 @@ export function renderResults(el: HTMLElement, text: string, result: SearchResul
  * @public
  */
 export function sanitizeHTMLToDom(html: string): DocumentFragment;
-
-/**
- * Set a tooltip on an element.
- * @param el The element.
- * @param tooltip The tooltip text.
- * @param options The tooltip options.
- * @public
- * @since 1.4.4
- */
-export function setTooltip(el: HTMLElement, tooltip: string, options?: TooltipOptions): void;
