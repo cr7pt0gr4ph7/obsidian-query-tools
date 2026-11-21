@@ -1,10 +1,8 @@
 import type { ExtraButtonComponent } from "../components.js";
-import type { Placeholder } from "../placeholder.js";
 import type { SettingControl } from "./controls.js";
 import type { SettingGroup } from "./groups.js";
+import type { SettingPage } from "./page.js";
 import type { Setting } from "./setting.js";
-
-type SettingPage = Placeholder;
 
 /**
  * @public

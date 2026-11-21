@@ -1,7 +1,5 @@
+import type { App } from "./app.js";
 import { Component } from "./lifecycle.js";
-import type { Placeholder } from "./unsupported/placeholder.js";
-
-type App = Placeholder;
 
 /**
  * Base class for all plugins.

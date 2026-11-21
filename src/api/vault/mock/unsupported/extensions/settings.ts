@@ -1,3 +1,4 @@
+import type { App } from "../../app.js";
 import { MomentFormatComponent } from "../../unsupported_api.js";
 import {
 	BaseComponent,
@@ -12,13 +13,11 @@ import {
 	TextComponent,
 	ToggleComponent,
 } from "../components.js";
-import { type Placeholder, placeholder } from "../placeholder.js";
+import { placeholder } from "../placeholder.js";
 import type { SettingDefinition } from "../settings/definitions.js";
 import type { SettingGroupItem } from "../settings/groups.js";
 import { TooltipOptions } from "../tooltips.js";
 import type { IconName } from "./icons.js";
-
-type App = Placeholder;
 
 export interface ISettingsPlugin_ {
 	/**

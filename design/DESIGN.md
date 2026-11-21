@@ -29,6 +29,10 @@ text, and uses UTC instants and ISO durations for date arithmetic. Empty
 collections are false; unsupported JavaScript value types throw. Mock value
 semantics have not been compared against an Obsidian oracle.
 
+The excluded mock CodeMirror modules re-export types from the lockfile-pinned
+`@codemirror/state` and `@codemirror/view` development dependencies. They
+provide types only, not an Obsidian editor or plugin compatibility.
+
 The excluded `vault/mock/files/adapter_filesystem.ts` adapter is a standalone
 filesystem utility rooted at a caller-supplied existing directory. Vault
 relative paths are confined to that root and reject symlink components.

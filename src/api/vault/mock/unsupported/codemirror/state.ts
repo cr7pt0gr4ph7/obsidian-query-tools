@@ -1,4 +1,1 @@
-import { Placeholder } from "../placeholder.js";
-
-export type StateField<T> = Placeholder;
-export type Extension = Placeholder;
+export type { Extension, StateField } from "@codemirror/state";

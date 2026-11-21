@@ -1,8 +1,6 @@
+import type { App } from "../app.js";
 import { HistoryHandler } from "./history.js";
 import { Scope } from "./keymap.js";
-import { Placeholder } from "./placeholder.js";
-
-type App = Placeholder;
 
 /**
  * An instruction shown in a suggestion modal.

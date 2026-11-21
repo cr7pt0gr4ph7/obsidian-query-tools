@@ -25,6 +25,8 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - Node.js 24 and 26 CI coverage; reproducible install, build, and test commands.
 - Topic-organized Obsidian API mock declarations, excluded from the production
   TypeScript build because the mock stubs are not runtime library code.
+- Mock placeholder aliases replaced with local types and CodeMirror type
+  re-exports; other unsupported mock stubs remain.
 - Project-defined mock value wrappers with safe text rendering, nested values,
   dates and durations; not an Obsidian Bases compatibility claim.
 - Root-confined filesystem adapter for mock vault files with opt-in absolute

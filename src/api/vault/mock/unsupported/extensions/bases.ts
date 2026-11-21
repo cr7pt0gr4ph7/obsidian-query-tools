@@ -1,10 +1,6 @@
-import type { Placeholder } from "../placeholder.js";
+import type { BasesView, BasesViewConfig, QueryController } from "../bases/bases.js";
+import type { BasesAllOptions } from "../bases/options.js";
 import type { IconName } from "./icons.js";
-
-type BasesView = Placeholder;
-type BasesViewConfig = Placeholder;
-type BasesAllOptions = Placeholder;
-type QueryController = Placeholder;
 
 export interface IBasesViewPlugin_ {
 	/**

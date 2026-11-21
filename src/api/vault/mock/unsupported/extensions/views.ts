@@ -1,6 +1,4 @@
-import type { Placeholder } from "../placeholder.js";
-
-type ViewCreator = Placeholder;
+import type { ViewCreator } from "../view.js";
 
 export interface IViewPlugin_ {
 	/**

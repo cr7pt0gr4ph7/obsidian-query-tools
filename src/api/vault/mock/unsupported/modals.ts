@@ -1,10 +1,9 @@
+import type { App } from "../app.js";
+import type { ConfirmationButton } from "./components.js";
 import { HistoryHandler } from "./history.js";
 import { Scope } from "./keymap.js";
-import { placeholder, Placeholder } from "./placeholder.js";
+import { placeholder } from "./placeholder.js";
 import type { Instruction, ISuggestOwner } from "./suggest.js";
-
-type App = Placeholder;
-type ConfirmationButton = Placeholder;
 
 /**
  * Modal dialog component.

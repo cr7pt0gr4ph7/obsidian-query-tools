@@ -1,6 +1,7 @@
 import type { IconName } from "../official_api.js";
 import { Component } from "../lifecycle.js";
 import type { App, Menu, Scope } from "../unsupported_api.js";
+import type { ViewPlugin } from "./codemirror/view.js";
 import type { WorkspaceLeaf } from "./workspace.js";
 
 /**

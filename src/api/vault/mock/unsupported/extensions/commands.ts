@@ -1,10 +1,7 @@
-import { IconName } from "./icons.js";
-import { Hotkey } from "../keyboard.js";
-import { Placeholder } from "../placeholder.js";
-
-type Editor = Placeholder;
-type MarkdownView = Placeholder;
-type MarkdownFileInfo = Placeholder;
+import type { Editor } from "../editor.js";
+import type { Hotkey } from "../keyboard.js";
+import type { MarkdownFileInfo, MarkdownView } from "../view.js";
+import type { IconName } from "./icons.js";
 
 export interface ICommandPlugin_ {
 	/**
