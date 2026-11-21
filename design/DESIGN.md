@@ -22,7 +22,7 @@ syntax and fixture references, not an execution oracle. Any future reuse or
 compatibility claim requires pinned revisions, documented deviations and
 licenses, and evidence against those revisions.
 
-The excluded `host/obsidian/values.ts` module supplies project-defined value
+The excluded `host/obsidian/base/values.ts` module supplies project-defined value
 wrappers for local mock use, not Obsidian Bases compatibility. It wraps nested
 arrays and objects, compares values without cross-type coercion, renders plain
 text, and uses UTC instants and ISO durations for date arithmetic. Empty

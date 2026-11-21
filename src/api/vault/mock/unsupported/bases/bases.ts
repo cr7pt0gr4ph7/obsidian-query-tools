@@ -1,4 +1,4 @@
-import type { Value } from "../../../../host/obsidian/values.js";
+import type { Value } from "../../../../host/obsidian/base/values.js";
 import type { App } from "../../app.js";
 import type { FrontmatterValue } from "../../cache/types.js";
 import type { TFile } from "../../files/files.js";
