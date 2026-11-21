@@ -1,4 +1,4 @@
-import { Events } from "./events.js";
+import { Events } from "../../../host/obsidian/base/events.js";
 
 /**
  * @public

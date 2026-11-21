@@ -1,4 +1,4 @@
-import { type EventRef, Events } from "./events.ts";
+import { type EventRef, Events } from "../../../host/obsidian/base/events.ts";
 import type { DataAdapter, DataWriteOptions } from "./files/adapter.js";
 import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "./files/files.ts";
 

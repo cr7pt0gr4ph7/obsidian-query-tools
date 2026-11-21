@@ -1,10 +1,10 @@
+import { type EventRef, Events } from "../../../host/obsidian/base/events.js";
 import type { BlockSubpathResult } from "./cache/blocks.js";
 import type { CachedMetadata } from "./cache/cache.js";
 import type { FootnoteSubpathResult } from "./cache/footnotes.js";
 import type { HeadingSubpathResult } from "./cache/headings.js";
 import type { ReferenceCache } from "./cache/reference.js";
 import type { Reference } from "./cache/types.js";
-import { type EventRef, Events } from "./events.js";
 import type { TFile } from "./files/files.js";
 
 /**
