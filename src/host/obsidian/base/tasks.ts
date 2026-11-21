@@ -4,6 +4,8 @@
  * @since 0.10.2
  */
 export class Tasks {
+	private readonly promises = new Set<Promise<unknown>>();
+
 	/**
 	 * Add a task.
 	 * @param callback A function that starts the task and returns its promise. It is called immediately.
@@ -11,7 +13,7 @@ export class Tasks {
 	 * @since 0.10.2
 	 */
 	add(callback: () => Promise<any>): void {
-		throw new Error("Method not implemented.");
+		this.addPromise(callback());
 	}
 
 	/**
@@ -21,7 +23,15 @@ export class Tasks {
 	 * @since 0.10.2
 	 */
 	addPromise(promise: Promise<any>): void {
-		throw new Error("Method not implemented.");
+		this.promises.add(promise);
+		void promise.then(
+			() => {
+				this.promises.delete(promise);
+			},
+			() => {
+				this.promises.delete(promise);
+			},
+		);
 	}
 
 	/**
@@ -30,7 +40,7 @@ export class Tasks {
 	 * @since 0.10.2
 	 */
 	isEmpty(): boolean {
-		throw new Error("Method not implemented.");
+		return this.promises.size === 0;
 	}
 
 	/**
@@ -39,6 +49,7 @@ export class Tasks {
 	 * @since 0.10.2
 	 */
 	promise(): Promise<any> {
-		throw new Error("Method not implemented.");
+		if (this.promises.size === 0) return Promise.resolve([]);
+		return Promise.all([...this.promises]).then(() => []);
 	}
 }
