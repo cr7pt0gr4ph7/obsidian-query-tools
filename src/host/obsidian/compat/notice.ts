@@ -44,7 +44,9 @@ export class Notice {
 	 * @public
 	 */
 	constructor(message: string | DocumentFragment, duration?: number) {
-		throw new Error("Method not implemented.");
+		this.noticeEl = {} as HTMLElement;
+		this.containerEl = {} as HTMLElement;
+		this.messageEl = {} as HTMLElement;
 	}
 
 	/**
@@ -62,7 +64,7 @@ export class Notice {
 	 * @since 0.9.7
 	 */
 	setMessage(message: string | DocumentFragment): this {
-		throw new Error("Method not implemented.");
+		return this;
 	}
 
 	/**
@@ -71,6 +73,6 @@ export class Notice {
 	 * @since 0.9.7
 	 */
 	hide(): void {
-		throw new Error("Method not implemented.");
+		// Compatibility no-op.
 	}
 }
