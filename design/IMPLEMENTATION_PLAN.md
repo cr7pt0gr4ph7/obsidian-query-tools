@@ -23,6 +23,16 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - Focused fixtures and tests for API behavior, interface equivalence,
   refresh, and filesystem boundaries.
 - Node.js 24 and 26 CI coverage; reproducible install, build, and test commands.
+- Topic-organized Obsidian API mock declarations, excluded from the production
+  TypeScript build because the mock stubs are not runtime library code.
+- Mock placeholder aliases replaced with local types and CodeMirror type
+  re-exports; other unsupported mock stubs remain.
+- Project-defined mock value wrappers with safe text rendering, nested values,
+  dates and durations; not an Obsidian Bases compatibility claim.
+- Root-confined filesystem adapter for mock vault files with opt-in absolute
+  paths; symlink traversal through vault-relative paths is rejected.
+- Adapter-backed mock file and folder objects, `FileManager`, and file-related
+  `Vault` operations with focused filesystem-backed tests.
 - Upstream investigation and the preliminary CLI boundary, documented in the
   [research notes](notes/2026-11-19-upstream.md) and
   [console note](notes/2026-11-19-console-interface.md).

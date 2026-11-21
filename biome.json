@@ -10,6 +10,9 @@
 		"rules": {
 			"style": {
 				"useBlockStatements": "warn"
+			},
+			"correctness": {
+				"noUnusedFunctionParameters": "off"
 			}
 		}
 	}

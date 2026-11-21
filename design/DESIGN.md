@@ -22,6 +22,34 @@ syntax and fixture references, not an execution oracle. Any future reuse or
 compatibility claim requires pinned revisions, documented deviations and
 licenses, and evidence against those revisions.
 
+The excluded `vault/mock/values.ts` module supplies project-defined value
+wrappers for local mock use, not Obsidian Bases compatibility. It wraps nested
+arrays and objects, compares values without cross-type coercion, renders plain
+text, and uses UTC instants and ISO durations for date arithmetic. Empty
+collections are false; unsupported JavaScript value types throw. Mock value
+semantics have not been compared against an Obsidian oracle.
+
+The excluded mock CodeMirror modules re-export types from the lockfile-pinned
+`@codemirror/state` and `@codemirror/view` development dependencies. They
+provide types only, not an Obsidian editor or plugin compatibility.
+
+The excluded `vault/mock/files/adapter_filesystem.ts` adapter is a standalone
+filesystem utility rooted at a caller-supplied existing directory. Vault
+relative paths are confined to that root and reject symlink components.
+Absolute paths are rejected unless the caller opts in with the second
+constructor argument; when enabled, absolute paths may access files outside
+the root. Filesystem creation times are reported, but cannot be set with
+Node's portable filesystem APIs.
+The excluded `vault/mock/files/files.ts` and `vault/mock/vault.ts` modules
+provide a separate, project-defined adapter-backed file tree and mutation API.
+Call `Vault.initialize()` before relying on synchronous lookups; later
+mutations update that in-memory tree, but external filesystem changes require
+another initialization. These mock APIs are not part of the production
+read-only query API and do not claim Obsidian behavior parity. UI deletion
+confirmation remains unsupported, and `FileManager.renameFile()` does not
+rewrite links; generated links use a basic wiki-link form without user
+preferences.
+
 ## Interface contract
 
 The TypeScript API in `src/api/` has a stable public `index.ts` entrypoint and
