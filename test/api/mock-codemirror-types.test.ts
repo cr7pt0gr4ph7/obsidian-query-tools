@@ -5,12 +5,12 @@ import type { EditorView, ViewPlugin } from "@codemirror/view";
 import type {
 	Extension as MockExtension,
 	StateField as MockStateField,
-} from "../../src/api/vault/mock/unsupported/codemirror/state.ts";
+} from "../../src/host/obsidian/compat/codemirror/state.ts";
 import type {
 	EditorView as MockEditorView,
 	ViewPlugin as MockViewPlugin,
 	ViewPlugiN,
-} from "../../src/api/vault/mock/unsupported/codemirror/view.ts";
+} from "../../src/host/obsidian/compat/codemirror/view.ts";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 

@@ -1,7 +1,7 @@
+import type { StateField } from "../../../../host/obsidian/compat/codemirror/state.js";
+import type { EditorView } from "../../../../host/obsidian/compat/codemirror/view.js";
 import type { TFile } from "../../../../host/obsidian/files/files.js";
 import type { App } from "../app.js";
-import type { StateField } from "./codemirror/state.js";
-import type { EditorView } from "./codemirror/view.js";
 import type { Instruction } from "./modals.js";
 import { placeholder } from "./placeholder.js";
 import { PopoverSuggest } from "./suggest.js";

@@ -1,7 +1,7 @@
 import { Component } from "../../../../host/obsidian/base/lifecycle.js";
+import type { ViewPlugin } from "../../../../host/obsidian/compat/codemirror/view.js";
 import type { IconName } from "../official_api.js";
 import type { App, Menu, Scope } from "../unsupported_api.js";
-import type { ViewPlugin } from "./codemirror/view.js";
 import type { WorkspaceLeaf } from "./workspace.js";
 
 /**
