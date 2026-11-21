@@ -1,10 +1,9 @@
 import { placeholder } from "./placeholder.js";
 import { App } from "../app.js";
 import { TFile } from "../files/files.js";
-import { Instruction } from "../unsupported_api.js";
 import { StateField } from "./codemirror/state.js";
 import { EditorView } from "./codemirror/view.js";
-import { PopoverSuggest } from "./suggest.js";
+import { type Instruction, PopoverSuggest } from "./suggest.js";
 import { MarkdownFileInfo } from "./view.js";
 
 /**

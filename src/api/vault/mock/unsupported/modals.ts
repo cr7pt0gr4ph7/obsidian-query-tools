@@ -1,7 +1,7 @@
 import { HistoryHandler } from "./history.js";
 import { Scope } from "./keymap.js";
 import { placeholder, Placeholder } from "./placeholder.js";
-import { ISuggestOwner } from "./suggest.js";
+import type { Instruction, ISuggestOwner } from "./suggest.js";
 
 type App = Placeholder;
 type ConfirmationButton = Placeholder;
