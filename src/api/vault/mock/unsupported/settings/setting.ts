@@ -1,3 +1,4 @@
+import type { TooltipOptions } from "../../../../host/obsidian/compat/tooltips.js";
 import type { ButtonComponent, ExtraButtonComponent } from "../components/button.js";
 import type { BaseComponent } from "../components/component.js";
 import type { SearchComponent } from "../components/search.js";
@@ -10,7 +11,6 @@ import type {
 	ToggleComponent,
 } from "../components/value.js";
 import { placeholder } from "../placeholder.js";
-import type { TooltipOptions } from "../tooltips.js";
 
 /**
  * A single setting row, with a name, a description and controls.

@@ -1,6 +1,6 @@
+import type { TooltipOptions } from "../../../../host/obsidian/compat/tooltips.js";
 import type { IconName } from "../extensions/icons.js";
 import { placeholder } from "../placeholder.js";
-import type { TooltipOptions } from "../tooltips.js";
 import { BaseComponent } from "./component.js";
 
 /**

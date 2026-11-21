@@ -1,6 +1,6 @@
 import type { HexString, HSL, RGB } from "../../../../host/obsidian/base/colors.js";
+import type { TooltipOptions } from "../../../../host/obsidian/compat/tooltips.js";
 import { placeholder } from "../placeholder.js";
-import type { TooltipOptions } from "../tooltips.js";
 import { BaseComponent } from "./component.js";
 
 /**
