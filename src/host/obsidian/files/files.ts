@@ -1,6 +1,5 @@
 import path from "node:path";
 import { parseDocument, stringify } from "yaml";
-import type { Vault } from "../vault.js";
 import type { DataAdapter, DataWriteOptions } from "./adapter.js";
 
 /**
@@ -14,7 +13,7 @@ export class TAbstractFile {
 	 * @public
 	 * @since 0.9.7
 	 */
-	vault: Vault;
+	vault: object;
 
 	/**
 	 * The path of the file.
@@ -45,7 +44,7 @@ export class TAbstractFile {
 	 * @param parent Parent folder, or null for the root or an external file.
 	 * @param externalPath Whether the path identifies an external file.
 	 */
-	constructor(vault: Vault, filePath: string, parent: TFolder | null, externalPath = false) {
+	constructor(vault: object, filePath: string, parent: TFolder | null, externalPath = false) {
 		this.vault = vault;
 		this.path = normalizeVaultPath(filePath, externalPath);
 		this.name = this.path ? path.posix.basename(this.path) : "";
@@ -73,7 +72,7 @@ export class TFolder extends TAbstractFile {
 	 * @param folderPath Vault-relative POSIX path.
 	 * @param parent Parent folder, or null for the root.
 	 */
-	constructor(vault: Vault, folderPath: string, parent: TFolder | null) {
+	constructor(vault: object, folderPath: string, parent: TFolder | null) {
 		super(vault, folderPath, parent);
 	}
 
@@ -148,7 +147,7 @@ export class TFile extends TAbstractFile {
 	 * @param externalPath Whether the path identifies an external file.
 	 */
 	constructor(
-		vault: Vault,
+		vault: object,
 		filePath: string,
 		parent: TFolder | null,
 		stat: FileStats = emptyFileStats(),
@@ -186,7 +185,7 @@ export class TExternalFile extends TFile {
 	 * @param stat File metadata.
 	 * @param realPath Physical filesystem path.
 	 */
-	constructor(vault: Vault, filePath: string, stat: FileStats, realPath: string) {
+	constructor(vault: object, filePath: string, stat: FileStats, realPath: string) {
 		super(vault, filePath, null, stat, true);
 		this.realPath = realPath;
 	}
@@ -213,7 +212,7 @@ export class FileManager {
 	/** The vault's indexed root folder. */
 	readonly root: TFolder;
 
-	private vault: Vault;
+	private vault: object;
 	private readonly files = new Map<string, TAbstractFile>();
 
 	/**
@@ -222,7 +221,7 @@ export class FileManager {
 	 * @param adapter Filesystem adapter.
 	 * @param vault Owning vault.
 	 */
-	constructor(adapter: DataAdapter, vault: Vault) {
+	constructor(adapter: DataAdapter, vault: object) {
 		this.adapter = adapter;
 		this.vault = vault;
 		this.root = new TFolder(vault, "", null);
@@ -276,7 +275,7 @@ export class FileManager {
 	/**
 	 * Return all indexed files and folders, including the root.
 	 *
-	 * @returns Indexed objects in deterministic path order.
+	 * @returns Indexed files and folders in deterministic path order.
 	 */
 	getAllLoadedFiles(): TAbstractFile[] {
 		return [...this.files.values()].sort((a, b) => a.path.localeCompare(b.path));
@@ -409,7 +408,7 @@ export class FileManager {
 	/**
 	 * Copy a file or folder and add the copy to the index.
 	 *
-	 * @param file Source object.
+	 * @param file Source file.
 	 * @param newPath Destination path.
 	 * @returns The newly indexed copy.
 	 */

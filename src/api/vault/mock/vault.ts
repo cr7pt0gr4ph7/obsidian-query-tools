@@ -1,6 +1,6 @@
 import { type EventRef, Events } from "../../../host/obsidian/base/events.ts";
-import type { DataAdapter, DataWriteOptions } from "./files/adapter.js";
-import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "./files/files.ts";
+import type { DataAdapter, DataWriteOptions } from "../../../host/obsidian/files/adapter.js";
+import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "../../../host/obsidian/files/files.ts";
 
 /**
  * Work with files and folders stored inside a vault.

@@ -1,4 +1,4 @@
-import type { TFile, TFolder } from "../../files/files.js";
+import type { TFile, TFolder } from "../../../../../host/obsidian/files/files.js";
 import type { BasesPropertyId } from "./properties.js";
 
 /**

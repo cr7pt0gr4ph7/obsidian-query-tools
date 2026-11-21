@@ -1,5 +1,5 @@
+import type { FileManager } from "../../../host/obsidian/files/files.js";
 import type { Vault } from "../vault.js";
-import type { FileManager } from "./files/files.js";
 import type { MetadataCache } from "./metadata.js";
 import type { SecretStorage } from "./secrets.js";
 import type { Keymap, Scope } from "./unsupported/keymap.js";

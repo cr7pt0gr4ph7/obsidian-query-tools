@@ -33,14 +33,14 @@ The excluded mock CodeMirror modules re-export types from the lockfile-pinned
 `@codemirror/state` and `@codemirror/view` development dependencies. They
 provide types only, not an Obsidian editor or plugin compatibility.
 
-The excluded `vault/mock/files/adapter_filesystem.ts` adapter is a standalone
+The excluded `host/obsidian/files/adapter_filesystem.ts` adapter is a standalone
 filesystem utility rooted at a caller-supplied existing directory. Vault
 relative paths are confined to that root and reject symlink components.
 Absolute paths are rejected unless the caller opts in with the second
 constructor argument; when enabled, absolute paths may access files outside
 the root. Filesystem creation times are reported, but cannot be set with
 Node's portable filesystem APIs.
-The excluded `vault/mock/files/files.ts` and `vault/mock/vault.ts` modules
+The excluded `host/obsidian/files/files.ts` and `vault/mock/vault.ts` modules
 provide a separate, project-defined adapter-backed file tree and mutation API.
 Call `Vault.initialize()` before relying on synchronous lookups; later
 mutations update that in-memory tree, but external filesystem changes require

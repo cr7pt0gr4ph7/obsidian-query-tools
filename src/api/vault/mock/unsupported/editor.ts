@@ -1,5 +1,5 @@
+import type { TFile } from "../../../../host/obsidian/files/files.js";
 import type { App } from "../app.js";
-import type { TFile } from "../files/files.js";
 import type { StateField } from "./codemirror/state.js";
 import type { EditorView } from "./codemirror/view.js";
 import type { Instruction } from "./modals.js";
