@@ -36,6 +36,15 @@ Absolute paths are rejected unless the caller opts in with the second
 constructor argument; when enabled, absolute paths may access files outside
 the root. Filesystem creation times are reported, but cannot be set with
 Node's portable filesystem APIs.
+The excluded `vault/mock/files/files.ts` and `vault/mock/vault.ts` modules
+provide a separate, project-defined adapter-backed file tree and mutation API.
+Call `Vault.initialize()` before relying on synchronous lookups; later
+mutations update that in-memory tree, but external filesystem changes require
+another initialization. These mock APIs are not part of the production
+read-only query API and do not claim Obsidian behavior parity. UI deletion
+confirmation remains unsupported, and `FileManager.renameFile()` does not
+rewrite links; generated links use a basic wiki-link form without user
+preferences.
 
 ## Interface contract
 

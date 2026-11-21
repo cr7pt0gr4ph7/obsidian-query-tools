@@ -29,6 +29,8 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
   dates and durations; not an Obsidian Bases compatibility claim.
 - Root-confined filesystem adapter for mock vault files with opt-in absolute
   paths; symlink traversal through vault-relative paths is rejected.
+- Adapter-backed mock file and folder objects, `FileManager`, and file-related
+  `Vault` operations with focused filesystem-backed tests.
 - Upstream investigation and the preliminary CLI boundary, documented in the
   [research notes](notes/2026-11-19-upstream.md) and
   [console note](notes/2026-11-19-console-interface.md).

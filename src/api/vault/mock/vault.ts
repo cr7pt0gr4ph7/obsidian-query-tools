@@ -1,3 +1,7 @@
+import { type EventRef, Events } from "./events.ts";
+import type { DataAdapter, DataWriteOptions } from "./files/adapter.js";
+import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "./files/files.ts";
+
 /**
  * Work with files and folders stored inside a vault.
  * @see {@link https://docs.obsidian.md/Plugins/Vault}.
@@ -13,6 +17,12 @@ export class Vault extends Events {
 	adapter: DataAdapter;
 
 	/**
+	 * File manager for the vault's file tree and mutation operations.
+	 * @public
+	 */
+	fileManager: FileManager;
+
+	/**
 	 * Gets the path to the config folder.
 	 * This value is typically `.obsidian` but it could be different.
 	 * @public
@@ -21,12 +31,34 @@ export class Vault extends Events {
 	configDir: string;
 
 	/**
+	 * Create a vault backed by a data adapter.
+	 *
+	 * @param adapter Low-level adapter.
+	 * @param configDir Path to the vault configuration directory.
+	 */
+	constructor(adapter: DataAdapter, configDir = ".obsidian") {
+		super();
+		this.adapter = adapter;
+		this.configDir = configDir;
+		this.fileManager = new FileManager(adapter, this);
+	}
+
+	/**
+	 * Load the adapter's current file tree into the synchronous lookup index.
+	 *
+	 * @returns A promise that resolves when the file tree is available.
+	 */
+	initialize(): Promise<void> {
+		return this.fileManager.initialize();
+	}
+
+	/**
 	 * Gets the name of the vault.
 	 * @public
 	 * @since 0.9.7
 	 */
 	getName(): string {
-		throw new Error("Method not implemented.");
+		return this.adapter.getName();
 	}
 
 	/**
@@ -37,7 +69,7 @@ export class Vault extends Events {
 	 * @since 1.5.7
 	 */
 	getFileByPath(path: string): TFile | null {
-		throw new Error("Method not implemented.");
+		return this.fileManager.getFileByPath(path);
 	}
 
 	/**
@@ -48,7 +80,7 @@ export class Vault extends Events {
 	 * @since 1.5.7
 	 */
 	getFolderByPath(path: string): TFolder | null {
-		throw new Error("Method not implemented.");
+		return this.fileManager.getFolderByPath(path);
 	}
 
 	/**
@@ -67,7 +99,7 @@ export class Vault extends Events {
 	 * @since 0.11.11
 	 */
 	getAbstractFileByPath(path: string): TAbstractFile | null {
-		throw new Error("Method not implemented.");
+		return this.fileManager.getAbstractFileByPath(path);
 	}
 
 	/**
@@ -76,7 +108,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	getRoot(): TFolder {
-		throw new Error("Method not implemented.");
+		return this.fileManager.root;
 	}
 
 	/**
@@ -89,7 +121,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	create(path: string, data: string, options?: DataWriteOptions): Promise<TFile> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.create(path, data, options);
 	}
 
 	/**
@@ -102,7 +134,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	createBinary(path: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<TFile> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.createBinary(path, data, options);
 	}
 
 	/**
@@ -113,7 +145,7 @@ export class Vault extends Events {
 	 * @since 1.4.0
 	 */
 	createFolder(path: string): Promise<TFolder> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.createFolder(path);
 	}
 
 	/**
@@ -125,7 +157,8 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	read(file: TFile): Promise<string> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.read(file.path);
 	}
 
 	/**
@@ -137,7 +170,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	cachedRead(file: TFile): Promise<string> {
-		throw new Error("Method not implemented.");
+		return this.read(file);
 	}
 
 	/**
@@ -147,7 +180,8 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	readBinary(file: TFile): Promise<ArrayBuffer> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.readBinary(file.path);
 	}
 
 	/**
@@ -157,7 +191,8 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	getResourcePath(file: TFile): string {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.getResourcePath(file.path);
 	}
 
 	/**
@@ -168,7 +203,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	delete(file: TAbstractFile, force?: boolean): Promise<void> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.delete(file, force);
 	}
 
 	/**
@@ -179,7 +214,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	trash(file: TAbstractFile, system: boolean): Promise<void> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.trash(file, system);
 	}
 
 	/**
@@ -191,7 +226,7 @@ export class Vault extends Events {
 	 * @since 0.9.11
 	 */
 	rename(file: TAbstractFile, newPath: string): Promise<void> {
-		throw new Error("Method not implemented.");
+		return this.fileManager.rename(file, newPath);
 	}
 
 	/**
@@ -203,7 +238,8 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	modify(file: TFile, data: string, options?: DataWriteOptions): Promise<void> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.write(file.path, data, options).then(() => this.updateFileStats(file));
 	}
 
 	/**
@@ -215,7 +251,8 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	modifyBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.writeBinary(file.path, data, options).then(() => this.updateFileStats(file));
 	}
 
 	/**
@@ -227,7 +264,8 @@ export class Vault extends Events {
 	 * @since 0.13.0
 	 */
 	append(file: TFile, data: string, options?: DataWriteOptions): Promise<void> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.append(file.path, data, options).then(() => this.updateFileStats(file));
 	}
 
 	/**
@@ -239,7 +277,8 @@ export class Vault extends Events {
 	 * @since 1.12.3
 	 */
 	appendBinary(file: TFile, data: ArrayBuffer, options?: DataWriteOptions): Promise<void> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.appendBinary(file.path, data, options).then(() => this.updateFileStats(file));
 	}
 
 	/**
@@ -258,7 +297,11 @@ export class Vault extends Events {
 	 * @since 1.1.0
 	 */
 	process(file: TFile, fn: (data: string) => string, options?: DataWriteOptions): Promise<string> {
-		throw new Error("Method not implemented.");
+		this.assertVaultFile(file);
+		return this.adapter.process(file.path, fn, options).then(async (result) => {
+			await this.updateFileStats(file);
+			return result;
+		});
 	}
 
 	/**
@@ -268,8 +311,11 @@ export class Vault extends Events {
 	 * @public
 	 * @since 1.8.7
 	 */
-	copy<T extends TAbstractFile>(file: T, newPath: string): Promise<T> {
-		throw new Error("Method not implemented.");
+	copy(file: TFile, newPath: string): Promise<TFile>;
+	copy(file: TFolder, newPath: string): Promise<TFolder>;
+	copy(file: TAbstractFile, newPath: string): Promise<TAbstractFile>;
+	copy(file: TAbstractFile, newPath: string): Promise<TAbstractFile> {
+		return this.fileManager.copy(file, newPath);
 	}
 
 	/**
@@ -278,7 +324,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	getAllLoadedFiles(): TAbstractFile[] {
-		throw new Error("Method not implemented.");
+		return this.fileManager.getAllLoadedFiles().filter((file) => file !== this.fileManager.root);
 	}
 
 	/**
@@ -288,7 +334,7 @@ export class Vault extends Events {
 	 * @since 1.6.6
 	 */
 	getAllFolders(includeRoot?: boolean): TFolder[] {
-		throw new Error("Method not implemented.");
+		return this.fileManager.getAllFolders(includeRoot);
 	}
 
 	/**
@@ -299,7 +345,14 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	static recurseChildren(root: TFolder, cb: (file: TAbstractFile) => any): void {
-		throw new Error("Method not implemented.");
+		cb(root);
+		for (const child of root.children) {
+			if (child instanceof TFolder) {
+				Vault.recurseChildren(child, cb);
+			} else {
+				cb(child);
+			}
+		}
 	}
 
 	/**
@@ -308,7 +361,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	getMarkdownFiles(): TFile[] {
-		throw new Error("Method not implemented.");
+		return this.getFiles().filter((file) => file.extension.toLowerCase() === "md");
 	}
 
 	/**
@@ -317,7 +370,7 @@ export class Vault extends Events {
 	 * @since 0.9.7
 	 */
 	getFiles(): TFile[] {
-		throw new Error("Method not implemented.");
+		return this.getAllLoadedFiles().filter((file): file is TFile => file instanceof TFile);
 	}
 
 	/**
@@ -348,7 +401,34 @@ export class Vault extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	on(name: "rename", callback: (file: TAbstractFile, oldPath: string) => any, ctx?: any): EventRef {
-		throw new Error("Method not implemented.");
+	on(name: "rename", callback: (file: TAbstractFile, oldPath: string) => any, ctx?: any): EventRef;
+
+	/**
+	 * Register a vault file event listener.
+	 *
+	 * @param name Event name.
+	 * @param callback Event listener.
+	 * @param ctx Listener context.
+	 * @returns Event listener reference.
+	 */
+	on(name: string, callback: (...data: any[]) => any, ctx?: any): EventRef {
+		return super.on(name, callback, ctx);
+	}
+
+	private assertVaultFile(file: TFile): void {
+		if (
+			file.vault !== this ||
+			(!(file instanceof TExternalFile) && this.fileManager.getAbstractFileByPath(file.path) !== file)
+		) {
+			throw new Error("File does not belong to this vault.");
+		}
+	}
+
+	private async updateFileStats(file: TFile): Promise<void> {
+		const info = await this.adapter.stat(file.path);
+		if (info?.type !== "file") {
+			throw new Error(`File does not exist: ${file.path}`);
+		}
+		file.stat = { ctime: info.ctime, mtime: info.mtime, size: info.size };
 	}
 }
