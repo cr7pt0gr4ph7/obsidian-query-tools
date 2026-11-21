@@ -1,4 +1,4 @@
-import { Component } from "../lifecycle.js";
+import { Component } from "../../lifecycle.js";
 import { placeholder } from "../placeholder.js";
 
 export interface IHoverPlugin_ {

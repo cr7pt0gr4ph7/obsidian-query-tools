@@ -2,7 +2,7 @@ import type { App } from "../../app.js";
 import type { FrontmatterValue } from "../../cache/types.js";
 import type { TFile } from "../../files/files.js";
 import type { Value } from "../../values.js";
-import { Component } from "../lifecycle.js";
+import { Component } from "../../lifecycle.js";
 import { placeholder } from "../placeholder.js";
 import type { BasesEntry, BasesEntryGroup } from "./entries.js";
 import type { BasesPropertyId } from "./properties.js";

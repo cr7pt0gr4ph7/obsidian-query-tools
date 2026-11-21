@@ -5,6 +5,10 @@ import {
 	DateValue,
 	DurationValue,
 	FileValue,
+	HTMLValue,
+	IconValue,
+	ImageValue,
+	LinkValue,
 	ListValue,
 	NullValue,
 	NumberValue,
@@ -15,6 +19,15 @@ import {
 	TagValue,
 	Value,
 } from "../../src/api/vault/mock/values.ts";
+
+test("moved rich values remain string values and link parsing remains unsupported", () => {
+	for (const ValueClass of [HTMLValue, IconValue, ImageValue, LinkValue]) {
+		const value = new ValueClass("example");
+		assert.ok(value instanceof StringValue);
+		assert.equal(value.toString(), "example");
+	}
+	assert.throws(() => LinkValue.parseFromString({}, "[[example]]", ""), /Method not implemented/);
+});
 
 test("primitive values and null compare without coercion", () => {
 	assert.equal(new StringValue("hello").toString(), "hello");

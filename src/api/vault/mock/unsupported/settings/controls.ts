@@ -1,5 +1,5 @@
 import type { TFile, TFolder } from "../../files/files.js";
-import type { HexString } from "../../unsupported_api.js";
+import type { HexString } from "../../colors.js";
 
 /**
  * @public

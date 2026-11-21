@@ -1,4 +1,4 @@
-import type { EventRef } from "../events.js";
+import type { EventRef } from "./events.js";
 
 /**
  * A component that can be loaded and unloaded.

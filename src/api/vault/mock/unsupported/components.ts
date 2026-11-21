@@ -1,7 +1,7 @@
 import { placeholder } from "./placeholder.js";
 import type { TooltipOptions } from "./tooltips.js";
 import type { App } from "../app.js";
-import type { HexString, HSL, RGB } from "../unsupported_api.js";
+import type { HexString, HSL, RGB } from "../colors.js";
 import type { IconName } from "./extensions/icons.js";
 
 /**

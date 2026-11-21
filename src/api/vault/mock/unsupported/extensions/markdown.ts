@@ -1,4 +1,4 @@
-import { Component } from "../lifecycle.js";
+import { Component } from "../../lifecycle.js";
 
 export interface IMarkdownProcessorPlugin_ {
 	/**

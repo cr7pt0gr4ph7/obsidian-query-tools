@@ -1,4 +1,4 @@
-import { Component } from "./unsupported/lifecycle.js";
+import { Component } from "./lifecycle.js";
 import type { Placeholder } from "./unsupported/placeholder.js";
 
 type App = Placeholder;
