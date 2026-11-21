@@ -27,7 +27,7 @@ declare global {
 			object: {
 				[key: string]: T;
 			},
-			callback: (value: T, key?: string) => boolean | void,
+			callback: (value: T, key?: string) => boolean | undefined,
 			context?: any,
 		): boolean;
 	}
@@ -1240,16 +1240,6 @@ declare global {
 	 * Waits for the next animation frame.
 	 */
 	function nextFrame(): Promise<void>;
-	/**
-	 * The actively focused Window object. This is usually the same as `window` but
-	 * it will be different when using popout windows.
-	 */
-	let activeWindow: Window;
-	/**
-	 * The actively focused Document object. This is usually the same as `document` but
-	 * it will be different when using popout windows.
-	 */
-	let activeDocument: Document;
 	interface Window
 		extends EventTarget,
 			AnimationFrameProvider,
@@ -1318,7 +1308,7 @@ declare global {
 			object: {
 				[key: string]: T;
 			},
-			callback: (value: T, key?: string) => boolean | void,
+			callback: (value: T, key?: string) => boolean | undefined,
 			context?: any,
 		): boolean;
 	}

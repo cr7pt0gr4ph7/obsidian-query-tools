@@ -67,7 +67,7 @@ export interface Debouncer<T extends unknown[], V> {
 	 * @public
 	 * @since 1.4.4
 	 */
-	run(): V | void;
+	run(): V | undefined;
 }
 
 /**

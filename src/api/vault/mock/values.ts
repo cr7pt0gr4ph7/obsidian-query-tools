@@ -19,8 +19,12 @@ export abstract class Value {
 	 * @since 1.10.0
 	 */
 	static equals(a: Value | null, b: Value | null): boolean {
-		if (a === null || a instanceof NullValue) return b === null || b instanceof NullValue;
-		if (b === null || b instanceof NullValue) return false;
+		if (a === null || a instanceof NullValue) {
+			return b === null || b instanceof NullValue;
+		}
+		if (b === null || b instanceof NullValue) {
+			return false;
+		}
 		return a.equals(b);
 	}
 
@@ -29,8 +33,12 @@ export abstract class Value {
 	 * @since 1.10.0
 	 */
 	static looseEquals(a: Value | null, b: Value | null): boolean {
-		if (a === null || a instanceof NullValue) return b === null || b instanceof NullValue;
-		if (b === null || b instanceof NullValue) return false;
+		if (a === null || a instanceof NullValue) {
+			return b === null || b instanceof NullValue;
+		}
+		if (b === null || b instanceof NullValue) {
+			return false;
+		}
 		return a.looseEquals(b);
 	}
 
@@ -250,7 +258,9 @@ export class ObjectValue extends NotNullValue {
 	 * @returns Whether both objects have the same keys and values.
 	 */
 	equals(other: Value): boolean {
-		if (!(other instanceof ObjectValue)) return false;
+		if (!(other instanceof ObjectValue)) {
+			return false;
+		}
 		const keys = Object.keys(this.value);
 		return (
 			keys.length === Object.keys(other.value).length &&
@@ -275,7 +285,9 @@ export class DateValue extends NotNullValue {
 	constructor(value: Date | number | string) {
 		super();
 		const parsed = typeof value === "string" ? moment.parseZone(value, moment.ISO_8601, true) : moment(value);
-		if (!parsed.isValid()) throw new TypeError("Invalid date.");
+		if (!parsed.isValid()) {
+			throw new TypeError("Invalid date.");
+		}
 		this.timestamp = parsed.valueOf();
 	}
 
@@ -420,7 +432,9 @@ export class DurationValue extends NotNullValue {
 	 * @since 1.10.0
 	 */
 	static fromMilliseconds(milliseconds: number): DurationValue {
-		if (!Number.isFinite(milliseconds)) throw new TypeError("Duration must be finite.");
+		if (!Number.isFinite(milliseconds)) {
+			throw new TypeError("Duration must be finite.");
+		}
 		return new DurationValue(moment.duration(milliseconds));
 	}
 }
@@ -482,7 +496,9 @@ export class ListValue extends NotNullValue {
 	constructor(value: unknown[]) {
 		super();
 		this.value = value.map((item) => wrap(item));
-		for (let i = 0; i < this.value.length; i++) value[i] = this.value[i];
+		for (let i = 0; i < this.value.length; i++) {
+			value[i] = this.value[i];
+		}
 	}
 
 	/**
@@ -681,14 +697,32 @@ export class TagValue extends StringValue {
 }
 
 function wrap(value: unknown): Value {
-	if (value instanceof Value) return value;
-	if (value === null || value === undefined) return NullValue.value;
-	if (typeof value === "string") return new StringValue(value);
-	if (typeof value === "number") return new NumberValue(value);
-	if (typeof value === "boolean") return new BooleanValue(value);
-	if (value instanceof Date) return new DateValue(value);
-	if (value instanceof RegExp) return new RegExpValue(value);
-	if (Array.isArray(value)) return new ListValue(value);
-	if (typeof value === "object") return new ObjectValue(value as Record<string, unknown>);
+	if (value instanceof Value) {
+		return value;
+	}
+	if (value === null || value === undefined) {
+		return NullValue.value;
+	}
+	if (typeof value === "string") {
+		return new StringValue(value);
+	}
+	if (typeof value === "number") {
+		return new NumberValue(value);
+	}
+	if (typeof value === "boolean") {
+		return new BooleanValue(value);
+	}
+	if (value instanceof Date) {
+		return new DateValue(value);
+	}
+	if (value instanceof RegExp) {
+		return new RegExpValue(value);
+	}
+	if (Array.isArray(value)) {
+		return new ListValue(value);
+	}
+	if (typeof value === "object") {
+		return new ObjectValue(value as Record<string, unknown>);
+	}
 	throw new TypeError(`Unsupported value type: ${typeof value}.`);
 }

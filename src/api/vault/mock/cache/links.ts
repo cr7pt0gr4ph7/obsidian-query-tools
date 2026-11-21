@@ -1,4 +1,4 @@
-import { ReferenceCache } from "./reference.js";
+import type { ReferenceCache } from "./reference.js";
 
 /**
  * A link in the note.

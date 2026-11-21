@@ -1,6 +1,6 @@
-import { Modifier } from "./keyboard.js";
-import { UserEvent } from "./userevent.js";
-import { PaneType } from "./workspace.js";
+import type { Modifier } from "./keyboard.js";
+import type { UserEvent } from "./userevent.js";
+import type { PaneType } from "./workspace.js";
 
 /**
  * A scope receives keyboard events and binds callbacks to given hotkeys.

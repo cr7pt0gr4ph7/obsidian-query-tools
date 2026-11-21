@@ -1,11 +1,11 @@
-import { placeholder } from "./placeholder.js";
-import { App } from "../app.js";
-import { TFile } from "../files/files.js";
-import { StateField } from "./codemirror/state.js";
-import { EditorView } from "./codemirror/view.js";
+import type { App } from "../app.js";
+import type { TFile } from "../files/files.js";
+import type { StateField } from "./codemirror/state.js";
+import type { EditorView } from "./codemirror/view.js";
 import type { Instruction } from "./modals.js";
+import { placeholder } from "./placeholder.js";
 import { PopoverSuggest } from "./suggest.js";
-import { MarkdownFileInfo } from "./view.js";
+import type { MarkdownFileInfo } from "./view.js";
 
 /**
  * This is now deprecated - it is now mapped directly to {@link editorInfoField}, which returns a {@link MarkdownFileInfo}, which may be a {@link MarkdownView} but not necessarily.
@@ -352,7 +352,7 @@ export abstract class Editor {
 	 */
 	processLines<T>(
 		read: (line: number, lineText: string) => T | null,
-		write: (line: number, lineText: string, value: T | null) => EditorChange | void,
+		write: (line: number, lineText: string, value: T | null) => EditorChange | undefined,
 		ignoreEmpty?: boolean,
 	): void {
 		throw new Error("Method not implemented.");

@@ -1,7 +1,7 @@
 import type { BlockCache } from "./blocks.js";
 import type { EmbedCache } from "./embeds.js";
 import type { FootnoteCache, FootnoteRefCache } from "./footnotes.js";
-import { type FrontMatterCache, FrontMatterInfo, type FrontmatterLinkCache } from "./frontmatter.js";
+import type { FrontMatterCache, FrontmatterLinkCache } from "./frontmatter.js";
 import type { HeadingCache } from "./headings.js";
 import type { LinkCache } from "./links.js";
 import type { ListItemCache } from "./lists.js";

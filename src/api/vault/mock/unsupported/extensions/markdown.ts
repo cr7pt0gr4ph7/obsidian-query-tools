@@ -36,7 +36,7 @@ export interface IMarkdownProcessorPlugin_ {
 	 */
 	registerMarkdownCodeBlockProcessor(
 		language: string,
-		handler: (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => Promise<any> | void,
+		handler: (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => Promise<any> | undefined,
 		sortOrder?: number,
 	): MarkdownPostProcessor;
 }
@@ -56,7 +56,7 @@ export interface MarkdownPostProcessor {
 	 * The processor function itself.
 	 * @public
 	 */
-	(el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<any> | void;
+	(el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<any> | undefined;
 
 	/**
 	 * An optional integer sort order. Defaults to 0. Lower number runs before higher numbers.

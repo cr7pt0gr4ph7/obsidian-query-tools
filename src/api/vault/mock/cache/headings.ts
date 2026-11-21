@@ -1,4 +1,4 @@
-import { CacheItem, SubpathResult } from "./types.js";
+import type { CacheItem, SubpathResult } from "./types.js";
 
 /**
  * A heading in the note.

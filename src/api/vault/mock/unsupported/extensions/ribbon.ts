@@ -1,4 +1,4 @@
-import { IconName } from "./icons.js";
+import type { IconName } from "./icons.js";
 
 export interface IRibbonIconPlugin_ {
 	/**

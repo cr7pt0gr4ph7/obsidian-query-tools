@@ -4,7 +4,7 @@ import type { FootnoteSubpathResult } from "./cache/footnotes.js";
 import type { HeadingSubpathResult } from "./cache/headings.js";
 import type { ReferenceCache } from "./cache/reference.js";
 import type { Reference } from "./cache/types.js";
-import { Events, type EventRef } from "./events.js";
+import { type EventRef, Events } from "./events.js";
 import type { TFile } from "./files/files.js";
 
 /**
@@ -16,7 +16,7 @@ import type { TFile } from "./files/files.js";
  * @public
  * @deprecated
  */
-export function iterateCacheRefs(cache: CachedMetadata, cb: (ref: ReferenceCache) => boolean | void): boolean;
+export function iterateCacheRefs(cache: CachedMetadata, cb: (ref: ReferenceCache) => boolean | undefined): boolean;
 
 /**
  * If callback returns true, the iteration process will be interrupted.
@@ -25,7 +25,7 @@ export function iterateCacheRefs(cache: CachedMetadata, cb: (ref: ReferenceCache
  * @returns `true` if callback ever returns `true`, `false` otherwise.
  * @public
  */
-export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean | void): boolean;
+export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean | undefined): boolean;
 
 /**
  * Provides access to the cached metadata of the files in the vault.

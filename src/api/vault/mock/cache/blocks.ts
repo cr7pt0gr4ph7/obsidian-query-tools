@@ -1,5 +1,5 @@
-import { ListItemCache } from "./lists.js";
-import { CacheItem, SubpathResult } from "./types.js";
+import type { ListItemCache } from "./lists.js";
+import type { CacheItem, SubpathResult } from "./types.js";
 
 /**
  * A block with an ID in the note.

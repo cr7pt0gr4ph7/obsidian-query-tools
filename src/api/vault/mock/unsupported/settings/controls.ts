@@ -1,5 +1,5 @@
-import type { TFile, TFolder } from "../../files/files.js";
 import type { HexString } from "../../colors.js";
+import type { TFile, TFolder } from "../../files/files.js";
 
 /**
  * @public
@@ -55,7 +55,7 @@ export interface SettingControlBase<V, K extends string = string> {
 	 * @public
 	 * @since 1.13.0
 	 */
-	validate?: (value: V) => string | void | Promise<string | void>;
+	validate?: (value: V) => string | undefined | Promise<string | undefined>;
 
 	/**
 	 * Disables the control. Evaluated on each render, so a function form can

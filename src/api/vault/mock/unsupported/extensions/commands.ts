@@ -126,7 +126,7 @@ export interface Command {
 	 * ```
 	 * @public
 	 */
-	checkCallback?: (checking: boolean) => boolean | void;
+	checkCallback?: (checking: boolean) => boolean | undefined;
 
 	/**
 	 * A command callback that is only triggered when the user is in an editor.
@@ -174,7 +174,11 @@ export interface Command {
 	 * @public
 	 * @since 0.12.2
 	 */
-	editorCheckCallback?: (checking: boolean, editor: Editor, ctx: MarkdownView | MarkdownFileInfo) => boolean | void;
+	editorCheckCallback?: (
+		checking: boolean,
+		editor: Editor,
+		ctx: MarkdownView | MarkdownFileInfo,
+	) => boolean | undefined;
 
 	/**
 	 * Sets the default hotkey. It is recommended for plugins to avoid setting default hotkeys if possible,

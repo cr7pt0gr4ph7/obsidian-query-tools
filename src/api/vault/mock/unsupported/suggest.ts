@@ -1,6 +1,6 @@
 import type { App } from "../app.js";
-import { HistoryHandler } from "./history.js";
-import { Scope } from "./keymap.js";
+import type { HistoryHandler } from "./history.js";
+import type { Scope } from "./keymap.js";
 
 /**
  * An owner that controls UI suggestions.

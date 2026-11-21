@@ -1,13 +1,13 @@
-import { constants } from "node:fs";
-import { realpathSync } from "node:fs";
+import { randomUUID } from "node:crypto";
+import { constants, realpathSync } from "node:fs";
 import {
 	access,
 	appendFile,
 	copyFile,
 	lstat,
 	mkdir,
-	readFile,
 	readdir,
+	readFile,
 	rename,
 	rm,
 	stat as statFile,
@@ -16,7 +16,6 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { randomUUID } from "node:crypto";
 import type { DataAdapter, DataWriteOptions, ListedFiles, Stat } from "./adapter.js";
 
 /**
@@ -88,7 +87,9 @@ export class FileSystemAdapter implements DataAdapter {
 	 */
 	async rmdir(normalizedPath: string, recursive: boolean): Promise<void> {
 		const target = this.getFullPath(normalizedPath);
-		if (target === this.rootPath) throw new Error("Cannot remove the vault root.");
+		if (target === this.rootPath) {
+			throw new Error("Cannot remove the vault root.");
+		}
 		await this.assertNoSymlink(target);
 		await rm(target, { recursive, force: false });
 	}
@@ -206,7 +207,9 @@ export class FileSystemAdapter implements DataAdapter {
 	/** @param normalizedPath Vault-relative file path. */
 	async remove(normalizedPath: string): Promise<void> {
 		const target = this.getFullPath(normalizedPath);
-		if (target === this.rootPath) throw new Error("Cannot remove the vault root as a file.");
+		if (target === this.rootPath) {
+			throw new Error("Cannot remove the vault root as a file.");
+		}
 		await this.assertNoSymlink(target);
 		await rm(target, { force: false });
 	}
@@ -253,8 +256,12 @@ export class FileSystemAdapter implements DataAdapter {
 			await access(target);
 			return true;
 		} catch (error) {
-			if (!isNotFound(error)) throw error;
-			if (sensitive || (this.allowAbsolutePaths && path.isAbsolute(normalizedPath))) return false;
+			if (!isNotFound(error)) {
+				throw error;
+			}
+			if (sensitive || (this.allowAbsolutePaths && path.isAbsolute(normalizedPath))) {
+				return false;
+			}
 			const insensitive = await this.findCaseInsensitivePath(normalizedPath);
 			return insensitive !== null;
 		}
@@ -271,7 +278,9 @@ export class FileSystemAdapter implements DataAdapter {
 		try {
 			await this.assertNoSymlink(target);
 			const info = await statFile(target);
-			if (!info.isFile() && !info.isDirectory()) throw new Error(`Unsupported filesystem entry: ${normalizedPath}`);
+			if (!info.isFile() && !info.isDirectory()) {
+				throw new Error(`Unsupported filesystem entry: ${normalizedPath}`);
+			}
 			return {
 				type: info.isDirectory() ? "folder" : "file",
 				ctime: info.birthtimeMs,
@@ -279,7 +288,9 @@ export class FileSystemAdapter implements DataAdapter {
 				size: info.size,
 			};
 		} catch (error) {
-			if (isNotFound(error)) return null;
+			if (isNotFound(error)) {
+				return null;
+			}
 			throw error;
 		}
 	}
@@ -298,10 +309,15 @@ export class FileSystemAdapter implements DataAdapter {
 		const folders: string[] = [];
 		const logicalDirectory = this.toLogicalPath(normalizedPath);
 		for (const entry of entries) {
-			if (entry.isSymbolicLink()) continue;
+			if (entry.isSymbolicLink()) {
+				continue;
+			}
 			const child = logicalDirectory ? `${logicalDirectory}/${entry.name}` : entry.name;
-			if (entry.isDirectory()) folders.push(child);
-			else if (entry.isFile()) files.push(child);
+			if (entry.isDirectory()) {
+				folders.push(child);
+			} else if (entry.isFile()) {
+				files.push(child);
+			}
 		}
 		files.sort();
 		folders.sort();
@@ -320,11 +336,15 @@ export class FileSystemAdapter implements DataAdapter {
 		}
 		const portablePath = normalizedPath.replaceAll("\\", "/");
 		if (path.isAbsolute(portablePath)) {
-			if (!this.allowAbsolutePaths) throw new Error("Absolute paths are disabled.");
+			if (!this.allowAbsolutePaths) {
+				throw new Error("Absolute paths are disabled.");
+			}
 			return path.resolve(portablePath);
 		}
 		const target = path.resolve(this.rootPath, portablePath);
-		if (!isWithin(this.rootPath, target)) throw new Error("Path escapes the vault root.");
+		if (!isWithin(this.rootPath, target)) {
+			throw new Error("Path escapes the vault root.");
+		}
 		return target;
 	}
 
@@ -356,15 +376,21 @@ export class FileSystemAdapter implements DataAdapter {
 	}
 
 	private async assertNoSymlink(target: string): Promise<void> {
-		if (!isWithin(this.rootPath, target)) return;
+		if (!isWithin(this.rootPath, target)) {
+			return;
+		}
 		let current = this.rootPath;
 		const relative = path.relative(this.rootPath, target);
 		for (const part of relative.split(path.sep).filter(Boolean)) {
 			current = path.join(current, part);
 			try {
-				if ((await lstat(current)).isSymbolicLink()) throw new Error(`Symlink paths are not allowed: ${current}`);
+				if ((await lstat(current)).isSymbolicLink()) {
+					throw new Error(`Symlink paths are not allowed: ${current}`);
+				}
 			} catch (error) {
-				if (isNotFound(error)) return;
+				if (isNotFound(error)) {
+					return;
+				}
 				throw error;
 			}
 		}
@@ -378,11 +404,15 @@ export class FileSystemAdapter implements DataAdapter {
 			try {
 				entries = await readdir(current);
 			} catch (error) {
-				if (isNotFound(error)) return null;
+				if (isNotFound(error)) {
+					return null;
+				}
 				throw error;
 			}
 			const match = entries.find((entry) => entry.toLocaleLowerCase() === part.toLocaleLowerCase());
-			if (!match) return null;
+			if (!match) {
+				return null;
+			}
 			current = path.join(current, match);
 		}
 		try {
@@ -390,7 +420,9 @@ export class FileSystemAdapter implements DataAdapter {
 			await access(current);
 			return current;
 		} catch (error) {
-			if (isNotFound(error)) return null;
+			if (isNotFound(error)) {
+				return null;
+			}
 			throw error;
 		}
 	}
@@ -408,7 +440,9 @@ export class FileSystemAdapter implements DataAdapter {
 			await access(filePath);
 			return true;
 		} catch (error) {
-			if (isNotFound(error)) return false;
+			if (isNotFound(error)) {
+				return false;
+			}
 			throw error;
 		}
 	}

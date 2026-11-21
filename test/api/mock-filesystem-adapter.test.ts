@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -88,7 +88,7 @@ test("local trash, timestamps, and directory removal work", async (t) => {
 
 	assert.equal(await adapter.trashSystem("gone.txt"), false);
 	await adapter.write("gone.txt", "trash", { mtime: 1_000_000 });
-	assert.ok(Math.abs((await adapter.stat("gone.txt"))!.mtime - 1_000_000) < 5);
+	assert.ok(Math.abs((await adapter.stat("gone.txt"))?.mtime - 1_000_000) < 5);
 	await adapter.trashLocal("gone.txt");
 	assert.equal(await adapter.read(".trash/gone.txt"), "trash");
 	await adapter.mkdir("empty/nested");

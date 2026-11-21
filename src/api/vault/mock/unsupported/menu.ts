@@ -1,5 +1,5 @@
-import type { HistoryHandler } from "./history.js";
 import { Component } from "../lifecycle.js";
+import type { HistoryHandler } from "./history.js";
 
 /**
  * The position to show a menu at.

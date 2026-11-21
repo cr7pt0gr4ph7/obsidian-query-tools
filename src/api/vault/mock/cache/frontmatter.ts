@@ -1,4 +1,4 @@
-import { Reference } from "./types.js";
+import type { Reference } from "./types.js";
 
 /**
  * The frontmatter of the note.

@@ -1,4 +1,4 @@
-import { DataAdapter, DataWriteOptions, Stat, ListedFiles } from "./adapter.js";
+import type { DataAdapter, DataWriteOptions, ListedFiles, Stat } from "./adapter.js";
 
 /**
  * Implementation of the vault adapter for mobile devices.

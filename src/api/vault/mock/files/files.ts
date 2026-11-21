@@ -463,7 +463,7 @@ export class FileManager {
 			throw new Error("External file paths must be absolute.");
 		}
 		const info = await this.adapter.stat(filePath);
-		if (!info || info.type !== "file") {
+		if (info?.type !== "file") {
 			throw new Error(`External file does not exist: ${filePath}`);
 		}
 		return new TExternalFile(this.vault, filePath, toFileStats(info), filePath);
@@ -736,6 +736,8 @@ function normalizeVaultPath(filePath: string, external = false): string {
 		return portablePath;
 	}
 	const parts = portablePath.split("/");
-	if (parts.includes("..")) throw new Error("Vault paths must not traverse outside the vault root.");
+	if (parts.includes("..")) {
+		throw new Error("Vault paths must not traverse outside the vault root.");
+	}
 	return parts.filter((part) => part && part !== ".").join("/");
 }

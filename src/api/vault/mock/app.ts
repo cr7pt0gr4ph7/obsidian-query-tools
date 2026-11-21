@@ -1,11 +1,11 @@
-import { Vault } from "../vault.js";
-import { FileManager } from "./files/files.js";
-import { MetadataCache } from "./metadata.js";
-import { SecretStorage } from "./secrets.js";
-import { Keymap, Scope } from "./unsupported/keymap.js";
-import { UserEvent } from "./unsupported/userevent.js";
-import { Workspace } from "./unsupported/workspace.js";
-import { RenderContext } from "./unsupported_api.js";
+import type { Vault } from "../vault.js";
+import type { FileManager } from "./files/files.js";
+import type { MetadataCache } from "./metadata.js";
+import type { SecretStorage } from "./secrets.js";
+import type { Keymap, Scope } from "./unsupported/keymap.js";
+import type { UserEvent } from "./unsupported/userevent.js";
+import type { Workspace } from "./unsupported/workspace.js";
+import type { RenderContext } from "./unsupported_api.js";
 
 /**
  * The main app object.

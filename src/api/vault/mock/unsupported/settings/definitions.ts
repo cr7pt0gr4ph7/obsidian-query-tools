@@ -117,7 +117,7 @@ export interface SettingDefinitionRender extends SettingDefinitionBase {
 	 * @public
 	 * @since 1.13.0
 	 */
-	render: (setting: Setting, group: SettingGroup) => void | (() => void);
+	render: (setting: Setting, group: SettingGroup) => undefined | (() => void);
 }
 
 /**

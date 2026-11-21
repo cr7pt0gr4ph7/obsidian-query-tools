@@ -1,4 +1,4 @@
-import { CacheItem, Reference } from "./types.js";
+import type { CacheItem, Reference } from "./types.js";
 
 /**
  * A {@link Reference} with a position in the note.

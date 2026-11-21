@@ -1,8 +1,4 @@
 import type { App } from "../../app.js";
-import { placeholder } from "../placeholder.js";
-import type { SettingDefinition } from "../settings/definitions.js";
-import type { SettingGroupItem } from "../settings/groups.js";
-import { TooltipOptions } from "../tooltips.js";
 import type { IconName } from "./icons.js";
 
 export interface ISettingsPlugin_ {

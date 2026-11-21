@@ -1,4 +1,4 @@
-import { CacheItem } from "./types.js";
+import type { CacheItem } from "./types.js";
 
 /**
  * A section of the note.
