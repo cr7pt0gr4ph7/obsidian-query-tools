@@ -40,7 +40,7 @@ Absolute paths are rejected unless the caller opts in with the second
 constructor argument; when enabled, absolute paths may access files outside
 the root. Filesystem creation times are reported, but cannot be set with
 Node's portable filesystem APIs.
-The excluded `host/obsidian/files/files.ts` and `vault/mock/vault.ts` modules
+The excluded `host/obsidian/files/files.ts` and `host/obsidian/files/vault.ts` modules
 provide a separate, project-defined adapter-backed file tree and mutation API.
 Call `Vault.initialize()` before relying on synchronous lookups; later
 mutations update that in-memory tree, but external filesystem changes require
