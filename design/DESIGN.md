@@ -29,6 +29,14 @@ text, and uses UTC instants and ISO durations for date arithmetic. Empty
 collections are false; unsupported JavaScript value types throw. Mock value
 semantics have not been compared against an Obsidian oracle.
 
+The excluded `vault/mock/files/adapter_filesystem.ts` adapter is a standalone
+filesystem utility rooted at a caller-supplied existing directory. Vault
+relative paths are confined to that root and reject symlink components.
+Absolute paths are rejected unless the caller opts in with the second
+constructor argument; when enabled, absolute paths may access files outside
+the root. Filesystem creation times are reported, but cannot be set with
+Node's portable filesystem APIs.
+
 ## Interface contract
 
 The TypeScript API in `src/api/` has a stable public `index.ts` entrypoint and

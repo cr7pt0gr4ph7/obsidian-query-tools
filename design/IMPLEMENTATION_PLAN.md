@@ -27,6 +27,8 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
   TypeScript build because the mock stubs are not runtime library code.
 - Project-defined mock value wrappers with safe text rendering, nested values,
   dates and durations; not an Obsidian Bases compatibility claim.
+- Root-confined filesystem adapter for mock vault files with opt-in absolute
+  paths; symlink traversal through vault-relative paths is rejected.
 - Upstream investigation and the preliminary CLI boundary, documented in the
   [research notes](notes/2026-11-19-upstream.md) and
   [console note](notes/2026-11-19-console-interface.md).
