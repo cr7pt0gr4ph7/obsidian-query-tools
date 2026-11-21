@@ -1,4 +1,4 @@
-import { Component } from "../lifecycle.js";
+import { Component } from "../../../../host/obsidian/base/lifecycle.js";
 import type { IconName } from "../official_api.js";
 import type { App, Menu, Scope } from "../unsupported_api.js";
 import type { ViewPlugin } from "./codemirror/view.js";

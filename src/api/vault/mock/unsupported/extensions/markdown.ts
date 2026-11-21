@@ -1,4 +1,4 @@
-import { Component } from "../../lifecycle.js";
+import { Component } from "../../../../../host/obsidian/base/lifecycle.js";
 
 export interface IMarkdownProcessorPlugin_ {
 	/**

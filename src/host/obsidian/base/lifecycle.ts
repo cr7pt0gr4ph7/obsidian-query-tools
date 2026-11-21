@@ -1,4 +1,4 @@
-import type { EventRef } from "../../../host/obsidian/base/events.js";
+import type { EventRef } from "./events.js";
 
 /**
  * A component that can be loaded and unloaded.

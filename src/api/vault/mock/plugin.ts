@@ -1,5 +1,5 @@
+import { Component } from "../../../host/obsidian/base/lifecycle.js";
 import type { App } from "./app.js";
-import { Component } from "./lifecycle.js";
 
 /**
  * Base class for all plugins.
