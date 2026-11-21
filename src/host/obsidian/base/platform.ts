@@ -3,7 +3,12 @@
  * @public
  * @since 0.12.2
  */
-export declare const Platform: {
+/**
+ * Information about the Linux desktop mock platform.
+ * @public
+ * @since 0.12.2
+ */
+export const Platform: {
 	/**
 	 * The UI is in desktop mode.
 	 * @public
@@ -86,4 +91,18 @@ export declare const Platform: {
 	 * @public
 	 */
 	resourcePathPrefix: string;
+} = {
+	isDesktop: true,
+	isMobile: false,
+	isDesktopApp: false,
+	isMobileApp: false,
+	isIosApp: false,
+	isAndroidApp: false,
+	isPhone: false,
+	isTablet: false,
+	isMacOS: false,
+	isWin: false,
+	isLinux: true,
+	isSafari: false,
+	resourcePathPrefix: "app://",
 };
