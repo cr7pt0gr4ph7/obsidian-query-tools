@@ -20,57 +20,6 @@ export function arrayBufferToHex(data: ArrayBuffer): string;
 export function base64ToArrayBuffer(base64: string): ArrayBuffer;
 
 /**
- * A standard debounce function.
- * Use this to have a time-delayed function only be called once in a given timeframe.
- * @param cb The function to call.
- * @param timeout The timeout, in milliseconds.
- * @param resetTimer Whether to reset the timeout when the debounce function is called again.
- * @returns a debounced function that takes the same parameter as the original function.
- * @example
- * ```ts
- * const debounced = debounce((text: string) => {
- *     console.log(text);
- * }, 1000, true);
- * debounced('Hello world'); // this will not be printed
- * await sleep(500);
- * debounced('World, hello'); // this will be printed to the console.
- * ```
- * @public
- */
-export function debounce<T extends unknown[], V>(
-	cb: (...args: [...T]) => V,
-	timeout?: number,
-	resetTimer?: boolean,
-): Debouncer<T, V>;
-
-/**
- * A debouncer wrapper for a function.
- * @public
- */
-export interface Debouncer<T extends unknown[], V> {
-	/**
-	 * Call the debounced function.
-	 * @param args The arguments.
-	 * @public
-	 */
-	(...args: [...T]): this;
-
-	/**
-	 * Cancel any pending debounced function call.
-	 * @public
-	 */
-	cancel(): this;
-
-	/**
-	 * If there is any pending function call, clear the timer and call the function immediately.
-	 * @returns The return value of the function, or `undefined` if there are no pending function calls.
-	 * @public
-	 * @since 1.4.4
-	 */
-	run(): V | undefined;
-}
-
-/**
  * Converts a Blob to an ArrayBuffer.
  * @param blob The blob.
  * @public

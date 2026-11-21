@@ -1,3 +1,4 @@
+import type { Debouncer } from "../../../../host/obsidian/base/debounce.js";
 import type { TAbstractFile, TFile } from "../../../../host/obsidian/files/files.js";
 import type { View, ViewState } from "./view.js";
 
