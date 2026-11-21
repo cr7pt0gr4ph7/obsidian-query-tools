@@ -1,3 +1,5 @@
+import { parseDocument, stringify } from "yaml";
+
 /**
  * Gets the aliases from the frontmatter object.
  * @param frontmatter The frontmatter object.
@@ -9,7 +11,9 @@
  * ```
  * @public
  */
-export function parseFrontMatterAliases(frontmatter: any | null): string[] | null;
+export function parseFrontMatterAliases(frontmatter: unknown | null): string[] | null {
+	return parseFrontMatterStringArray(frontmatter, "aliases");
+}
 
 /**
  * Gets an entry from the frontmatter object.
@@ -23,7 +27,18 @@ export function parseFrontMatterAliases(frontmatter: any | null): string[] | nul
  * ```
  * @public
  */
-export function parseFrontMatterEntry(frontmatter: any | null, key: string | RegExp): any | null;
+export function parseFrontMatterEntry(frontmatter: unknown | null, key: string | RegExp): unknown | null {
+	if (typeof frontmatter !== "object" || frontmatter === null || Array.isArray(frontmatter)) return null;
+	const record = frontmatter as Record<string, unknown>;
+	if (typeof key === "string") {
+		return Object.hasOwn(record, key) ? record[key] : null;
+	}
+	for (const name of Object.keys(record)) {
+		key.lastIndex = 0;
+		if (key.test(name)) return record[name];
+	}
+	return null;
+}
 
 /**
  * Parses a frontmatter entry as an array of strings. A single string value is returned as a one-element array.
@@ -38,7 +53,18 @@ export function parseFrontMatterEntry(frontmatter: any | null, key: string | Reg
  * ```
  * @public
  */
-export function parseFrontMatterStringArray(frontmatter: any | null, key: string | RegExp): string[] | null;
+export function parseFrontMatterStringArray(frontmatter: unknown | null, key: string | RegExp): string[] | null {
+	const value = parseFrontMatterEntry(frontmatter, key);
+	if (typeof value === "string") {
+		const trimmed = value.trim();
+		return trimmed ? [trimmed] : [];
+	}
+	if (!Array.isArray(value)) return null;
+	return value
+		.filter((entry): entry is string => typeof entry === "string")
+		.map((entry) => entry.trim())
+		.filter((entry) => entry.length > 0);
+}
 
 /**
  * Gets the tags from the frontmatter object.
@@ -51,18 +77,30 @@ export function parseFrontMatterStringArray(frontmatter: any | null, key: string
  * ```
  * @public
  */
-export function parseFrontMatterTags(frontmatter: any | null): string[] | null;
+export function parseFrontMatterTags(frontmatter: unknown | null): string[] | null {
+	const tags = parseFrontMatterStringArray(frontmatter, "tags");
+	if (tags === null) return null;
+	return tags.map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
+}
 
 /**
  * Parses a YAML string into an object.
  * @param yaml The YAML string.
+ * @returns The parsed YAML value.
  * @public
  */
-export function parseYaml(yaml: string): any;
+export function parseYaml(yaml: string): unknown {
+	const document = parseDocument(yaml);
+	if (document.errors.length > 0) throw document.errors[0];
+	return document.toJS({ maxAliasCount: 100 });
+}
 
 /**
  * Converts an object to a YAML string.
  * @param obj The object.
+ * @returns The serialized YAML string.
  * @public
  */
-export function stringifyYaml(obj: any): string;
+export function stringifyYaml(obj: unknown): string {
+	return stringify(obj);
+}
