@@ -1,8 +1,8 @@
 import { Component } from "../../../../../host/obsidian/base/lifecycle.js";
+import type { FrontmatterValue } from "../../../../../host/obsidian/cache/types.js";
 import type { TFile } from "../../../../../host/obsidian/files/files.js";
 import type { Value } from "../../../../host/obsidian/base/values.js";
 import type { App } from "../../app.js";
-import type { FrontmatterValue } from "../../cache/types.js";
 import { placeholder } from "../placeholder.js";
 import type { BasesEntry, BasesEntryGroup } from "./entries.js";
 import type { BasesPropertyId } from "./properties.js";
