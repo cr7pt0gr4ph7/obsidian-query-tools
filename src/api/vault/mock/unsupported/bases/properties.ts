@@ -38,3 +38,13 @@ export interface BasesProperty {
  * @since 1.10.0
  */
 export type BasesPropertyId = `${BasesPropertyType}.${string}`;
+
+/**
+ * Split a Bases property ID into constituent parts.
+ *
+ * @param propertyId Property ID to split.
+ * @returns The parsed property.
+ * @public
+ * @since 1.10.0
+ */
+export declare function parsePropertyId(propertyId: BasesPropertyId): BasesProperty;
