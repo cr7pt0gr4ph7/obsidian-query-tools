@@ -4,4 +4,6 @@
  * @public
  * @since 1.8.7
  */
-export function getLanguage(): string;
+export function getLanguage(): string {
+	return "en";
+}
