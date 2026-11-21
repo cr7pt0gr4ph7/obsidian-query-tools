@@ -18,7 +18,7 @@ import {
 	StringValue,
 	TagValue,
 	Value,
-} from "../../src/api/vault/mock/values.ts";
+} from "../../src/host/obsidian/values.ts";
 
 test("moved rich values remain string values and link parsing remains unsupported", () => {
 	for (const ValueClass of [HTMLValue, IconValue, ImageValue, LinkValue]) {
