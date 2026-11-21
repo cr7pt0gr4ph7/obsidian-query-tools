@@ -9,6 +9,7 @@ interface Listener {
 	name: string;
 	callback: (...data: unknown[]) => unknown;
 	ctx?: unknown;
+	detach: () => void;
 }
 
 /**
@@ -29,7 +30,12 @@ export class Events {
 	 * @since 0.9.7
 	 */
 	on(name: string, callback: (...data: unknown[]) => unknown, ctx?: unknown): EventRef {
-		const listener: Listener = { name, callback, ctx };
+		const listener: Listener = {
+			name,
+			callback,
+			ctx,
+			detach: () => this.offref(listener),
+		};
 		let set = this.handlers.get(name);
 		if (!set) {
 			set = new Set();

@@ -6,13 +6,27 @@ import type { EventRef } from "./events.js";
  * @since 0.9.7
  */
 export class Component {
+	private loaded = false;
+	private started = false;
+	private readonly children = new Set<Component>();
+	private readonly cleanups: Array<() => unknown> = [];
+
 	/**
 	 * Load this component and its children.
 	 * @public
 	 * @since 0.9.7
 	 */
 	load(): void {
-		throw new Error("Method not implemented.");
+		if (this.loaded) return;
+		this.started = true;
+		this.loaded = true;
+		try {
+			this.onload();
+		} catch (error) {
+			this.loaded = false;
+			throw error;
+		}
+		for (const child of this.children) child.load();
 	}
 
 	/**
@@ -22,7 +36,7 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	onload(): void {
-		throw new Error("Method not implemented.");
+		// Subclasses override this method.
 	}
 
 	/**
@@ -31,7 +45,31 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	unload(): void {
-		throw new Error("Method not implemented.");
+		if (!this.loaded) return;
+		this.loaded = false;
+		let firstError: unknown;
+		const runCleanup = (cleanup: () => unknown) => {
+			try {
+				cleanup();
+			} catch (error) {
+				firstError ??= error;
+			}
+		};
+		try {
+			this.onunload();
+		} catch (error) {
+			firstError ??= error;
+		}
+		for (const cleanup of [...this.cleanups].reverse()) runCleanup(cleanup);
+		this.cleanups.length = 0;
+		for (const child of [...this.children].reverse()) {
+			try {
+				child.unload();
+			} catch (error) {
+				firstError ??= error;
+			}
+		}
+		if (firstError !== undefined) throw firstError;
 	}
 
 	/**
@@ -41,7 +79,7 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	onunload(): void {
-		throw new Error("Method not implemented.");
+		// Subclasses override this method.
 	}
 
 	/**
@@ -51,7 +89,9 @@ export class Component {
 	 * @since 0.12.0
 	 */
 	addChild<T extends Component>(component: T): T {
-		throw new Error("Method not implemented.");
+		this.children.add(component);
+		if (this.loaded) component.load();
+		return component;
 	}
 
 	/**
@@ -61,7 +101,9 @@ export class Component {
 	 * @since 0.12.0
 	 */
 	removeChild<T extends Component>(component: T): T {
-		throw new Error("Method not implemented.");
+		this.children.delete(component);
+		component.unload();
+		return component;
 	}
 
 	/**
@@ -71,7 +113,11 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	register(cb: () => any): void {
-		throw new Error("Method not implemented.");
+		if (this.started && !this.loaded) {
+			cb();
+			return;
+		}
+		this.cleanups.push(cb);
 	}
 
 	/**
@@ -81,7 +127,10 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	registerEvent(eventRef: EventRef): void {
-		throw new Error("Method not implemented.");
+		this.register(() => {
+			const listener = eventRef as EventRef & { detach?: () => void };
+			listener.detach?.();
+		});
 	}
 
 	/**
@@ -136,7 +185,8 @@ export class Component {
 	): void;
 
 	registerDomEvent(el: any, type: string, callback: Function, options?: boolean | AddEventListenerOptions): void {
-		throw new Error("Method not implemented.");
+		el.addEventListener(type, callback, options);
+		this.register(() => el.removeEventListener(type, callback, options));
 	}
 
 	/**
@@ -153,6 +203,7 @@ export class Component {
 	 * @since 0.13.8
 	 */
 	registerInterval(id: number): number {
-		throw new Error("Method not implemented.");
+		this.register(() => clearInterval(id));
+		return id;
 	}
 }
