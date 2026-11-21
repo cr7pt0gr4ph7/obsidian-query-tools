@@ -11,7 +11,7 @@
  * @since 0.12.11
  */
 export function request(request: RequestUrlParam | string): Promise<string> {
-	throw new Error("Method not implemented.");
+	return requestUrl(request).text;
 }
 
 /**
@@ -26,10 +26,56 @@ export function request(request: RequestUrlParam | string): Promise<string> {
  * console.log(await response.text);
  * console.log(await requestUrl('https://google.com'));
  * ```
+ * @returns The URL response.
  * @public
  */
 export function requestUrl(request: RequestUrlParam | string): RequestUrlResponsePromise {
-	throw new Error("Method not implemented.");
+	const params: RequestUrlParam = typeof request === "string" ? { url: request } : request;
+	const promise = (async (): Promise<RequestUrlResponse> => {
+		const headers = new Headers(params.headers);
+		if (params.contentType && !headers.has("content-type")) {
+			headers.set("content-type", params.contentType);
+		}
+		const body =
+			params.body === undefined
+				? undefined
+				: typeof params.body === "string"
+					? params.body
+					: new Uint8Array(params.body);
+		const response = await fetch(params.url, {
+			method: params.method,
+			headers,
+			body,
+		});
+		const bytes = await response.arrayBuffer();
+		const text = new TextDecoder().decode(bytes);
+		const responseHeaders: Record<string, string> = {};
+		response.headers.forEach((value, key) => {
+			responseHeaders[key] = value;
+		});
+		if (params.throw !== false && response.status >= 400) {
+			throw new Error(`Request failed with status ${response.status}: ${text}`);
+		}
+		let json: unknown = null;
+		try {
+			json = JSON.parse(text);
+		} catch {
+			// Non-JSON responses remain available through text and arrayBuffer.
+		}
+		return {
+			status: response.status,
+			headers: responseHeaders,
+			arrayBuffer: bytes,
+			json,
+			text,
+		};
+	})();
+	Object.defineProperties(promise, {
+		arrayBuffer: { enumerable: true, get: () => promise.then((response) => response.arrayBuffer) },
+		json: { enumerable: true, get: () => promise.then((response) => response.json) },
+		text: { enumerable: true, get: () => promise.then((response) => response.text) },
+	});
+	return promise as RequestUrlResponsePromise;
 }
 
 /**
