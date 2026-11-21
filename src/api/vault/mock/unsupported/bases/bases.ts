@@ -314,20 +314,22 @@ export abstract class BasesView extends Component {
  * @public
  * @since 1.10.0
  */
-export /*class*/ interface BasesViewConfig {
+export class BasesViewConfig {
 	/**
 	 * User-friendly name for this view.
 	 * @public
 	 * @since 1.10.0
 	 */
-	name: string;
+	declare name: string;
 
 	/**
 	 * Retrieve the user-configured value of options exposed in `BasesViewRegistration.options`.
 	 * @public
 	 * @since 1.10.0
 	 */
-	get(key: string): unknown;
+	get(key: string): unknown {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Retrieve a user-configured value from the config, converting it to a BasesPropertyId.
@@ -335,7 +337,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @public
 	 * @since 1.10.0
 	 */
-	getAsPropertyId(key: string): BasesPropertyId | null;
+	getAsPropertyId(key: string): BasesPropertyId | null {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Retrieve a user-configured value from the config, evaluating it as a
@@ -347,7 +351,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @returns the Value result from evaluating the formula, or NullValue if the formula is invalid, or the key is not present.
 	 * @since 1.10.2
 	 */
-	getEvaluatedFormula(view: BasesView, key: string): Value;
+	getEvaluatedFormula(view: BasesView, key: string): Value {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Store configuration data for the view. Views should prefer `BasesViewRegistration.options`
@@ -355,7 +361,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @public
 	 * @since 1.10.0
 	 */
-	set(key: string, value: any | null): void;
+	set(key: string, value: any | null): void {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Ordered list of properties to display in this view.
@@ -364,7 +372,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @public
 	 * @since 1.10.0
 	 */
-	getOrder(): BasesPropertyId[];
+	getOrder(): BasesPropertyId[] {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Retrieve the sorting config for this view. Sort is configured by the user through the sort toolbar menu.
@@ -376,7 +386,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @public
 	 * @since 1.10.0
 	 */
-	getSort(): BasesSortConfig[];
+	getSort(): BasesSortConfig[] {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Retrieve a friendly name for the provided property.
@@ -387,7 +399,9 @@ export /*class*/ interface BasesViewConfig {
 	 * @public
 	 * @since 1.10.0
 	 */
-	getDisplayName(propertyId: BasesPropertyId): string;
+	getDisplayName(propertyId: BasesPropertyId): string {
+		throw new Error("Method not Implemented");
+	}
 }
 
 /**

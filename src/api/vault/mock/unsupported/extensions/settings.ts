@@ -37,25 +37,25 @@ export interface ISettingsPlugin_ {
  * @see {@link https://docs.obsidian.md/Plugins/User+interface/Settings#Register+a+settings+tab}.
  * @since 0.9.7
  */
-export /*abstract class*/ interface SettingTab {
+export abstract class SettingTab {
 	/**
 	 * The icon to display in the settings sidebar.
 	 * @public
 	 * @since 1.11.0
 	 */
-	icon: IconName;
+	declare icon: IconName;
 
 	/**
 	 * Reference to the app instance.
 	 * @public
 	 */
-	app: App;
+	declare app: App;
 
 	/**
 	 * HTML element for the setting tab content.
 	 * @public
 	 */
-	containerEl: HTMLElement;
+	declare containerEl: HTMLElement;
 
 	/**
 	 * Nested setting definitions as returned by getSettingDefinitions().
@@ -63,7 +63,7 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	settingItems: SettingDefinitionItem[];
+	declare settingItems: SettingDefinitionItem[];
 
 	/**
 	 * Override to provide setting definitions. Return an array of definitions
@@ -72,7 +72,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	getSettingDefinitions(): SettingDefinitionItem[];
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Stores the result of getSettingDefinitions() for rendering and search indexing.
@@ -80,7 +82,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	update(): void;
+	update(): void {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Read the current value for a control key. Called on every render of a
@@ -94,7 +98,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	getControlValue(key: string): unknown;
+	getControlValue(key: string): unknown {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Persist a new value for a control key. Called on user change of a
@@ -105,7 +111,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	setControlValue(key: string, value: unknown): void | Promise<void>;
+	setControlValue(key: string, value: unknown): void | Promise<void> {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Re-evaluate every `visible` and `disabled` predicate against the
@@ -119,7 +127,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @public
 	 * @since 1.13.0
 	 */
-	refreshDomState(): void;
+	refreshDomState(): void {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Override to render the tab imperatively.
@@ -132,7 +142,9 @@ export /*abstract class*/ interface SettingTab {
 	 * @deprecated Since 1.13.0. Use {@link getSettingDefinitions} instead.
 	 * @public
 	 */
-	display(): void;
+	display(): void {
+		throw new Error("Method not Implemented");
+	}
 
 	/**
 	 * Hides the contents of the setting tab.
@@ -140,7 +152,9 @@ export /*abstract class*/ interface SettingTab {
 	 * Override this if you need to perform additional cleanup.
 	 * @public
 	 */
-	hide(): void;
+	hide(): void {
+		throw new Error("Method not Implemented");
+	}
 }
 
 /**

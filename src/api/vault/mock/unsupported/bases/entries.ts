@@ -1,6 +1,5 @@
 import type { TFile } from "../../files/files.js";
 import type { Value } from "../../values.js";
-import type { FormulaContext } from "./formulas.js";
 import type { BasesPropertyId } from "./properties.js";
 
 /**
@@ -8,12 +7,12 @@ import type { BasesPropertyId } from "./properties.js";
  * @public
  * @since 1.10.0
  */
-export /*class*/ interface BasesEntry extends FormulaContext {
+export class BasesEntry {
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	file: TFile;
+	declare file: TFile;
 
 	/**
 	 * Get the value of the property.
@@ -21,7 +20,9 @@ export /*class*/ interface BasesEntry extends FormulaContext {
 	 * @public
 	 * @since 1.10.0
 	 */
-	getValue(propertyId: BasesPropertyId): Value | null;
+	getValue(propertyId: BasesPropertyId): Value | null {
+		throw new Error("Method not Implemented");
+	}
 }
 
 /**
@@ -31,24 +32,26 @@ export /*class*/ interface BasesEntry extends FormulaContext {
  * @public
  * @since 1.10.0
  */
-export /*class*/ interface BasesEntryGroup {
+export class BasesEntryGroup {
 	/**
 	 * The value of the groupBy key for this entry group.
 	 * @public
 	 * @since 1.10.0
 	 */
-	key?: Value;
+	declare key?: Value;
 
 	/**
 	 * @public
 	 * @since 1.10.0
 	 */
-	entries: BasesEntry[];
+	declare entries: BasesEntry[];
 
 	/**
 	 * @returns true iff this entry group has a non-null key.
 	 * @public
 	 * @since 1.10.0
 	 */
-	hasKey(): boolean;
+	hasKey(): boolean {
+		throw new Error("Method not Implemented");
+	}
 }

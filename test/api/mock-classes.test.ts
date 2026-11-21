@@ -1,0 +1,39 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { test } from "node:test";
+import ts from "typescript";
+
+async function findClass(file: string, name: string): Promise<ts.ClassDeclaration> {
+	const text = await readFile(file, "utf8");
+	const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true);
+	const declaration = source.statements.find(
+		(statement): statement is ts.ClassDeclaration => ts.isClassDeclaration(statement) && statement.name?.text === name,
+	);
+	assert.ok(declaration, `${name} should be declared as a class`);
+	return declaration;
+}
+
+test("class-marked mock types are classes with throwing stub methods", async () => {
+	const declarations = await Promise.all([
+		findClass("src/api/vault/mock/unsupported/bases/entries.ts", "BasesEntry"),
+		findClass("src/api/vault/mock/unsupported/bases/entries.ts", "BasesEntryGroup"),
+		findClass("src/api/vault/mock/unsupported/bases/bases.ts", "BasesViewConfig"),
+		findClass("src/api/vault/mock/unsupported/extensions/settings.ts", "SettingTab"),
+	]);
+	const methods = declarations.flatMap((declaration) => declaration.members.filter(ts.isMethodDeclaration));
+
+	assert.equal(methods.length, 16);
+	for (const method of methods) {
+		assert.ok(method.body, `${method.name?.getText()} should have an implementation`);
+		assert.ok(
+			method.body.statements.some(
+				(statement) =>
+					ts.isThrowStatement(statement) &&
+					ts.isNewExpression(statement.expression) &&
+					statement.expression.expression.getText() === "Error" &&
+					statement.expression.arguments?.[0]?.getText() === '"Method not Implemented"',
+			),
+			`${method.name?.getText()} should throw the stub error`,
+		);
+	}
+});
