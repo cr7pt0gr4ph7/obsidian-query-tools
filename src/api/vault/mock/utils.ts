@@ -27,18 +27,6 @@ export function base64ToArrayBuffer(base64: string): ArrayBuffer;
 export function getBlobArrayBuffer(blob: Blob): Promise<ArrayBuffer>;
 
 /**
- * Converts the linktext to a linkpath.
- * @param linktext A wikilink without the leading [[ and trailing ]].
- * @returns The name of the file that is being linked to.
- * @example
- * ```ts
- * console.log(getLinkpath('foo#bar')); // foo
- * ```
- * @public
- */
-export function getLinkpath(linktext: string): string;
-
-/**
  * Converts a hex string to an ArrayBuffer.
  * @param hex The hex string.
  * @public

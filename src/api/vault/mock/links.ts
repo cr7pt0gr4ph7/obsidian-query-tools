@@ -40,6 +40,20 @@ export function parseLinktext(linktext: string): {
 };
 
 /**
+ * Converts link text to a link path.
+ * @param linktext A wikilink without the leading `[[` and trailing `]]`.
+ * @returns The name of the file that is being linked to.
+ * @example
+ * ```ts
+ * console.log(getLinkpath('foo#bar')); // foo
+ * ```
+ * @public
+ */
+export function getLinkpath(linktext: string): string {
+	return linktext.split("#", 1)[0] ?? "";
+}
+
+/**
  * Normalizes headings for link matching by stripping out special characters and shrinking consecutive spaces.
  * @param heading The heading.
  * @example
