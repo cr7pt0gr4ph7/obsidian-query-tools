@@ -14,7 +14,14 @@
  * ```
  * @public
  */
-export function normalizePath(path: string): string;
+export function normalizePath(path: string): string {
+	return path
+		.replace(/\\/g, "/")
+		.replace(/[\u00a0\u202f]/g, " ")
+		.normalize("NFC")
+		.replace(/\/+/g, "/")
+		.replace(/^\/+|\/+$/g, "");
+}
 
 /**
  * Parses the linktext of a wikilink into its component parts.
@@ -37,7 +44,11 @@ export function parseLinktext(linktext: string): {
 	 * @public
 	 */
 	subpath: string;
-};
+} {
+	const hashIndex = linktext.indexOf("#");
+	if (hashIndex < 0) return { path: linktext, subpath: "" };
+	return { path: linktext.slice(0, hashIndex), subpath: linktext.slice(hashIndex) };
+}
 
 /**
  * Converts link text to a link path.
@@ -62,7 +73,12 @@ export function getLinkpath(linktext: string): string {
  * ```
  * @public
  */
-export function stripHeading(heading: string): string;
+export function stripHeading(heading: string): string {
+	return heading
+		.replace(/["#$%&()*+,.:;<=>?@^`{|}~[\]\\!/_]/g, "")
+		.replace(/\s+/g, " ")
+		.trim();
+}
 
 /**
  * Prepares headings for linking by stripping out some bad combinations of special characters that could break links.
@@ -73,4 +89,10 @@ export function stripHeading(heading: string): string;
  * ```
  * @public
  */
-export function stripHeadingForLink(heading: string): string;
+export function stripHeadingForLink(heading: string): string {
+	return heading
+		.replace(/[:#|^\\\r\n%%]/g, "")
+		.replace(/\[\[/g, "")
+		.replace(/]]/g, "")
+		.trim();
+}
