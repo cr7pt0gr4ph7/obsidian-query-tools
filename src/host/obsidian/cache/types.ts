@@ -108,19 +108,3 @@ export interface SubpathResult {
 	 */
 	end: Loc | null;
 }
-
-/**
- * All possible types that can be emitted from parsing or writing to frontmatter.
- * @public
- */
-export type FrontmatterValue =
-	| string
-	| number
-	| boolean
-	| undefined
-	| null
-	| {
-			/** @public */
-			[key: string]: FrontmatterValue;
-	  }
-	| Array<FrontmatterValue>;

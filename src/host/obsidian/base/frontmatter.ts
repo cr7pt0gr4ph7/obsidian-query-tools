@@ -1,6 +1,22 @@
 import { parseDocument, stringify } from "yaml";
 
 /**
+ * All possible types that can be emitted from parsing or writing to frontmatter.
+ * @public
+ */
+export type FrontmatterValue =
+	| string
+	| number
+	| boolean
+	| undefined
+	| null
+	| {
+			/** @public */
+			[key: string]: FrontmatterValue;
+	  }
+	| Array<FrontmatterValue>;
+
+/**
  * Gets the aliases from the frontmatter object.
  * @param frontmatter The frontmatter object.
  * @returns The aliases, or `null` if there are none.
@@ -28,7 +44,9 @@ export function parseFrontMatterAliases(frontmatter: unknown | null): string[] |
  * @public
  */
 export function parseFrontMatterEntry(frontmatter: unknown | null, key: string | RegExp): unknown | null {
-	if (typeof frontmatter !== "object" || frontmatter === null || Array.isArray(frontmatter)) return null;
+	if (typeof frontmatter !== "object" || frontmatter === null || Array.isArray(frontmatter)) {
+		return null;
+	}
 	const record = frontmatter as Record<string, unknown>;
 	if (typeof key === "string") {
 		return Object.hasOwn(record, key) ? record[key] : null;

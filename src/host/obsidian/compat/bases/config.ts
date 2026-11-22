@@ -1,4 +1,4 @@
-import type { FrontmatterValue } from "../../../../../host/obsidian/cache/types";
+import type { FrontmatterValue } from "../../base/frontmatter.js";
 
 /**
  * Represents the serialized format of a Bases query as stored in a `.base` file.
