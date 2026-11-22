@@ -1,7 +1,8 @@
 import type { Modifier } from "../../base/modifier.js";
 import type { Editor } from "../editor/editor.js";
 import type { IconName } from "../icons.js";
-import type { MarkdownFileInfo, MarkdownView } from "../views/view.js";
+import type { MarkdownView } from "../views/markdown.js";
+import type { MarkdownFileInfo } from "../views/markdown_file.js";
 
 /**
  * A hotkey.

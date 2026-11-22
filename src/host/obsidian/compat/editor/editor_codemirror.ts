@@ -1,7 +1,7 @@
 import { placeholder } from "../../placeholder.internal.js";
 import type { StateField } from "../codemirror/state.js";
 import type { EditorView, ViewPlugin } from "../codemirror/view.js";
-import type { MarkdownFileInfo } from "../views/markdown.js";
+import type { MarkdownFileInfo } from "../views/markdown_file.js";
 
 /**
  * Use this CodeMirror {@link StateField} to get a reference to the {@link EditorView}.
@@ -39,10 +39,10 @@ export const livePreviewState: ViewPlugin<LivePreviewStateType, undefined> = pla
  * @public
  */
 export interface LivePreviewStateType {
-    /**
-     * Whether the left mouse is currently held down in the editor
-     * (for example, when drag-to-select text).
-     * @public
-     */
-    mousedown: boolean;
+	/**
+	 * Whether the left mouse is currently held down in the editor
+	 * (for example, when drag-to-select text).
+	 * @public
+	 */
+	mousedown: boolean;
 }

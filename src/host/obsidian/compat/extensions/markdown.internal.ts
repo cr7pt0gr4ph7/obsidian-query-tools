@@ -1,4 +1,4 @@
-import type { MarkdownPostProcessor, MarkdownPostProcessorContext } from "./markdown";
+import type { MarkdownPostProcessor, MarkdownPostProcessorContext } from "./markdown.js";
 
 export interface IMarkdownProcessorPluginRegistry {
 	/**

@@ -1,4 +1,4 @@
-import type { CliFlags, CliHandler } from "../../../api/vault/mock/unsupported/extensions/cli.js";
+import type { CliFlags, CliHandler } from "./cli.js";
 
 export interface ICliPluginRegistry {
 	/**
@@ -30,7 +30,7 @@ export interface ICliHandlerRegistration {
 
 export function CliPluginRegistry<TBase extends new (...args: any[]) => any>(Base: TBase) {
 	return class extends Base implements ICliPluginRegistry {
-        _cliHandlers: Record<string, ICliHandlerRegistration> = {};
+		_cliHandlers: Record<string, ICliHandlerRegistration> = {};
 
 		registerCliHandler(command: string, description: string, flags: CliFlags | null, handler: CliHandler): void {
 			this._cliHandlers[command] = { command, description, flags, handler };
