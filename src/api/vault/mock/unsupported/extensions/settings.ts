@@ -1,17 +1,6 @@
 import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
 import type { App } from "../../app.js";
 
-export interface ISettingsPlugin_ {
-	/**
-	 * Register a settings tab, which allows users to change settings.
-	 * @see {@link https://docs.obsidian.md/Plugins/User+interface/Settings#Register+a+settings+tab}.
-	 * @param settingTab The setting tab.
-	 * @public
-	 * @since 0.9.7
-	 */
-	addSettingTab(settingTab: PluginSettingTab): void;
-}
-
 /**
  * A setting tab.
  * @public

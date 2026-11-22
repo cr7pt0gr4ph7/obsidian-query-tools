@@ -1,4 +1,3 @@
-import type { TooltipOptions } from "../../../../host/obsidian/compat/tooltips.js";
 import type { ButtonComponent, ExtraButtonComponent } from "../components/button.js";
 import type { BaseComponent } from "../components/component.js";
 import type { SearchComponent } from "../components/search.js";
@@ -10,7 +9,9 @@ import type {
 	SliderComponent,
 	ToggleComponent,
 } from "../components/value.js";
-import { placeholder } from "../placeholder.js";
+import { createDomElement } from "../fakedom.internal.js";
+import type { TooltipOptions } from "../tooltips.js";
+import type { DisplayValueComponent } from "./displayvalue.js";
 
 /**
  * A single setting row, with a name, a description and controls.
@@ -73,11 +74,11 @@ export class Setting {
 	 * @public
 	 */
 	constructor(containerEl: HTMLElement) {
-		this.settingEl = placeholder;
-		this.infoEl = placeholder;
-		this.nameEl = placeholder;
-		this.descEl = placeholder;
-		this.controlEl = placeholder;
+		this.settingEl = createDomElement("div", "setting", containerEl);
+		this.infoEl = createDomElement("div", "setting-info", this.settingEl);
+		this.nameEl = createDomElement("div", "setting-name", this.infoEl);
+		this.descEl = createDomElement("div", "setting-desc", this.infoEl);
+		this.controlEl = createDomElement("div", "setting-control", this.settingEl);
 		this.components = [];
 		this.errorEl = null;
 	}
@@ -90,7 +91,8 @@ export class Setting {
 	 * @since 1.13.0
 	 */
 	setErrorMessage(message: string | null): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -101,7 +103,8 @@ export class Setting {
 	 * @since 1.13.1
 	 */
 	addDisplayValue(cb: (component: DisplayValueComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -117,7 +120,8 @@ export class Setting {
 	 * @since 0.12.16
 	 */
 	setName(name: string | DocumentFragment): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -127,7 +131,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	setDesc(desc: string | DocumentFragment): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -137,7 +142,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	setClass(cls: string): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -148,7 +154,8 @@ export class Setting {
 	 * @since 1.1.0
 	 */
 	setTooltip(tooltip: string, options?: TooltipOptions): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -157,7 +164,8 @@ export class Setting {
 	 * @since 0.9.16
 	 */
 	setHeading(): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -167,7 +175,8 @@ export class Setting {
 	 * @since 1.2.3
 	 */
 	setDisabled(disabled: boolean): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -183,7 +192,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addButton(cb: (component: ButtonComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -199,7 +209,8 @@ export class Setting {
 	 * @since 0.9.16
 	 */
 	addExtraButton(cb: (component: ExtraButtonComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -215,7 +226,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addToggle(cb: (component: ToggleComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -231,7 +243,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addText(cb: (component: TextComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -239,7 +252,8 @@ export class Setting {
 	 * @since 1.11.0
 	 */
 	addComponent<T extends BaseComponent>(cb: (el: HTMLElement) => T): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -255,7 +269,8 @@ export class Setting {
 	 * @since 0.9.21
 	 */
 	addSearch(cb: (component: SearchComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -271,7 +286,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addTextArea(cb: (component: TextAreaComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -287,7 +303,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addMomentFormat(cb: (component: MomentFormatComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -303,7 +320,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addDropdown(cb: (component: DropdownComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -319,7 +337,8 @@ export class Setting {
 	 * @since 0.16.0
 	 */
 	addColorPicker(cb: (component: ColorComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -335,7 +354,8 @@ export class Setting {
 	 * @since 1.4.4
 	 */
 	addProgressBar(cb: (component: ProgressBarComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -351,7 +371,8 @@ export class Setting {
 	 * @since 0.9.7
 	 */
 	addSlider(cb: (component: SliderComponent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -378,49 +399,7 @@ export class Setting {
 	 * @since 0.13.8
 	 */
 	clear(): this {
-		throw new Error("Method not implemented.");
-	}
-}
-
-/**
- * A read-only display value for a setting row: a value label and an optional
- * status indicator. On a navigable row, it surfaces the value edited on the
- * page the row opens, so the user can see it without opening that page.
- * @public
- * @since 1.13.1
- */
-export class DisplayValueComponent {
-	/**
-	 * @public
-	 * @since 1.13.1
-	 */
-	valueEl: HTMLElement;
-
-	/**
-	 * @public
-	 */
-	constructor(containerEl: HTMLElement) {
-		this.valueEl = placeholder;
-	}
-
-	/**
-	 * Set the value label text. Pass an empty string or `null` to clear it.
-	 * @public
-	 * @since 1.13.1
-	 */
-	setValue(value: string | null): this {
-		throw new Error("Method not implemented.");
-	}
-
-	/**
-	 * Show a status indicator on the row. Use `'warning'` when the value needs
-	 * the user's attention; the explanation itself belongs on the page this
-	 * row leads to, while this only signals that there is something to look at.
-	 * Pass `null` to clear it.
-	 * @public
-	 * @since 1.13.1
-	 */
-	setStatus(status: "warning" | null): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 }

@@ -1,5 +1,5 @@
-import type { TFile, TFolder } from "../../../../../../host/obsidian/files/files.js";
-import type { HexString } from "../../../../host/obsidian/base/colors.js";
+import type { HexString } from "../../base/colors.js";
+import type { TFile, TFolder } from "../../files/files.js";
 
 /**
  * @public

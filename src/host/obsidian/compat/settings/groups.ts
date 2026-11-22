@@ -1,8 +1,7 @@
 import type { ExtraButtonComponent } from "../components/button.js";
 import type { SearchComponent } from "../components/search.js";
-import { placeholder } from "../placeholder.js";
+import { createDomElement } from "../fakedom.internal.js";
 import type { Setting } from "./setting.js";
-
 /**
  * @public
  * @since 1.11.0
@@ -19,7 +18,7 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	constructor(containerEl: HTMLElement) {
-		this.listEl = placeholder;
+		this.listEl = createDomElement("div", "setting-group", containerEl);
 	}
 
 	/**
@@ -27,7 +26,8 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	setHeading(text: string | DocumentFragment): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -35,7 +35,8 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	addClass(...classes: string[]): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -43,7 +44,8 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	addSetting(cb: (setting: Setting) => void): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -53,7 +55,8 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	addSearch(cb: (component: SearchComponent) => unknown): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 
 	/**
@@ -61,6 +64,7 @@ export class SettingGroup {
 	 * @since 1.11.0
 	 */
 	addExtraButton(cb: (component: ExtraButtonComponent) => unknown): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		return this;
 	}
 }

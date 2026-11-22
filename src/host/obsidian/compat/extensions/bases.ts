@@ -1,17 +1,6 @@
-import type { BasesAllOptions } from "../../../../../host/obsidian/compat/bases/options.js";
-import type { BasesView, BasesViewConfig, QueryController } from "../../../../../host/obsidian/compat/bases/view.js";
-import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
-
-export interface IBasesViewPlugin_ {
-	/**
-	 * Register a Base view handler that can be used to render data from property queries.
-	 *
-	 * @returns false if bases are not enabled in this vault.
-	 * @public
-	 * @since 1.10.0
-	 */
-	registerBasesView(viewId: string, registration: BasesViewRegistration): boolean;
-}
+import type { BasesAllOptions } from "../bases/options.js";
+import type { BasesView, BasesViewConfig, QueryController } from "../bases/view.js";
+import type { IconName } from "../icons.js";
 
 /**
  * Implement this factory function in a {@link BasesViewRegistration} to create a

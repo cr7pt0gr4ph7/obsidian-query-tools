@@ -1,41 +1,6 @@
-import { Component } from "../../../../../host/obsidian/base/lifecycle.js";
-import { placeholder } from "../placeholder.js";
-
-export interface IHoverPlugin_ {
-	/**
-	 * Registers a view with the 'Page preview' core plugin as an emitter of the 'hover-link' event.
-	 * @param id The ID of the hover link source, usually the plugin ID.
-	 * @param info How the source is shown in the 'Page preview' plugin settings.
-	 * @example
-	 * ```ts
-	 * plugin.registerHoverLinkSource('foo', {
-	 *     display: 'bar',
-	 *     defaultMod: true,
-	 * });
-	 * ```
-	 * @public
-	 * @since 1.1.0
-	 */
-	registerHoverLinkSource(id: string, info: HoverLinkSource): void;
-}
-
-/**
- * Represents a point in a 2D coordinate system.
- * @public
- */
-export interface Point {
-	/**
-	 * The x coordinate.
-	 * @public
-	 */
-	x: number;
-
-	/**
-	 * The y coordinate.
-	 * @public
-	 */
-	y: number;
-}
+import { Component } from "../../base/component.js";
+import type { Point } from "../../base/point.js";
+import { createDomElement } from "../fakedom.internal.js";
 
 /**
  * A source for hover links.
@@ -103,7 +68,8 @@ export class HoverPopover extends Component {
 	 */
 	constructor(parent: HoverParent, targetEl: HTMLElement | null, waitTime?: number, staticPos?: Point | null) {
 		super();
-		this.hoverEl = placeholder;
-		this.state = placeholder;
+		this.hoverEl = createDomElement("div", "hover-popover");
+		this.state = {} as PopoverState;
+		parent.hoverPopover = this;
 	}
 }

@@ -1,4 +1,4 @@
-import type { Extension } from "../../../../../host/obsidian/compat/codemirror/state.js";
+import type { Extension } from "../codemirror/state.js";
 
 export interface IEditorPluginRegistry {
 	/**

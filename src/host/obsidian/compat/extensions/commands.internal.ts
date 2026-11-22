@@ -1,6 +1,6 @@
-import type { Command } from "commander";
+import type { Command } from "./commands.js";
 
-export interface ICommandPlugin_ {
+export interface ICommandPluginRegistry {
 	/**
 	 * Register a command globally.
 	 * Registered commands will be available from the {@link https://obsidian.md/help/plugins/command-palette Command palette}.
@@ -29,4 +29,19 @@ export interface ICommandPlugin_ {
 	 * @since 1.7.2
 	 */
 	removeCommand(commandId: string): void;
+}
+
+export function CommandPluginRegistry<TBase extends new (...args: any[]) => any>(Base: TBase) {
+	return class extends Base implements ICommandPluginRegistry {
+		_commands: Record<string, Command> = {};
+
+		addCommand(command: Command): Command {
+			this._commands[command.id] = command;
+			return command;
+		}
+
+		removeCommand(commandId: string): void {
+			delete this._commands[commandId];
+		}
+	};
 }

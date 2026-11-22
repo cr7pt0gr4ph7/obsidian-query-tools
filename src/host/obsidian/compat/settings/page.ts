@@ -1,4 +1,4 @@
-import { placeholder } from "../placeholder.js";
+import { createDomElement } from "../fakedom.internal.js";
 
 /**
  * Base class for a sub-page within a {@link SettingTab}. Use with the `page`
@@ -44,10 +44,10 @@ export abstract class SettingPage {
 	 * @since 1.13.0
 	 */
 	constructor() {
-		this.containerEl = placeholder;
 		this.title = "";
-		this.rootEl = placeholder;
-		this.titlebarEl = placeholder;
+		this.rootEl = createDomElement("div", "setting-page");
+		this.containerEl = createDomElement("div", "setting-page-container", this.rootEl);
+		this.titlebarEl = createDomElement("div", "setting-page-titlebar", this.rootEl);
 	}
 
 	/**
@@ -69,6 +69,6 @@ export abstract class SettingPage {
 	 * @since 1.13.0
 	 */
 	hide(): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
 	}
 }

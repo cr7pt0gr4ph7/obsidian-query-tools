@@ -1,4 +1,4 @@
-import type { CliFlags, CliHandler } from "./cli.js";
+import type { CliFlags, CliHandler } from "../../../api/vault/mock/unsupported/extensions/cli.js";
 
 export interface ICliPluginRegistry {
 	/**
