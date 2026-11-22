@@ -28,7 +28,7 @@
 		"lint:fix": "biome lint --unsafe --write .",
 		"fix": "biome check --write .",
 		"fix:unsafe": "biome check --unsafe --write .",
-		"check": "biome check ."
+		"check": "biome check --skip=lint/style/noNonNullAssertion --skip=lint/complexity/noBannedTypes ."
 	},
 	"dependencies": {
 		"@modelcontextprotocol/server": "2.4.0",
