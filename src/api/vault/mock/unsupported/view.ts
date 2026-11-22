@@ -1,4 +1,4 @@
-import { Component } from "../../../../host/obsidian/base/lifecycle.js";
+import { Component } from "../../../../host/obsidian/base/component.js";
 import type { ViewPlugin } from "../../../../host/obsidian/compat/codemirror/view.js";
 import type { WorkspaceLeaf } from "./workspace.js";
 

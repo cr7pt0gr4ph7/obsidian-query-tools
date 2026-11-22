@@ -1,5 +1,66 @@
-import { Component } from "../../../host/obsidian/base/lifecycle.js";
-import type { App } from "./app.js";
+import type { App } from "../app.js";
+import { Component } from "../base/component.js";
+
+/**
+ * Metadata about a Community plugin.
+ * @see {@link https://docs.obsidian.md/Reference/Manifest}.
+ * @public
+ */
+export interface PluginManifest {
+	/**
+	 * Vault path to the plugin folder in the config directory.
+	 * @public
+	 */
+	dir?: string;
+
+	/**
+	 * The plugin ID.
+	 * @public
+	 */
+	id: string;
+
+	/**
+	 * The display name.
+	 * @public
+	 */
+	name: string;
+
+	/**
+	 * The author's name.
+	 * @public
+	 */
+	author: string;
+
+	/**
+	 * The current version, using {@link https://semver.org/ Semantic Versioning}.
+	 * @public
+	 */
+	version: string;
+
+	/**
+	 * The minimum required Obsidian version to run this plugin.
+	 * @public
+	 */
+	minAppVersion: string;
+
+	/**
+	 * A description of the plugin.
+	 * @public
+	 */
+	description: string;
+
+	/**
+	 * A URL to the author's website.
+	 * @public
+	 */
+	authorUrl?: string;
+
+	/**
+	 * Whether the plugin can be used only on desktop.
+	 * @public
+	 */
+	isDesktopOnly?: boolean;
+}
 
 /**
  * Base class for all plugins.
@@ -92,7 +153,9 @@ export abstract class Plugin extends Component {
 	 * @public
 	 * @since 1.7.2
 	 */
-	onUserEnable(): void {}
+	onUserEnable(): void {
+		// Override in subclasses
+	}
 
 	/**
 	 * Called when the `data.json` file is modified on disk externally from Obsidian.
@@ -104,67 +167,6 @@ export abstract class Plugin extends Component {
 	 * @since 1.5.7
 	 */
 	onExternalSettingsChange?(): any {
-		throw new Error("Method not implemented.");
+		// Override in subclasses
 	}
-}
-
-/**
- * Metadata about a Community plugin.
- * @see {@link https://docs.obsidian.md/Reference/Manifest}.
- * @public
- */
-export interface PluginManifest {
-	/**
-	 * Vault path to the plugin folder in the config directory.
-	 * @public
-	 */
-	dir?: string;
-
-	/**
-	 * The plugin ID.
-	 * @public
-	 */
-	id: string;
-
-	/**
-	 * The display name.
-	 * @public
-	 */
-	name: string;
-
-	/**
-	 * The author's name.
-	 * @public
-	 */
-	author: string;
-
-	/**
-	 * The current version, using {@link https://semver.org/ Semantic Versioning}.
-	 * @public
-	 */
-	version: string;
-
-	/**
-	 * The minimum required Obsidian version to run this plugin.
-	 * @public
-	 */
-	minAppVersion: string;
-
-	/**
-	 * A description of the plugin.
-	 * @public
-	 */
-	description: string;
-
-	/**
-	 * A URL to the author's website.
-	 * @public
-	 */
-	authorUrl?: string;
-
-	/**
-	 * Whether the plugin can be used only on desktop.
-	 * @public
-	 */
-	isDesktopOnly?: boolean;
 }

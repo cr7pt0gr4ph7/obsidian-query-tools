@@ -1,5 +1,5 @@
 import type { App } from "../../../../api/vault/mock/app.js";
-import { Component } from "../../base/lifecycle.js";
+import { Component } from "../../base/component.js";
 import type { Value } from "../../base/values.js";
 import type { TFile } from "../../files/files.js";
 import { placeholder } from "../../placeholder.internal.js";
