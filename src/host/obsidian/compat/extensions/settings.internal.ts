@@ -1,4 +1,4 @@
-import type { PluginSettingTab } from "./settings.js";
+import type { PluginSettingTab } from "../settings/tab.js";
 
 export interface ISettingsPluginRegistry {
 	/**

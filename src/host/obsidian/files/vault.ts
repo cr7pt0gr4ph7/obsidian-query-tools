@@ -415,6 +415,19 @@ export class Vault extends Events {
 		return super.on(name, callback, ctx);
 	}
 
+	//
+	// Internal methods
+	//
+
+	getConfig(key: string): unknown {
+		console.warn(`Vault.getConfig is not implemented. It was called with key: ${key}`);
+		return null;
+	}
+
+	setConfig(key: string, value: unknown): void | Promise<void> {
+		console.warn(`Vault.setConfig is not implemented. It was called with key: ${key}, value: ${value}`);
+	}
+
 	private assertVaultFile(file: TFile): void {
 		if (
 			file.vault !== this ||

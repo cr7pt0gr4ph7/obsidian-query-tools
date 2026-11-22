@@ -1,5 +1,8 @@
-import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
 import type { App } from "../../app.js";
+import type { Plugin } from "../../extensions/plugin.js";
+import type { IconName } from "../icons.js";
+import type { SettingDefinitionItem } from "./definitions.js";
+import type { Setting } from "./setting.js";
 
 /**
  * A setting tab.
@@ -35,6 +38,10 @@ export abstract class SettingTab {
 	 */
 	declare settingItems: SettingDefinitionItem[];
 
+	constructor(app: App) {
+		this.app = app;
+	}
+
 	/**
 	 * Override to provide setting definitions. Return an array of definitions
 	 * and inline groups. Called on every display() and once when the tab is
@@ -43,7 +50,8 @@ export abstract class SettingTab {
 	 * @since 1.13.0
 	 */
 	getSettingDefinitions(): SettingDefinitionItem[] {
-		throw new Error("Method not Implemented");
+		// Override in subclasses to provide setting definitions.
+		return [];
 	}
 
 	/**
@@ -53,7 +61,7 @@ export abstract class SettingTab {
 	 * @since 1.13.0
 	 */
 	update(): void {
-		throw new Error("Method not Implemented");
+		this.settingItems = this.getSettingDefinitions();
 	}
 
 	/**
@@ -69,7 +77,7 @@ export abstract class SettingTab {
 	 * @since 1.13.0
 	 */
 	getControlValue(key: string): unknown {
-		throw new Error("Method not Implemented");
+		return this.app.vault.getConfig(key);
 	}
 
 	/**
@@ -82,7 +90,7 @@ export abstract class SettingTab {
 	 * @since 1.13.0
 	 */
 	setControlValue(key: string, value: unknown): void | Promise<void> {
-		throw new Error("Method not Implemented");
+		return this.app.vault.setConfig(key, value);
 	}
 
 	/**
@@ -98,7 +106,7 @@ export abstract class SettingTab {
 	 * @since 1.13.0
 	 */
 	refreshDomState(): void {
-		throw new Error("Method not Implemented");
+		// Ignored, as this is a stub implementation.
 	}
 
 	/**
@@ -113,7 +121,7 @@ export abstract class SettingTab {
 	 * @public
 	 */
 	display(): void {
-		throw new Error("Method not Implemented");
+		// Ignored, as this is a stub implementation.
 	}
 
 	/**
@@ -123,7 +131,7 @@ export abstract class SettingTab {
 	 * @public
 	 */
 	hide(): void {
-		throw new Error("Method not Implemented");
+		// Ignored, as this is a stub implementation.
 	}
 }
 
@@ -134,13 +142,16 @@ export abstract class SettingTab {
  * @since 0.9.7
  */
 export abstract class PluginSettingTab extends SettingTab {
+	plugin: Plugin;
+
 	/**
 	 * @param app The app instance.
 	 * @param plugin The plugin.
 	 * @public
 	 */
 	constructor(app: App, plugin: Plugin) {
-		throw new Error("Method not implemented.");
+		super(app);
+		this.plugin = plugin;
 	}
 
 	/**
@@ -148,7 +159,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	 * @since 1.13.0
 	 */
 	getSettingDefinitions(): SettingDefinitionItem[] {
-		throw new Error("Method not implemented.");
+		return []
 	}
 
 	/**
@@ -158,7 +169,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	 * @since 1.13.0
 	 */
 	getControlValue(key: string): unknown {
-		throw new Error("Method not implemented.");
+		return super.getControlValue(key);
 	}
 
 	/**
@@ -168,6 +179,6 @@ export abstract class PluginSettingTab extends SettingTab {
 	 * @since 1.13.0
 	 */
 	setControlValue(key: string, value: unknown): void | Promise<void> {
-		throw new Error("Method not implemented.");
+		return super.setControlValue(key, value);
 	}
 }
