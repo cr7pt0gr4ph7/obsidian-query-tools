@@ -1,4 +1,4 @@
-import type { IconName } from "./icons.js";
+import type { IconName } from "../../../../../host/obsidian/compat/icons";
 
 export interface IRibbonIconPlugin_ {
 	/**

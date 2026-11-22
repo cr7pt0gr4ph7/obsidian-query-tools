@@ -15,7 +15,7 @@ export type IconName = string;
  * @public
  */
 export function addIcon(iconId: string, svgContent: string): void {
-	throw new Error("Method not implemented.");
+	// Ignore request, as this is a stub implementation.
 }
 
 /**
@@ -24,7 +24,7 @@ export function addIcon(iconId: string, svgContent: string): void {
  * @public
  */
 export function removeIcon(iconId: string): void {
-	throw new Error("Method not implemented.");
+	// Ignore request, as this is a stub implementation.
 }
 
 /**
@@ -33,7 +33,8 @@ export function removeIcon(iconId: string): void {
  * @public
  */
 export function getIcon(iconId: string): SVGSVGElement | null {
-	throw new Error("Method not implemented.");
+	// Ignore request, as this is a stub implementation.
+	return null;
 }
 
 /**
@@ -41,7 +42,8 @@ export function getIcon(iconId: string): SVGSVGElement | null {
  * @public
  */
 export function getIconIds(): IconName[] {
-	throw new Error("Method not implemented.");
+	// Ignore request, as this is a stub implementation.
+	return [];
 }
 
 /**
@@ -52,5 +54,5 @@ export function getIconIds(): IconName[] {
  * @public
  */
 export function setIcon(parent: HTMLElement, iconId: IconName): void {
-	throw new Error("Method not implemented.");
+	// Ignore request, as this is a stub implementation.
 }

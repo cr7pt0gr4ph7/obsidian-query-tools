@@ -1,5 +1,5 @@
-import type { IconName } from "../../../../api/vault/mock/unsupported/extensions/icons.js";
 import { placeholder } from "../../placeholder.internal.js";
+import type { IconName } from "../icons.js";
 import type { TooltipOptions } from "../tooltips.js";
 import { BaseComponent } from "./component.js";
 

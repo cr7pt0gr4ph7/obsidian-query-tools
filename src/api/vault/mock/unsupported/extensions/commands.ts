@@ -1,7 +1,7 @@
+import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
 import type { Editor } from "../editor.js";
 import type { Hotkey } from "../keyboard.js";
 import type { MarkdownFileInfo, MarkdownView } from "../view.js";
-import type { IconName } from "./icons.js";
 
 export interface ICommandPlugin_ {
 	/**

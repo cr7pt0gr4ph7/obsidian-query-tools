@@ -1,5 +1,5 @@
+import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
 import type { App } from "../../app.js";
-import type { IconName } from "./icons.js";
 
 export interface ISettingsPlugin_ {
 	/**

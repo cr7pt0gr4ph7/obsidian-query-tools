@@ -1,6 +1,6 @@
-import type { BasesView, BasesViewConfig, QueryController } from "../bases/bases.js";
-import type { BasesAllOptions } from "../bases/options.js";
-import type { IconName } from "./icons.js";
+import type { BasesAllOptions } from "../../../../../host/obsidian/compat/bases/options.js";
+import type { BasesView, BasesViewConfig, QueryController } from "../../../../../host/obsidian/compat/bases/view.js";
+import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
 
 export interface IBasesViewPlugin_ {
 	/**
