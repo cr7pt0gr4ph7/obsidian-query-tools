@@ -1,0 +1,6 @@
+[submodule "lib/dataview/dataview"]
+	path = lib/dataview/dataview
+	url = https://github.com/blacksmithgu/obsidian-dataview.git
+[submodule "lib/breadcrumbs/breadcrumbs.ts"]
+	path = lib/breadcrumbs/breadcrumbs.ts
+	url = https://github.com/michaelpporter/breadcrumbs.git
