@@ -1,9 +1,9 @@
 import type { Constructor } from "../../../../host/obsidian/base/constructor.js";
 import type { Debouncer } from "../../../../host/obsidian/base/debounce.js";
 import type { Tasks } from "../../../../host/obsidian/base/tasks.js";
+import type { View, ViewState } from "../../../../host/obsidian/compat/views/view.js";
 import type { PaneType, Side, SplitDirection } from "../../../../host/obsidian/compat/workspace/types.js";
 import type { TAbstractFile, TFile } from "../../../../host/obsidian/files/files.js";
-import type { View, ViewState } from "./view.js";
 
 /**
  * The workspace, which manages the splits, tab groups, sidedocks, and leaves of the app.

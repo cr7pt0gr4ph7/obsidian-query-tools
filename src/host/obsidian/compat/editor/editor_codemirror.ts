@@ -1,8 +1,7 @@
-import type { MarkdownFileInfo } from "../../../../api/vault/mock/unsupported/view.js";
 import { placeholder } from "../../placeholder.internal.js";
 import type { StateField } from "../codemirror/state.js";
-import type { EditorView } from "../codemirror/view.js";
-
+import type { EditorView, ViewPlugin } from "../codemirror/view.js";
+import type { MarkdownFileInfo } from "../views/markdown.js";
 
 /**
  * Use this CodeMirror {@link StateField} to get a reference to the {@link EditorView}.
@@ -28,3 +27,22 @@ export const editorViewField: StateField<MarkdownFileInfo> = editorInfoField;
  * @public
  */
 export const editorLivePreviewField: StateField<boolean> = placeholder;
+
+/**
+ * CodeMirror {@link ViewPlugin} for Live Preview.
+ * @public
+ */
+export const livePreviewState: ViewPlugin<LivePreviewStateType, undefined> = placeholder;
+
+/**
+ * The object stored in the view plugin {@link livePreviewState}.
+ * @public
+ */
+export interface LivePreviewStateType {
+    /**
+     * Whether the left mouse is currently held down in the editor
+     * (for example, when drag-to-select text).
+     * @public
+     */
+    mousedown: boolean;
+}

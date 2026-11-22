@@ -1,4 +1,4 @@
-import type { ViewCreator } from "../../../../api/vault/mock/unsupported/view.js";
+import type { ViewCreator } from "../views/view.js";
 
 export interface IViewPluginRegistry {
 	/**

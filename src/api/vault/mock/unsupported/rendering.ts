@@ -1,6 +1,14 @@
 import type { SearchMatches, SearchResult } from "./components/search.js";
 import type { HoverParent, HoverPopover } from "./extensions/hover.js";
 
+
+/**
+ * Sanitize HTML to a DOM fragment.
+ * @param html The HTML.
+ * @public
+ */
+export function sanitizeHTMLToDom(html: string): DocumentFragment;
+
 /**
  * Converts HTML to a Markdown string.
  * @public
@@ -55,10 +63,3 @@ export function renderMatches(
  * @public
  */
 export function renderResults(el: HTMLElement, text: string, result: SearchResult, offset?: number): void;
-
-/**
- * Sanitize HTML to a DOM fragment.
- * @param html The HTML.
- * @public
- */
-export function sanitizeHTMLToDom(html: string): DocumentFragment;

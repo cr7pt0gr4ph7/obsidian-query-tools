@@ -1,7 +1,7 @@
-import type { MarkdownFileInfo, MarkdownView } from "../../../../api/vault/mock/unsupported/view.js";
 import type { Modifier } from "../../base/modifier.js";
 import type { Editor } from "../editor/editor.js";
 import type { IconName } from "../icons.js";
+import type { MarkdownFileInfo, MarkdownView } from "../views/view.js";
 
 /**
  * A hotkey.
