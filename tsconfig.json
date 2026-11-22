@@ -5,10 +5,22 @@
 		"strict": true,
 		"types": ["node"],
 		"declaration": true,
-		"rootDir": "src",
+		"rootDir": ".",
 		"outDir": "dist",
 		"skipLibCheck": true,
-		"noImplicitAny": false
+		"noImplicitAny": false,
+		"paths": {
+			"obsidian": ["./src/host/obsidian"],
+			"data-import/*": ["./lib/dataview/dataview/src/data-import/*"],
+			"data-index/*": ["./lib/dataview/dataview/src/data-index/*"],
+			"data-model/*": ["./lib/dataview/dataview/src/data-model/*"],
+			"expression/*": ["./lib/dataview/dataview/src/expression/*"],
+			"query/*": ["./lib/dataview/dataview/src/query/*"],
+			"typings/*": ["./lib/dataview/dataview/src/typings/*"],
+			"ui/*": ["./lib/dataview/dataview/src/ui/*"],
+			"util/*": ["./lib/dataview/dataview/src/util/*"],
+			"util/hash": ["./lib/dataview/dataview/src/util/hash.js"],
+		}
 	},
 	"include": ["src/**/*.ts"]
 }
