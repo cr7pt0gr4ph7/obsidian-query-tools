@@ -8,11 +8,14 @@
 	},
 	"linter": {
 		"rules": {
+			"correctness": {
+				"noUnusedFunctionParameters": "off"
+			},
 			"style": {
 				"useBlockStatements": "warn"
 			},
-			"correctness": {
-				"noUnusedFunctionParameters": "off"
+			"suspicious": {
+				"noExplicitAny": "off"
 			}
 		}
 	}

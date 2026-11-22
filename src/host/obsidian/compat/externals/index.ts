@@ -1,4 +1,4 @@
-import * as Moment from "moment";
+import Moment from "moment";
 
 /**
  * The `Moment.js` library.
@@ -12,7 +12,7 @@ export const moment: typeof Moment = Moment;
  * @public
  */
 export function loadMathJax(): Promise<void> {
-	throw new Error("Method not implemented.");
+	return Promise.resolve();
 }
 
 /**
@@ -20,7 +20,7 @@ export function loadMathJax(): Promise<void> {
  * @public
  */
 export function finishRenderMath(): Promise<void> {
-	throw new Error("Method not implemented.");
+	return Promise.resolve();
 }
 
 /**
@@ -34,6 +34,8 @@ export function renderMath(source: string, display: boolean): HTMLElement {
 	throw new Error("Method not implemented.");
 }
 
+class MermaidMock {}
+
 /**
  * Load Mermaid and return a promise to the global mermaid object.
  * Can also use `window.mermaid` after this promise resolves to get the same reference.
@@ -41,8 +43,12 @@ export function renderMath(source: string, display: boolean): HTMLElement {
  * @public
  */
 export function loadMermaid(): Promise<any> {
-	throw new Error("Method not implemented.");
+	const w = window as any;
+	// biome-ignore lint/suspicious/noAssignInExpressions: It's shorter this way
+	return Promise.resolve(w.mermaid ?? (w.mermaid = new MermaidMock()));
 }
+
+class PdfJsMock {}
 
 /**
  * Load PDF.js and return a promise to the global pdfjsLib object.
@@ -51,8 +57,12 @@ export function loadMermaid(): Promise<any> {
  * @public
  */
 export function loadPdfJs(): Promise<any> {
-	throw new Error("Method not implemented.");
+	const w = window as any;
+	// biome-ignore lint/suspicious/noAssignInExpressions: It's shorter this way
+	return Promise.resolve(w.pdfjsLib ?? (w.pdfjsLib = new PdfJsMock()));
 }
+
+class PrismMock {}
 
 /**
  * Load Prism.js and return a promise to the global Prism object.
@@ -61,5 +71,7 @@ export function loadPdfJs(): Promise<any> {
  * @public
  */
 export function loadPrism(): Promise<any> {
-	throw new Error("Method not implemented.");
+	const w = window as any;
+	// biome-ignore lint/suspicious/noAssignInExpressions: It's shorter this way
+	return Promise.resolve(w.Prism ?? (w.Prism = new PrismMock()));
 }

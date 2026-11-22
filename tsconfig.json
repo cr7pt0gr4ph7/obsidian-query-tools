@@ -7,7 +7,7 @@
 		"declaration": true,
 		"rootDir": "src",
 		"outDir": "dist",
-		"skipLibCheck": true
+		"skipLibCheck": true,
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["src/api/vault/mock/**/*.ts", "src/host/obsidian/files/vault.ts"]
