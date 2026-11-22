@@ -1,8 +1,8 @@
 import type { App } from "../../../../api/vault/mock/app.js";
-import { placeholder } from "../../../../api/vault/mock/unsupported/placeholder.js";
 import { Component } from "../../base/lifecycle.js";
 import type { Value } from "../../base/values.js";
 import type { TFile } from "../../files/files.js";
+import { placeholder } from "../../placeholder.internal.js";
 import type { BasesEntry, BasesEntryGroup } from "./entries.js";
 import type { BasesPropertyId } from "./properties.js";
 

@@ -1,4 +1,4 @@
-import { placeholder } from "../placeholder.js";
+import { placeholder } from "../../../../../host/obsidian/placeholder.internal.js";
 import { AbstractTextComponent } from "./text.js";
 
 /**
