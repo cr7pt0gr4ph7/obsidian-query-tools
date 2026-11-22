@@ -17,7 +17,7 @@ export function BasesViewPluginRegistry<TBase extends new (...args: any[]) => an
 
 		registerBasesView(viewId: string, registration: BasesViewRegistration): boolean {
 			this._basesViews[viewId] = registration;
-            // Return false to indicate that bases are not enabled in this vault.
+			// Return false to indicate that bases are not enabled in this vault.
 			return false;
 		}
 	};

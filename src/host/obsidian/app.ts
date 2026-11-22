@@ -82,7 +82,7 @@ export class App {
 		this.fileManager = this.vault.fileManager;
 		this.secretStorage = new SecretStorage();
 		this.metadataCache = new MetadataCache();
-		
+
 		this.keymap = new Keymap();
 		this.scope = new Scope();
 		this.keymap.pushScope(this.scope);

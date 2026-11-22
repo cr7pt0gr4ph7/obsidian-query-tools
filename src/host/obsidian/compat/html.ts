@@ -4,7 +4,7 @@
  * @public
  */
 export function sanitizeHTMLToDom(html: string): DocumentFragment {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }
 
 /**
@@ -12,5 +12,5 @@ export function sanitizeHTMLToDom(html: string): DocumentFragment {
  * @public
  */
 export function htmlToMarkdown(html: string | HTMLElement | Document | DocumentFragment): string {
-    throw new Error("Method not implemented.");
+	throw new Error("Method not implemented.");
 }

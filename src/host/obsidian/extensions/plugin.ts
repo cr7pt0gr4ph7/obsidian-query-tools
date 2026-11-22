@@ -2,7 +2,6 @@ import type { App } from "../app.js";
 import { Component } from "../base/component.js";
 import { PluginRegistrationMixin } from "../compat/extensions/index.internal.js";
 
-
 /**
  * Metadata about a Community plugin.
  * @see {@link https://docs.obsidian.md/Reference/Manifest}.

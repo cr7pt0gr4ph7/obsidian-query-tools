@@ -1,5 +1,5 @@
 export interface AppConfig {
-    basePath: string;
-    configDir?: string;
-    allowAbsolutePaths?: boolean;
+	basePath: string;
+	configDir?: string;
+	allowAbsolutePaths?: boolean;
 }

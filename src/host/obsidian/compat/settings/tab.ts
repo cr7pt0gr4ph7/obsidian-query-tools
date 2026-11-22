@@ -159,7 +159,7 @@ export abstract class PluginSettingTab extends SettingTab {
 	 * @since 1.13.0
 	 */
 	getSettingDefinitions(): SettingDefinitionItem[] {
-		return []
+		return [];
 	}
 
 	/**
