@@ -1,5 +1,4 @@
-import type { App } from "../../../../api/vault/mock/app.js";
-import { createDomElement } from "../fakedom.internal.js";
+import type { App } from "../../app.js";
 import { BaseComponent } from "./component.js";
 
 /**

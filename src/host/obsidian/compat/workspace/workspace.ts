@@ -1,3 +1,4 @@
+import type { App } from "../../app.js";
 import type { Constructor } from "../../base/constructor.js";
 import type { Debouncer } from "../../base/debounce.js";
 import { type EventRef, Events } from "../../base/events.js";
@@ -104,6 +105,15 @@ export class Workspace extends Events {
 	 * @public
 	 */
 	declare activeEditor: MarkdownFileInfo | null;
+
+	/** @internal */
+	declare app: App;
+
+	/** @internal */
+	constructor(app: App) {
+		super();
+		this.app = app;
+	}
 
 	/**
 	 * Runs the callback function right away if layout is already ready,

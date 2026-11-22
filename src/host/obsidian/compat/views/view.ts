@@ -1,5 +1,6 @@
 import type { App } from "../../app.js";
 import { Component } from "../../base/component.js";
+import { placeholder } from "../../placeholder.internal.js";
 import type { Scope } from "../editor/keyboard.js";
 import { createDomElement } from "../fakedom.internal.js";
 import type { IconName } from "../icons.js";
@@ -73,7 +74,7 @@ export abstract class View extends Component {
 	constructor(leaf: WorkspaceLeaf) {
 		super();
 		this.leaf = leaf;
-		this.app = leaf.app;
+		this.app = placeholder;
 		this.containerEl = createDomElement("div", "view-container");
 	}
 
