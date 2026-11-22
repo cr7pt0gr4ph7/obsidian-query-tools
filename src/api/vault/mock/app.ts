@@ -2,9 +2,9 @@ import type { UserEvent } from "../../../host/obsidian/base/userevent.js";
 import type { MetadataCache } from "../../../host/obsidian/cache/cache.js";
 import type { Keymap, Scope } from "../../../host/obsidian/compat/editor/keyboard.js";
 import type { SecretStorage } from "../../../host/obsidian/compat/secrets.js";
+import type { Workspace } from "../../../host/obsidian/compat/workspace/workspace.js";
 import type { FileManager } from "../../../host/obsidian/files/files.js";
 import type { Vault } from "../../../host/obsidian/files/vault.js";
-import type { Workspace } from "./unsupported/workspace.js";
 import type { RenderContext } from "./unsupported_api.js";
 
 /**

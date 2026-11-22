@@ -1,4 +1,3 @@
-
 /**
  * A list of matched text ranges.
  * @public
