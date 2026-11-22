@@ -1,15 +1,3 @@
-export interface IObsidianProtocolPlugin_ {
-	/**
-	 * Register a handler for obsidian:// URLs.
-	 * @param action the action string. For example, 'open' corresponds to `obsidian://open`.
-	 * @param handler the callback to trigger. A key-value pair that is decoded from the query will be passed in.
-	 *                  For example, `obsidian://open?key=value` would generate `{'action': 'open', 'key': 'value'}`.
-	 * @public
-	 * @since 0.11.0
-	 */
-	registerObsidianProtocolHandler(action: string, handler: ObsidianProtocolHandler): void;
-}
-
 /**
  * A parsed data object for `obsidian://` URLs.
  * @example

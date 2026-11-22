@@ -15,7 +15,12 @@ export interface IStatusBarPluginRegistry {
 
 export function StatusBarPluginRegistry<Base extends new (...args: any[]) => any>(Base: Base) {
 	return class extends Base implements IStatusBarPluginRegistry {
-		_statusBarItems: HTMLElement[] = [];
+		declare _statusBarItems: HTMLElement[];
+
+		constructor(...args: any[]) {
+			super(...args);
+			this._statusBarItems = [];
+		}
 
 		addStatusBarItem(): HTMLElement {
 			const item = createDomElement("div", "status-bar-item");

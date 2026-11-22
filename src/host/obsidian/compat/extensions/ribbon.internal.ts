@@ -27,6 +27,10 @@ export function RibbonIconPluginRegistry<TBase extends new (...args: any[]) => a
 	return class extends Base implements IRibbonIconPluginRegistry {
 		_ribbonIcons: Record<string, IRibbonIconRegistration> = {};
 
+		constructor(...args: any[]) {
+			super(...args);
+		}
+
 		addRibbonIcon(icon: IconName, title: string, callback: (evt: MouseEvent) => any): HTMLElement {
 			const el = createDomElement("div", "ribbon-icon");
 			this._ribbonIcons[icon] = { icon, title, callback };

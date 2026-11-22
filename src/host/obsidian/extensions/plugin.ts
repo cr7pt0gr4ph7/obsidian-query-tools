@@ -1,5 +1,7 @@
 import type { App } from "../app.js";
 import { Component } from "../base/component.js";
+import { PluginRegistrationMixin } from "../compat/extensions/index.internal.js";
+
 
 /**
  * Metadata about a Community plugin.
@@ -67,7 +69,7 @@ export interface PluginManifest {
  * @public
  * @since 0.9.7
  */
-export abstract class Plugin extends Component {
+export abstract class Plugin extends PluginRegistrationMixin(Component) {
 	/**
 	 * The app instance.
 	 * @public
@@ -107,20 +109,6 @@ export abstract class Plugin extends Component {
 	 * @since 0.9.7
 	 */
 	onload(): Promise<void> | void {}
-
-	// Extracted into IRibbonIconPlugin_
-	// Extracted into IStatusBarPlugin_
-	// Extracted into ICommandPlugin_
-	// Extracted into ISettingsPlugin_
-	// Extracted into IViewPlugin_
-	// Extracted into IHoverPlugin_
-	// Extracted into IFileExtensionPlugin_
-	// Extracted into IMarkdownProcessorPlugin_
-	// Extracted into IBasesViewPlugin_
-	// Extracted into IEditorPlugin_
-	// Extracted into IObsidianProtocolPlugin_
-	// Extracted into IEditorSuggestPlugin_
-	// Extracted into ICliPlugin_
 
 	/**
 	 * Load settings data from disk.
