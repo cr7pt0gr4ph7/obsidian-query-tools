@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { Platform } from "../../../../src/host/obsidian/base/platform.ts";
+import { Platform } from "../../../../src/host/obsidian/base/platform.js";
 
 test("mock platform identifies Linux desktop only", () => {
 	assert.equal(Platform.isDesktop, true);

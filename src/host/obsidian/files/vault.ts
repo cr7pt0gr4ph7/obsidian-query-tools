@@ -1,6 +1,6 @@
-import { type EventRef, Events } from "../base/events.ts";
-import type { DataAdapter, DataWriteOptions } from "./adapter.ts";
-import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "./files.ts";
+import { type EventRef, Events } from "../base/events.js";
+import type { DataAdapter, DataWriteOptions } from "./adapter.js";
+import { FileManager, type TAbstractFile, TExternalFile, TFile, TFolder } from "./files.js";
 
 /**
  * Work with files and folders stored inside a vault.

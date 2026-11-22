@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { setTooltip } from "../../../src/host/obsidian/compat/tooltips.ts";
+import { setTooltip } from "../../../src/host/obsidian/compat/tooltips.js";
 
 test("setTooltip adds text and placement attributes", () => {
 	const attributes = new Map<string, string>();

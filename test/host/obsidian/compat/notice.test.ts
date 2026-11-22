@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { Notice } from "../../../../src/host/obsidian/compat/notice.ts";
+import { Notice } from "../../../../src/host/obsidian/compat/notice.js";
 
 test("Notice construction and methods do not throw", () => {
 	assert.doesNotThrow(() => new Notice("hello"));

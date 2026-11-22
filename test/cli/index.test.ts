@@ -6,10 +6,10 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import { openVault } from "../../dist/api/index.js";
+import { openVault } from "../../src/api/index.js";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../../dist/cli/index.js", import.meta.url));
+const cli = fileURLToPath(new URL("../../src/cli/index.js", import.meta.url));
 
 test("CLI results match the shared API and errors do not corrupt stdout", async (t) => {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-cli-test-"));

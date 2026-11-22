@@ -3,9 +3,9 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { FileSystemAdapter } from "../../../../src/host/obsidian/files/adapter_filesystem.ts";
-import { TAbstractFile, TExternalFile, TFile, TFolder } from "../../../../src/host/obsidian/files/files.ts";
-import { Vault } from "../../../../src/host/obsidian/files/vault.ts";
+import { FileSystemAdapter } from "../../../../src/host/obsidian/files/adapter_filesystem.js";
+import { TAbstractFile, TExternalFile, TFile, TFolder } from "../../../../src/host/obsidian/files/files.js";
+import { Vault } from "../../../../src/host/obsidian/files/vault.js";
 
 async function makeRoot(): Promise<string> {
 	return mkdtemp(path.join(os.tmpdir(), "obsidian-mock-vault-"));

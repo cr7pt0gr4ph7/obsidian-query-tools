@@ -7,12 +7,12 @@ import type { TestContext } from "node:test";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import type { GraphConfig } from "../../dist/api/graph/config.js";
-import type { GraphIndex } from "../../dist/api/graph/indexing.js";
-import type { GraphLimits, VaultGraph, VaultLimits, VaultOptions } from "../../dist/api/index.js";
-import { Errors, openVault } from "../../dist/api/index.js";
-import type { Config, VaultIndex } from "../../dist/api/vault/types.js";
-import { optionsForOpen } from "../../dist/api/vault/validation.js";
+import type { GraphConfig } from "../../src/api/graph/config.js";
+import type { GraphIndex } from "../../src/api/graph/indexing.js";
+import type { GraphLimits, VaultGraph, VaultLimits, VaultOptions } from "../../src/api/index.js";
+import { Errors, openVault } from "../../src/api/index.js";
+import type { Config, VaultIndex } from "../../src/api/vault/types.js";
+import { optionsForOpen } from "../../src/api/vault/validation.js";
 
 async function fixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
@@ -255,7 +255,7 @@ test("unreadable Markdown causes an explicit vault read error", async (t) => {
 		return;
 	}
 	await chmod(root, 0o755);
-	const moduleUrl = new URL("../../dist/api/index.js", import.meta.url).href;
+	const moduleUrl = new URL("../../src/api/index.js", import.meta.url).href;
 	const program = `
     import { openVault } from ${JSON.stringify(moduleUrl)};
     process.setgid(65534);

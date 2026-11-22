@@ -6,7 +6,7 @@ import {
 	base64ToArrayBuffer,
 	getBlobArrayBuffer,
 	hexToArrayBuffer,
-} from "../../../../src/host/obsidian/base/arraybuffer.ts";
+} from "../../../../src/host/obsidian/base/arraybuffer.js";
 
 test("ArrayBuffer base64 and hex conversions round-trip", () => {
 	const bytes = new Uint8Array([0, 1, 127, 128, 255]);
