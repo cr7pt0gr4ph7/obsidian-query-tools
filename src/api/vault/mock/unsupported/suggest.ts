@@ -1,5 +1,5 @@
+import type { HistoryHandler } from "../../../../host/obsidian/base/history.js";
 import type { App } from "../app.js";
-import type { HistoryHandler } from "./history.js";
 import type { Scope } from "./keymap.js";
 
 /**

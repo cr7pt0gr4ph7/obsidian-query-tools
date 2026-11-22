@@ -1,9 +1,9 @@
+import type { HistoryHandler } from "../../../../host/obsidian/base/history.js";
+import type { ConfirmationButton } from "../../../../host/obsidian/compat/components/button.js";
+import type { SearchResult } from "../../../../host/obsidian/compat/components/search.js";
+import { placeholder } from "../../../../host/obsidian/placeholder.internal.js";
 import type { App } from "../app.js";
-import type { ConfirmationButton } from "./components/button.js";
-import type { SearchResult } from "./components/search.js";
-import type { HistoryHandler } from "./history.js";
 import type { Scope } from "./keymap.js";
-import { placeholder } from "./placeholder.js";
 import type { ISuggestOwner } from "./suggest.js";
 
 /**
