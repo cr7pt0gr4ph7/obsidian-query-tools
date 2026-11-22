@@ -1,28 +1,9 @@
 import type { Constructor } from "../../../../host/obsidian/base/constructor.js";
 import type { Debouncer } from "../../../../host/obsidian/base/debounce.js";
 import type { Tasks } from "../../../../host/obsidian/base/tasks.js";
+import type { PaneType, Side, SplitDirection } from "../../../../host/obsidian/compat/workspace/types.js";
 import type { TAbstractFile, TFile } from "../../../../host/obsidian/files/files.js";
 import type { View, ViewState } from "./view.js";
-
-/**
- * Where to open a new leaf: in a new tab, a new split, or a new popout window.
- * @public
- */
-export type PaneType = "tab" | "split" | "window";
-
-/**
- * The direction to split a leaf in.
- * @public
- */
-export type SplitDirection = "vertical" | "horizontal";
-
-/**
- * Logical sidedock identity, independent of screen position. In LTR, `'primary'`
- * renders on the left and `'secondary'` on the right; RTL mirrors them.
- * `'left'` and `'right'` are legacy aliases for `'primary'` and `'secondary'`.
- * @public
- */
-export type Side = "primary" | "secondary" | "left" | "right";
 
 /**
  * The workspace, which manages the splits, tab groups, sidedocks, and leaves of the app.

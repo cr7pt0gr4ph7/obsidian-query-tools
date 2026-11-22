@@ -1,4 +1,4 @@
-import type { EditorSuggest } from "../../../../api/vault/mock/unsupported/editor.js";
+import type { EditorSuggest } from "../editor/editor_suggest.js";
 
 export interface IEditorSuggestPluginRegistry {
 	/**

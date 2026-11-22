@@ -1,6 +1,6 @@
-import type { HistoryHandler } from "../../../../host/obsidian/base/history.js";
-import type { App } from "../app.js";
-import type { Scope } from "./keymap.js";
+import type { App } from "../../app.js";
+import type { HistoryHandler } from "../../base/history.js";
+import type { Scope } from "./keyboard.js";
 
 /**
  * An owner that controls UI suggestions.
@@ -72,7 +72,7 @@ export abstract class PopoverSuggest<T> implements ISuggestOwner<T>, HistoryHand
 	 * @public
 	 */
 	onHistoryBack(): void {
-		// Ignored.
+		// Ignored, as this is a stub implementation.
 	}
 
 	/**
@@ -80,7 +80,7 @@ export abstract class PopoverSuggest<T> implements ISuggestOwner<T>, HistoryHand
 	 * @public
 	 */
 	open(): void {
-		// Ignored.
+		// Ignored, as this is a stub implementation.
 	}
 
 	/**
@@ -88,7 +88,7 @@ export abstract class PopoverSuggest<T> implements ISuggestOwner<T>, HistoryHand
 	 * @public
 	 */
 	close(): void {
-		// Ignored.
+		// Ignored, as this is a stub implementation.
 	}
 
 	/**
@@ -132,6 +132,15 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 */
 	limit: number;
 
+	/** @internal */
+	value: string;
+
+	/** @internal */
+	onSelectCallback?: (value: T, evt: MouseEvent | KeyboardEvent) => any;
+
+	/** @internal */
+	textInputEl: HTMLInputElement | HTMLDivElement;
+
 	/**
 	 * Accepts an `<input>` text box or a contenteditable div.
 	 * @param app The app instance.
@@ -141,6 +150,8 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	constructor(app: App, textInputEl: HTMLInputElement | HTMLDivElement) {
 		super(app);
 		this.limit = 100;
+		this.textInputEl = textInputEl;
+		this.value = "";
 	}
 
 	/**
@@ -150,7 +161,12 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 * @since 1.4.10
 	 */
 	setValue(value: string): void {
-		throw new Error("Method not implemented.");
+		this.value = value;
+		// if (this.textInputEl instanceof HTMLInputElement) {
+		//     this.textInputEl.value = value;
+		// } else if (this.textInputEl instanceof HTMLDivElement) {
+		//     this.textInputEl.textContent = value;
+		// }
 	}
 
 	/**
@@ -159,7 +175,12 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 * @since 1.4.10
 	 */
 	getValue(): string {
-		throw new Error("Method not implemented.");
+		// if (this.textInputEl instanceof HTMLInputElement) {
+		//     return this.textInputEl.value;
+		// } else if (this.textInputEl instanceof HTMLDivElement) {
+		//     return this.textInputEl.textContent || "";
+		// }
+		return this.value;
 	}
 
 	/**
@@ -191,7 +212,9 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 * @since 1.6.6
 	 */
 	selectSuggestion(value: T, evt: MouseEvent | KeyboardEvent): void {
-		throw new Error("Method not implemented.");
+		if (this.onSelectCallback) {
+			this.onSelectCallback(value, evt);
+		}
 	}
 
 	/**
@@ -201,6 +224,7 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 	 * @since 1.4.10
 	 */
 	onSelect(callback: (value: T, evt: MouseEvent | KeyboardEvent) => any): this {
-		throw new Error("Method not implemented.");
+		this.onSelectCallback = callback;
+		return this;
 	}
 }

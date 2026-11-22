@@ -1,10 +1,10 @@
 import type { HistoryHandler } from "../../../../host/obsidian/base/history.js";
 import type { ConfirmationButton } from "../../../../host/obsidian/compat/components/button.js";
 import type { SearchResult } from "../../../../host/obsidian/compat/components/search.js";
+import type { Scope } from "../../../../host/obsidian/compat/editor/keyboard.js";
+import type { ISuggestOwner } from "../../../../host/obsidian/compat/editor/suggest.js";
 import { placeholder } from "../../../../host/obsidian/placeholder.internal.js";
 import type { App } from "../app.js";
-import type { Scope } from "./keymap.js";
-import type { ISuggestOwner } from "./suggest.js";
 
 /**
  * An instruction shown in a suggestion modal.

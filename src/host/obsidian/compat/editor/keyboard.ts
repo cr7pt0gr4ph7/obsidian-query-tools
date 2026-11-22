@@ -1,6 +1,6 @@
-import type { Modifier } from "../../../../host/obsidian/base/modifier.js";
-import type { UserEvent } from "../../../../host/obsidian/base/userevent.js";
-import type { PaneType } from "./workspace.js";
+import type { Modifier } from "../../base/modifier.js";
+import type { UserEvent } from "../../base/userevent.js";
+import type { PaneType } from "../workspace/types.js";
 
 /**
  * A scope receives keyboard events and binds callbacks to given hotkeys.
@@ -8,6 +8,8 @@ import type { PaneType } from "./workspace.js";
  * @public
  */
 export class Scope {
+	_handlers: KeymapEventHandler[] = [];
+
 	/**
 	 * @param parent The parent scope. Key events that are not handled by this scope are passed to the parent.
 	 * @public
@@ -29,7 +31,15 @@ export class Scope {
 	 * @public
 	 */
 	register(modifiers: Modifier[] | null, key: string | null, func: KeymapEventListener): KeymapEventHandler {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		const handler = {
+			modifiers: modifiers ? modifiers.join(",") : null,
+			key,
+			listener: func,
+			scope: this,
+		};
+		this._handlers.push(handler);
+		return handler;
 	}
 
 	/**
@@ -38,7 +48,10 @@ export class Scope {
 	 * @public
 	 */
 	unregister(handler: KeymapEventHandler): void {
-		throw new Error("Method not implemented.");
+		const index = this._handlers.indexOf(handler);
+		if (index !== -1) {
+			this._handlers.splice(index, 1);
+		}
 	}
 }
 
@@ -49,6 +62,8 @@ export class Scope {
  * @since 0.13.9
  */
 export class Keymap {
+	_scopes: Scope[] = [];
+
 	/**
 	 * Push a scope onto the scope stack, setting it as the active scope to handle all key events.
 	 * @param scope The scope.
@@ -56,7 +71,7 @@ export class Keymap {
 	 * @since 0.13.9
 	 */
 	pushScope(scope: Scope): void {
-		throw new Error("Method not implemented.");
+		this._scopes.push(scope);
 	}
 
 	/**
@@ -67,7 +82,10 @@ export class Keymap {
 	 * @since 0.13.9
 	 */
 	popScope(scope: Scope): void {
-		throw new Error("Method not implemented.");
+		const index = this._scopes.indexOf(scope);
+		if (index !== -1) {
+			this._scopes.splice(index, 1);
+		}
 	}
 
 	/**
@@ -84,7 +102,9 @@ export class Keymap {
 	 * @since 0.12.17
 	 */
 	static isModifier(evt: MouseEvent | TouchEvent | KeyboardEvent, modifier: Modifier): boolean {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		// The stub implementation always indicates that the modifier is not pressed.
+		return false;
 	}
 
 	/**
@@ -99,7 +119,9 @@ export class Keymap {
 	 * @since 0.16.0
 	 */
 	static isModEvent(evt?: UserEvent | null): PaneType | boolean {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation.
+		// The stub implementation always returns false.
+		return false;
 	}
 }
 
