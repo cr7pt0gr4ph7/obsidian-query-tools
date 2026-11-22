@@ -1,37 +1,28 @@
-import type { IconName } from "../../../../../host/obsidian/compat/icons.js";
-import type { Editor } from "../editor.js";
-import type { Hotkey } from "../keyboard.js";
-import type { MarkdownFileInfo, MarkdownView } from "../view.js";
+import type { Editor } from "../../../../api/vault/mock/unsupported/editor.js";
+import type { MarkdownFileInfo, MarkdownView } from "../../../../api/vault/mock/unsupported/view.js";
+import type { Modifier } from "../../base/modifier.js";
+import type { IconName } from "../icons.js";
 
-export interface ICommandPlugin_ {
+/**
+ * A hotkey.
+ * @example
+ * ```ts
+ * const hotkey: Hotkey = { modifiers: ['Mod'], key: 'a' };
+ * ```
+ * @public
+ */
+export interface Hotkey {
 	/**
-	 * Register a command globally.
-	 * Registered commands will be available from the {@link https://obsidian.md/help/plugins/command-palette Command palette}.
-	 * The command id and name will be automatically prefixed with this plugin's id and name.
-	 *
-	 * @param command The command.
-	 * @returns The command, with its ID and name prefixed.
-	 * @example
-	 * ```ts
-	 * plugin.addCommand({
-	 *     id: 'foo',
-	 *     name: 'Foo',
-	 * });
-	 * ```
+	 * The modifier keys.
 	 * @public
-	 * @since 0.9.7
 	 */
-	addCommand(command: Command): Command;
+	modifiers: Modifier[];
 
 	/**
-	 * Manually remove a command from the list of global commands.
-	 * This should not be needed unless your plugin registers commands dynamically.
-	 *
-	 * @param commandId The ID you passed to {@link Plugin.addCommand}, without the plugin ID prefix.
+	 * The main key.
 	 * @public
-	 * @since 1.7.2
 	 */
-	removeCommand(commandId: string): void;
+	key: string;
 }
 
 /**

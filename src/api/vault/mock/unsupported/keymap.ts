@@ -1,5 +1,5 @@
+import type { Modifier } from "../../../../host/obsidian/base/modifier.js";
 import type { UserEvent } from "../../../../host/obsidian/base/userevent.js";
-import type { Modifier } from "./keyboard.js";
 import type { PaneType } from "./workspace.js";
 
 /**

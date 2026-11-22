@@ -1,3 +1,4 @@
+import type { Constructor } from "../../../../host/obsidian/base/constructor.js";
 import type { Debouncer } from "../../../../host/obsidian/base/debounce.js";
 import type { Tasks } from "../../../../host/obsidian/base/tasks.js";
 import type { TAbstractFile, TFile } from "../../../../host/obsidian/files/files.js";
@@ -22,12 +23,6 @@ export type SplitDirection = "vertical" | "horizontal";
  * @public
  */
 export type Side = "primary" | "secondary" | "left" | "right";
-
-/**
- * Abstract constructor type.
- * @public
- */
-export type Constructor<T> = abstract new (...args: any[]) => T;
 
 /**
  * The workspace, which manages the splits, tab groups, sidedocks, and leaves of the app.
