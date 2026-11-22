@@ -53,7 +53,9 @@ export function parseFrontMatterEntry(frontmatter: unknown | null, key: string |
 	}
 	for (const name of Object.keys(record)) {
 		key.lastIndex = 0;
-		if (key.test(name)) return record[name];
+		if (key.test(name)) {
+			return record[name];
+		}
 	}
 	return null;
 }
@@ -77,7 +79,9 @@ export function parseFrontMatterStringArray(frontmatter: unknown | null, key: st
 		const trimmed = value.trim();
 		return trimmed ? [trimmed] : [];
 	}
-	if (!Array.isArray(value)) return null;
+	if (!Array.isArray(value)) {
+		return null;
+	}
 	return value
 		.filter((entry): entry is string => typeof entry === "string")
 		.map((entry) => entry.trim())
@@ -97,7 +101,9 @@ export function parseFrontMatterStringArray(frontmatter: unknown | null, key: st
  */
 export function parseFrontMatterTags(frontmatter: unknown | null): string[] | null {
 	const tags = parseFrontMatterStringArray(frontmatter, "tags");
-	if (tags === null) return null;
+	if (tags === null) {
+		return null;
+	}
 	return tags.map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
 }
 
@@ -109,7 +115,9 @@ export function parseFrontMatterTags(frontmatter: unknown | null): string[] | nu
  */
 export function parseYaml(yaml: string): unknown {
 	const document = parseDocument(yaml);
-	if (document.errors.length > 0) throw document.errors[0];
+	if (document.errors.length > 0) {
+		throw document.errors[0];
+	}
 	return document.toJS({ maxAliasCount: 100 });
 }
 

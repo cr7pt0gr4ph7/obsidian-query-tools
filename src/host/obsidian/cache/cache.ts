@@ -237,7 +237,9 @@ export interface CachedMetadata {
  */
 export function iterateCacheRefs(cache: CachedMetadata, cb: (ref: ReferenceCache) => boolean | undefined): boolean {
 	for (const ref of [...(cache.links ?? []), ...(cache.embeds ?? [])]) {
-		if (cb(ref)) return true;
+		if (cb(ref)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -251,7 +253,9 @@ export function iterateCacheRefs(cache: CachedMetadata, cb: (ref: ReferenceCache
  */
 export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean | undefined): boolean {
 	for (const ref of refs) {
-		if (cb(ref as ReferenceCache)) return true;
+		if (cb(ref as ReferenceCache)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -378,7 +382,9 @@ export function resolveSubpath(
 	cache: CachedMetadata,
 	subpath: string,
 ): HeadingSubpathResult | BlockSubpathResult | FootnoteSubpathResult | null {
-	if (!subpath.startsWith("#")) return null;
+	if (!subpath.startsWith("#")) {
+		return null;
+	}
 	const target = subpath.slice(1);
 	if (target.startsWith("^")) {
 		const blockId = target.slice(1);
@@ -393,10 +399,16 @@ export function resolveSubpath(
 		return { type: "footnote", footnote, start: footnote.position.start, end: footnote.position.end };
 	}
 	const headingIndex = cache.headings?.findIndex((item) => item.heading === target);
-	if (headingIndex === undefined || headingIndex < 0) return null;
+	if (headingIndex === undefined || headingIndex < 0) {
+		return null;
+	}
+	// biome-ignore lint/style/noNonNullAssertion: This is intentional
 	const heading = cache.headings![headingIndex];
+	// biome-ignore lint/style/noNonNullAssertion: This is intentional
 	const next = cache.headings!.slice(headingIndex + 1).find((item) => item.level <= heading.level);
-	if (!next) return null;
+	if (!next) {
+		return null;
+	}
 	return {
 		type: "heading",
 		current: heading,

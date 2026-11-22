@@ -1,4 +1,3 @@
-import { placeholder } from "../../placeholder.internal.js";
 import { createDomElement } from "../fakedom.internal.js";
 import { ValueComponent } from "./value.js";
 

@@ -46,7 +46,9 @@ export function parseLinktext(linktext: string): {
 	subpath: string;
 } {
 	const hashIndex = linktext.indexOf("#");
-	if (hashIndex < 0) return { path: linktext, subpath: "" };
+	if (hashIndex < 0) {
+		return { path: linktext, subpath: "" };
+	}
 	return { path: linktext.slice(0, hashIndex), subpath: linktext.slice(hashIndex) };
 }
 

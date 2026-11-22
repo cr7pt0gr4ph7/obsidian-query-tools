@@ -8,7 +8,6 @@ import { Workspace } from "./compat/workspace/workspace.js";
 import { FileSystemAdapter } from "./files/adapter_filesystem.js";
 import type { FileManager } from "./files/files.js";
 import { Vault } from "./files/vault.js";
-import { placeholder } from "./placeholder.internal.js";
 
 /**
  * The main app object.

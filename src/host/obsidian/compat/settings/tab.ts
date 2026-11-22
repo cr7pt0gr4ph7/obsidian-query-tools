@@ -2,7 +2,6 @@ import type { App } from "../../app.js";
 import type { Plugin } from "../../extensions/plugin.js";
 import type { IconName } from "../icons.js";
 import type { SettingDefinitionItem } from "./definitions.js";
-import type { Setting } from "./setting.js";
 
 /**
  * A setting tab.

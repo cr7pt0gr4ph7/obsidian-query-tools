@@ -17,7 +17,9 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	load(): void {
-		if (this.loaded) return;
+		if (this.loaded) {
+			return;
+		}
 		this.started = true;
 		this.loaded = true;
 		try {
@@ -26,7 +28,9 @@ export class Component {
 			this.loaded = false;
 			throw error;
 		}
-		for (const child of this.children) child.load();
+		for (const child of this.children) {
+			child.load();
+		}
 	}
 
 	/**
@@ -45,7 +49,9 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	unload(): void {
-		if (!this.loaded) return;
+		if (!this.loaded) {
+			return;
+		}
 		this.loaded = false;
 		let firstError: unknown;
 		const runCleanup = (cleanup: () => unknown) => {
@@ -60,7 +66,9 @@ export class Component {
 		} catch (error) {
 			firstError ??= error;
 		}
-		for (const cleanup of [...this.cleanups].reverse()) runCleanup(cleanup);
+		for (const cleanup of [...this.cleanups].reverse()) {
+			runCleanup(cleanup);
+		}
 		this.cleanups.length = 0;
 		for (const child of [...this.children].reverse()) {
 			try {
@@ -69,7 +77,9 @@ export class Component {
 				firstError ??= error;
 			}
 		}
-		if (firstError !== undefined) throw firstError;
+		if (firstError !== undefined) {
+			throw firstError;
+		}
 	}
 
 	/**
@@ -90,7 +100,9 @@ export class Component {
 	 */
 	addChild<T extends Component>(component: T): T {
 		this.children.add(component);
-		if (this.loaded) component.load();
+		if (this.loaded) {
+			component.load();
+		}
 		return component;
 	}
 

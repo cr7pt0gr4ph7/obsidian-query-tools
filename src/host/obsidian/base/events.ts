@@ -55,11 +55,17 @@ export class Events {
 	 */
 	off(name: string, callback: (...data: unknown[]) => unknown): void {
 		const set = this.handlers.get(name);
-		if (!set) return;
-		for (const listener of set) {
-			if (listener.callback === callback) set.delete(listener);
+		if (!set) {
+			return;
 		}
-		if (set.size === 0) this.handlers.delete(name);
+		for (const listener of set) {
+			if (listener.callback === callback) {
+				set.delete(listener);
+			}
+		}
+		if (set.size === 0) {
+			this.handlers.delete(name);
+		}
 	}
 
 	/**
@@ -72,9 +78,13 @@ export class Events {
 	offref(ref: EventRef): void {
 		const listener = ref as Listener;
 		const set = this.handlers.get(listener.name);
-		if (!set) return;
+		if (!set) {
+			return;
+		}
 		set.delete(listener);
-		if (set.size === 0) this.handlers.delete(listener.name);
+		if (set.size === 0) {
+			this.handlers.delete(listener.name);
+		}
 	}
 
 	/**
@@ -87,7 +97,9 @@ export class Events {
 	 */
 	trigger(name: string, ...data: unknown[]): void {
 		const set = this.handlers.get(name);
-		if (!set) return;
+		if (!set) {
+			return;
+		}
 		for (const listener of [...set]) {
 			this.tryTrigger(listener, data);
 		}

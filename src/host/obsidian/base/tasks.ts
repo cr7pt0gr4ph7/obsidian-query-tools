@@ -49,7 +49,9 @@ export class Tasks {
 	 * @since 0.10.2
 	 */
 	promise(): Promise<any> {
-		if (this.promises.size === 0) return Promise.resolve([]);
+		if (this.promises.size === 0) {
+			return Promise.resolve([]);
+		}
 		return Promise.all([...this.promises]).then(() => []);
 	}
 }

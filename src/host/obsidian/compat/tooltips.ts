@@ -66,8 +66,16 @@ export type TooltipPlacement = "bottom" | "right" | "left" | "top";
 export function setTooltip(el: HTMLElement, tooltip: string, options?: TooltipOptions): void {
 	el.setAttribute("title", tooltip);
 	el.setAttribute("aria-label", tooltip);
-	if (options?.placement) el.setAttribute("data-tooltip-position", options.placement);
-	if (options?.delay !== undefined) el.setAttribute("data-tooltip-delay", String(options.delay));
-	if (options?.gap !== undefined) el.setAttribute("data-tooltip-gap", String(options.gap));
-	if (options?.classes) el.setAttribute("data-tooltip-classes", options.classes.join(" "));
+	if (options?.placement) {
+		el.setAttribute("data-tooltip-position", options.placement);
+	}
+	if (options?.delay !== undefined) {
+		el.setAttribute("data-tooltip-delay", String(options.delay));
+	}
+	if (options?.gap !== undefined) {
+		el.setAttribute("data-tooltip-gap", String(options.gap));
+	}
+	if (options?.classes) {
+		el.setAttribute("data-tooltip-classes", options.classes.join(" "));
+	}
 }

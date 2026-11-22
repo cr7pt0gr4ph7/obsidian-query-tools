@@ -44,8 +44,12 @@ export function debounce<T extends unknown[], V>(
 	let pending = false;
 
 	const invoke = (): V | undefined => {
-		if (!pending) return undefined;
-		if (timer !== undefined) clearTimeout(timer);
+		if (!pending) {
+			return undefined;
+		}
+		if (timer !== undefined) {
+			clearTimeout(timer);
+		}
 		timer = undefined;
 		const args = pendingArgs as [...T];
 		pendingArgs = undefined;
@@ -56,14 +60,20 @@ export function debounce<T extends unknown[], V>(
 	const debounced = ((...args: [...T]): Debouncer<T, V> => {
 		pendingArgs = args;
 		pending = true;
-		if (timer !== undefined && !resetTimer) return debounced;
-		if (timer !== undefined) clearTimeout(timer);
+		if (timer !== undefined && !resetTimer) {
+			return debounced;
+		}
+		if (timer !== undefined) {
+			clearTimeout(timer);
+		}
 		timer = setTimeout(() => invoke(), Math.max(0, timeout));
 		return debounced;
 	}) as Debouncer<T, V>;
 
 	debounced.cancel = (): Debouncer<T, V> => {
-		if (timer !== undefined) clearTimeout(timer);
+		if (timer !== undefined) {
+			clearTimeout(timer);
+		}
 		timer = undefined;
 		pending = false;
 		pendingArgs = undefined;

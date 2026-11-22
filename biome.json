@@ -8,10 +8,14 @@
 	},
 	"linter": {
 		"rules": {
+			"complexity": {
+				"noBannedTypes": "info"
+			},
 			"correctness": {
 				"noUnusedFunctionParameters": "off"
 			},
 			"style": {
+				"noNonNullAssertion": "info",
 				"useBlockStatements": "warn"
 			},
 			"suspicious": {
