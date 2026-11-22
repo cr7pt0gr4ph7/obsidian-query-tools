@@ -1,4 +1,5 @@
 import { placeholder } from "../../placeholder.internal.js";
+import { createDomElement } from "../fakedom.internal.js";
 import { AbstractTextComponent } from "./text.js";
 
 /**
@@ -19,7 +20,7 @@ export class SearchComponent extends AbstractTextComponent<HTMLInputElement> {
 	 * @public
 	 */
 	constructor(containerEl: HTMLElement) {
-		super(placeholder);
+		super(createDomElement("input", "search-component", containerEl) as HTMLInputElement);
 	}
 
 	/**
@@ -27,49 +28,4 @@ export class SearchComponent extends AbstractTextComponent<HTMLInputElement> {
 	 * @public
 	 */
 	onChanged(): void {}
-}
-
-/**
- * A list of matched text ranges.
- * @public
- */
-export type SearchMatches = SearchMatchPart[];
-
-/**
- * Text position offsets within text file. Represents
- * a text range `[fromOffset, toOffset]`.
- * @public
- */
-export type SearchMatchPart = [number, number];
-
-/**
- * A search result.
- * @public
- * @since 0.9.21
- */
-export interface SearchResult {
-	/**
-	 * The score.
-	 * @public
-	 */
-	score: number;
-
-	/**
-	 * The matched text ranges.
-	 * @public
-	 */
-	matches: SearchMatches;
-}
-
-/**
- * An object that contains a search result.
- * @public
- * @since 0.9.21
- */
-export interface SearchResultContainer {
-	/**
-	 * The search result.
-	 * @public
-	 */
-	match: SearchResult;
 }

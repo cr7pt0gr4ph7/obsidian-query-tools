@@ -1,9 +1,8 @@
-import type { Instruction } from "../../../../api/vault/mock/unsupported/modals.js";
 import type { App } from "../../app.js";
 import type { TFile } from "../../files/files.js";
 import type { Editor } from "./editor.js";
 import type { EditorPosition } from "./editor_types.js";
-import { PopoverSuggest } from "./suggest.js";
+import { type Instruction, PopoverSuggest } from "./suggest.js";
 
 /**
  * Provides autocomplete suggestions in the editor.

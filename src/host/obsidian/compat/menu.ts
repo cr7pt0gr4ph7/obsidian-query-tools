@@ -1,5 +1,6 @@
-import { Component } from "../../../../host/obsidian/base/lifecycle.js";
-import type { HistoryHandler } from "./history.js";
+import { Component } from "../base/component.js";
+import type { HistoryHandler } from "../base/history.js";
+import type { IconName } from "./icons.js";
 
 /**
  * The position to show a menu at.
@@ -43,11 +44,15 @@ export interface MenuPositionDef {
  * @public
  */
 export class Menu extends Component implements HistoryHandler {
+	/** @internal */
+	private onHideCallback?: () => any;
+
 	/**
 	 * @public
 	 */
+	// biome-ignore lint/complexity/noUselessConstructor: Explicit declaration for clarity
 	constructor() {
-		throw new Error("Method not implemented.");
+		super();
 	}
 
 	/**
@@ -55,7 +60,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @public
 	 */
 	setNoIcon(): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -66,7 +72,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 0.16.0
 	 */
 	setUseNativeMenu(useNativeMenu: boolean): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -82,7 +89,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 0.15.3
 	 */
 	addItem(cb: (item: MenuItem) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -91,7 +99,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 0.15.3
 	 */
 	addSeparator(): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -99,7 +108,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 0.16.0
 	 */
 	setParentElement(el: HTMLElement): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -109,7 +119,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 0.12.6
 	 */
 	showAtMouseEvent(evt: MouseEvent): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -120,7 +131,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 1.1.0
 	 */
 	showAtPosition(position: MenuPositionDef, doc?: Document): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -128,7 +140,7 @@ export class Menu extends Component implements HistoryHandler {
 	 * @public
 	 */
 	onHistoryBack(): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -136,7 +148,9 @@ export class Menu extends Component implements HistoryHandler {
 	 * @public
 	 */
 	hide(): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		this.onHideCallback?.();
+		return this;
 	}
 
 	/**
@@ -145,7 +159,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @public
 	 */
 	close(): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		this.hide();
 	}
 
 	/**
@@ -154,7 +169,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @public
 	 */
 	onHide(callback: () => any): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		this.onHideCallback = callback;
 	}
 
 	/**
@@ -162,7 +178,8 @@ export class Menu extends Component implements HistoryHandler {
 	 * @since 1.6.0
 	 */
 	static forEvent(evt: PointerEvent | MouseEvent): Menu {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return new Menu();
 	}
 }
 
@@ -191,7 +208,8 @@ export class MenuItem {
 	 * @public
 	 */
 	setTitle(title: string | DocumentFragment): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -202,7 +220,8 @@ export class MenuItem {
 	 * @since 0.16.2
 	 */
 	setIcon(icon: IconName | null): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -212,7 +231,8 @@ export class MenuItem {
 	 * @since 0.16.2
 	 */
 	setChecked(checked: boolean | null): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -222,7 +242,8 @@ export class MenuItem {
 	 * @since 0.15.0
 	 */
 	setDisabled(disabled: boolean): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -232,7 +253,8 @@ export class MenuItem {
 	 * @since 0.15.0
 	 */
 	setWarning(isWarning: boolean): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -242,7 +264,8 @@ export class MenuItem {
 	 * @since 0.15.0
 	 */
 	setIsLabel(isLabel: boolean): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -251,7 +274,8 @@ export class MenuItem {
 	 * @public
 	 */
 	onClick(callback: (evt: MouseEvent | KeyboardEvent) => any): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 
 	/**
@@ -267,7 +291,8 @@ export class MenuItem {
 	 * @since 0.15.3
 	 */
 	setSection(section: string): this {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return this;
 	}
 }
 

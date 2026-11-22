@@ -1,4 +1,5 @@
 import { placeholder } from "../../placeholder.internal.js";
+import { createDomElement } from "../fakedom.internal.js";
 import { ValueComponent } from "./value.js";
 
 /**
@@ -13,6 +14,12 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @since 0.9.7
 	 */
 	inputEl: T;
+
+	/* @internal */
+	value: string = "";
+
+	/* @internal */
+	onChangeCallback?: (value: string) => any;
 
 	/**
 	 * @param inputEl The input element.
@@ -29,7 +36,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @since 1.2.3
 	 */
 	setDisabled(disabled: boolean): this {
-		return this;
+		return super.setDisabled(disabled);
 	}
 
 	/**
@@ -38,7 +45,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @since 0.9.7
 	 */
 	getValue(): string {
-		return "";
+		return this.value;
 	}
 
 	/**
@@ -48,6 +55,10 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @since 0.9.7
 	 */
 	setValue(value: string): this {
+		if (this.value !== value) {
+			this.value = value;
+			this.onChanged();
+		}
 		return this;
 	}
 
@@ -66,7 +77,9 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @public
 	 * @since 0.9.21
 	 */
-	onChanged(): void {}
+	onChanged(): void {
+		this.onChangeCallback?.(this.value);
+	}
 
 	/**
 	 * Set the callback to be called when the value changes.
@@ -75,6 +88,7 @@ export class AbstractTextComponent<T extends HTMLInputElement | HTMLTextAreaElem
 	 * @since 0.9.7
 	 */
 	onChange(callback: (value: string) => any): this {
+		this.onChangeCallback = callback;
 		return this;
 	}
 }
@@ -90,7 +104,7 @@ export class TextAreaComponent extends AbstractTextComponent<HTMLTextAreaElement
 	 * @public
 	 */
 	constructor(containerEl: HTMLElement) {
-		super(placeholder);
+		super(createDomElement("textarea", "text-area-component", containerEl) as HTMLTextAreaElement);
 	}
 }
 
@@ -105,7 +119,7 @@ export class TextComponent extends AbstractTextComponent<HTMLInputElement> {
 	 * @public
 	 */
 	constructor(containerEl: HTMLElement) {
-		super(placeholder);
+		super(createDomElement("input", "text-component", containerEl) as HTMLInputElement);
 	}
 }
 
@@ -120,7 +134,7 @@ export class MomentFormatComponent extends TextComponent {
 	 * @public
 	 * @since 0.9.7
 	 */
-	sampleEl: HTMLElement = placeholder;
+	sampleEl: HTMLElement = null as any;
 
 	/**
 	 * Sets the default format when input is cleared. Also used for placeholder.
@@ -129,6 +143,7 @@ export class MomentFormatComponent extends TextComponent {
 	 * @since 0.9.7
 	 */
 	setDefaultFormat(defaultFormat: string): this {
+		this.updateSample();
 		return this;
 	}
 
@@ -139,6 +154,8 @@ export class MomentFormatComponent extends TextComponent {
 	 * @since 0.9.7
 	 */
 	setSampleEl(sampleEl: HTMLElement): this {
+		this.sampleEl = sampleEl;
+		this.updateSample();
 		return this;
 	}
 
@@ -149,7 +166,7 @@ export class MomentFormatComponent extends TextComponent {
 	 * @since 0.9.7
 	 */
 	setValue(value: string): this {
-		return this;
+		return super.setValue(value);
 	}
 
 	/**
@@ -157,7 +174,9 @@ export class MomentFormatComponent extends TextComponent {
 	 * @public
 	 * @since 0.9.7
 	 */
-	onChanged(): void {}
+	onChanged(): void {
+		super.onChanged();
+	}
 
 	/**
 	 * Updates the sample element with the current date in the selected format.

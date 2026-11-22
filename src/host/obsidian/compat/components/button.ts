@@ -1,4 +1,5 @@
 import { placeholder } from "../../placeholder.internal.js";
+import { createDomElement } from "../fakedom.internal.js";
 import type { IconName } from "../icons.js";
 import type { TooltipOptions } from "../tooltips.js";
 import { BaseComponent } from "./component.js";
@@ -22,7 +23,7 @@ export class ButtonComponent extends BaseComponent {
 	 */
 	constructor(containerEl: HTMLElement) {
 		super();
-		this.buttonEl = placeholder;
+		this.buttonEl = createDomElement("button", "button-compponent", containerEl) as HTMLButtonElement;
 	}
 
 	/**
@@ -32,7 +33,7 @@ export class ButtonComponent extends BaseComponent {
 	 * @since 1.2.3
 	 */
 	setDisabled(disabled: boolean): this {
-		return this;
+		return super.setDisabled(disabled);
 	}
 
 	/**

@@ -1,6 +1,32 @@
 import type { App } from "../../app.js";
 import type { HistoryHandler } from "../../base/history.js";
+import { createDomElement } from "../fakedom.internal.js";
 import type { Scope } from "./keyboard.js";
+import { Modal } from "./modal.js";
+/**
+ * An instruction shown in a suggestion modal.
+ * @example
+ * ```ts
+ * const instruction: Instruction = { command: '↑↓', purpose: 'Navigate' };
+ * ```
+ * @public
+ * @since 0.9.20
+ */
+export interface Instruction {
+	/**
+	 * The command or the key combination.
+	 * @public
+	 * @since 0.9.20
+	 */
+	command: string;
+
+	/**
+	 * The purpose of the command.
+	 * @public
+	 * @since 0.9.20
+	 */
+	purpose: string;
+}
 
 /**
  * An owner that controls UI suggestions.
@@ -227,4 +253,152 @@ export abstract class AbstractInputSuggest<T> extends PopoverSuggest<T> {
 		this.onSelectCallback = callback;
 		return this;
 	}
+}
+
+/**
+ * A modal that lets the user choose from a list of suggestions.
+ * @public
+ * @since 0.9.20
+ */
+export abstract class SuggestModal<T> extends Modal implements ISuggestOwner<T> {
+	/**
+	 * The maximum number of suggestions to show.
+	 * @public
+	 * @since 0.9.20
+	 */
+	limit: number;
+
+	/**
+	 * The text to display when there are no suggestions.
+	 * @public
+	 * @since 0.9.20
+	 */
+	emptyStateText: string;
+
+	/**
+	 * The input element.
+	 * @public
+	 * @since 0.9.20
+	 */
+	inputEl: HTMLInputElement;
+
+	/**
+	 * The result container element.
+	 * @public
+	 * @since 0.9.20
+	 */
+	resultContainerEl: HTMLElement;
+
+	/**
+	 * @param app The app instance.
+	 * @public
+	 */
+	constructor(app: App) {
+		super(app);
+		this.limit = -1;
+		this.emptyStateText = "";
+		this.inputEl = createDomElement("input", "suggest-modal-input") as HTMLInputElement;
+		this.resultContainerEl = createDomElement("div", "suggest-modal-result-container");
+	}
+
+	/**
+	 * Set the placeholder text.
+	 * @param placeholder The placeholder text.
+	 * @public
+	 * @since 0.9.20
+	 */
+	setPlaceholder(placeholder: string): void {
+		// Ignored, as this is a stub implementation.
+	}
+
+	/**
+	 * Set the instructions shown in the modal.
+	 * @param instructions The instructions.
+	 * @public
+	 * @since 0.9.20
+	 */
+	setInstructions(instructions: Instruction[]): void {
+		// Ignored, as this is a stub implementation.
+	}
+
+	/**
+	 * Called when there are no suggestions to show. By default, this shows the {@link SuggestModal.emptyStateText}.
+	 * @public
+	 * @since 0.9.20
+	 */
+	onNoSuggestion(): void {
+		// Ignored, as this is a stub implementation.
+	}
+
+	/**
+	 * Select a suggestion.
+	 * @param value The suggestion.
+	 * @param evt The event that triggered the selection.
+	 * @public
+	 * @since 0.9.20
+	 */
+	selectSuggestion(value: T, evt: MouseEvent | KeyboardEvent): void {
+		// Ignored, as this is a stub implementation.
+		this.onChooseSuggestion(value, evt);
+	}
+
+	/**
+	 * Select the active suggestion.
+	 * @param evt The event that triggered the selection.
+	 * @public
+	 * @since 1.7.2
+	 */
+	selectActiveSuggestion(evt: MouseEvent | KeyboardEvent): void {
+		// Ignored, as this is a stub implementation.
+	}
+
+	/**
+	 * Get the suggestions.
+	 * @param query The query.
+	 * @example
+	 * ```ts
+	 * class MySuggestModal extends SuggestModal<string> {
+	 *     public override getSuggestions(query: string): string[] {
+	 *         return ['foo', 'bar'];
+	 *     }
+	 * }
+	 * ```
+	 * @example
+	 * ```ts
+	 * class MySuggestModal extends SuggestModal<string> {
+	 *     public override async getSuggestions(query: string): Promise<string[]> {
+	 *         return Promise.resolve(['foo', 'bar']);
+	 *     }
+	 * }
+	 * ```
+	 * @public
+	 * @since 1.5.7
+	 */
+	abstract getSuggestions(query: string): T[] | Promise<T[]>;
+
+	/**
+	 * Render a suggestion.
+	 * @param value The suggestion.
+	 * @param el The element to render into.
+	 * @example
+	 * ```ts
+	 * class MySuggestModal extends SuggestModal<string> {
+	 *     public override renderSuggestion(value: string, el: HTMLElement): void {
+	 *         el.createEl('strong', { text: value });
+	 *     }
+	 * }
+	 * ```
+	 * @public
+	 * @since 1.5.7
+	 */
+	abstract renderSuggestion(value: T, el: HTMLElement): void;
+
+	/**
+	 * Called when the user chooses a suggestion.
+	 * @param item The chosen suggestion.
+	 * @param evt The event that triggered the choice.
+	 * @public
+	 * @since 1.5.7
+	 */
+	abstract onChooseSuggestion(item: T, evt: MouseEvent | KeyboardEvent): void;
 }
