@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { Component } from "../../../../src/host/obsidian/base/component.ts";
 import { Events } from "../../../../src/host/obsidian/base/events.ts";
-import { Component } from "../../../../src/host/obsidian/base/lifecycle.ts";
 
 test("component load and unload are idempotent and manage overrides", () => {
 	class TestComponent extends Component {
