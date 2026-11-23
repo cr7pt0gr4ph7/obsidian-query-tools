@@ -7,7 +7,7 @@ export type EventRef = {};
 
 interface Listener {
 	name: string;
-	callback: (...data: unknown[]) => unknown;
+	callback: (...data: any[]) => any;
 	ctx?: unknown;
 	detach: () => void;
 }
@@ -29,7 +29,7 @@ export class Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	on(name: string, callback: (...data: unknown[]) => unknown, ctx?: unknown): EventRef {
+	on(name: string, callback: (...data: any[]) => any, ctx?: any): EventRef {
 		const listener: Listener = {
 			name,
 			callback,
@@ -53,7 +53,7 @@ export class Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	off(name: string, callback: (...data: unknown[]) => unknown): void {
+	off(name: string, callback: (...data: any[]) => any): void {
 		const set = this.handlers.get(name);
 		if (!set) {
 			return;
@@ -95,7 +95,7 @@ export class Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	trigger(name: string, ...data: unknown[]): void {
+	trigger(name: string, ...data: any[]): void {
 		const set = this.handlers.get(name);
 		if (!set) {
 			return;
@@ -113,7 +113,7 @@ export class Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	tryTrigger(evt: EventRef, args: unknown[]): void {
+	tryTrigger(evt: EventRef, args: any[]): void {
 		const listener = evt as Listener;
 		try {
 			listener.callback.apply(listener.ctx, args);

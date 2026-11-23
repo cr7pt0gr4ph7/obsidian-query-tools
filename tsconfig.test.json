@@ -2,9 +2,10 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"rootDir": ".",
-		"noEmit": true,
+		"noEmit": false,
 		"declaration": false,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": false,
+		"rewriteRelativeImportExtensions": true
 	},
-	"include": ["test/**/*.ts"]
+	"include": ["test/**/*.ts", "lib/dataview/dataview/src/typings/workers.d.ts"]
 }

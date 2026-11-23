@@ -488,6 +488,13 @@ export class Workspace extends Events {
 		throw new Error("Method not implemented.");
 	}
 
+    /**
+     * @public
+     */
+    iterateCodeMirrors(callback: (cm: any) => any): void {
+		throw new Error("Method not implemented.");
+	}
+
 	/**
 	 * Add a context menu to internal file links.
 	 * @public
@@ -641,7 +648,10 @@ export class Workspace extends Events {
 	 */
 	on(name: "quit", callback: (tasks: Tasks) => any, ctx?: any): EventRef;
 
-	on(name: string, callback: (...data: any[]) => unknown, ctx?: any): EventRef {
+	/** @inheritDoc */
+	on(name: string, callback: (...data: any[]) => any, ctx?: any): EventRef;
+
+	on(name: string, callback: (...data: any[]) => any, ctx?: any): EventRef {
 		return super.on(name, callback, ctx);
 	}
 }
