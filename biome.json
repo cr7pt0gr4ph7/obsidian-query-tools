@@ -1,7 +1,7 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
 	"files": {
-		"includes": ["**", "!dist", "!lib"]
+		"includes": ["**", "!dist", "!lib/dataview/dataview", "!lib/breadcrumbs/breadcrumbs"]
 	},
 	"formatter": {
 		"lineWidth": 120

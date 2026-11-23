@@ -1,0 +1,33 @@
+{
+	"extends": "./tsconfig.lib.obsidian.json",
+	"compilerOptions": {
+		"strict": true,
+		"types": ["node"],
+		"jsx": "react",
+		"jsxFactory": "h",
+		"noImplicitAny": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"importHelpers": true,
+		"esModuleInterop": true,
+		"lib": ["dom", "scripthost", "ES2022"],
+		"paths": {
+			"obsidian": ["./src/host/obsidian/index.js"],
+			"api/*": ["./lib/dataview/dataview/src/api/*"],
+			"data-import/*": ["./lib/dataview/dataview/src/data-import/*"],
+			"data-index/*": ["./lib/dataview/dataview/src/data-index/*"],
+			"data-model/*": ["./lib/dataview/dataview/src/data-model/*"],
+			"expression/*": ["./lib/dataview/dataview/src/expression/*"],
+			"index": ["./lib/dataview/dataview/src/index.js"],
+			"query/*": ["./lib/dataview/dataview/src/query/*"],
+			"settings": ["./lib/dataview/dataview/src/settings.js"],
+			"typings/*": ["./lib/dataview/dataview/src/typings/*"],
+			"ui/*": ["./lib/dataview/dataview/src/ui/*"],
+			"util/*": ["./lib/dataview/dataview/src/util/*"],
+			"util/hash": ["./lib/dataview/dataview/src/util/hash.js"]
+		}
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"compilerOptions": {
+		"paths": {
+			"obsidian": ["./src/host/obsidian/index.js"]
+		}
+	}
+}

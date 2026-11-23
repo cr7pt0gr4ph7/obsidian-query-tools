@@ -1,0 +1,16 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "h",
+		"noImplicitAny": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"importHelpers": true,
+		"esModuleInterop": true
+	},
+	"include": ["dataview/src/**/*.ts"]
+}

@@ -1,3 +1,6 @@
+# Custom ignores
+ignored/
+
 # Logs
 logs
 *.log
