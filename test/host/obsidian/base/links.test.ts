@@ -6,7 +6,7 @@ import {
 	parseLinktext,
 	stripHeading,
 	stripHeadingForLink,
-} from "../../../../src/host/obsidian/base/links.js";
+} from "../../../../src/host/obsidian/base/links.ts";
 
 test("normalizePath canonicalizes separators, slash runs, whitespace, and Unicode", () => {
 	assert.equal(normalizePath("/foo//bar\\baz/"), "foo/bar/baz");

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { ConsoleRequest, ConsoleResult } from "../src/console.js";
-import { runConsole } from "../src/console.js";
+import type { ConsoleRequest, ConsoleResult } from "../src/console.ts";
+import { runConsole } from "../src/console.ts";
 
 function harness(
 	result: ConsoleResult = {

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { FileSystemAdapter } from "../../../../src/host/obsidian/files/adapter_filesystem.js";
+import { FileSystemAdapter } from "../../../../src/host/obsidian/files/adapter_filesystem.ts";
 
 async function makeRoot(): Promise<string> {
 	return mkdtemp(path.join(os.tmpdir(), "obsidian-mock-adapter-"));

@@ -6,7 +6,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
-import { openVault } from "../../src/api/index.js";
+import { openVault } from "../../src/api/index.ts";
 
 function record(value: unknown): Record<string, unknown> {
 	assert.ok(value !== null && typeof value === "object" && !Array.isArray(value));

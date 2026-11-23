@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { Tasks } from "../../../../src/host/obsidian/base/tasks.js";
+import { Tasks } from "../../../../src/host/obsidian/base/tasks.ts";
 
 test("Tasks starts callbacks immediately and tracks their completion", async () => {
 	const tasks = new Tasks();

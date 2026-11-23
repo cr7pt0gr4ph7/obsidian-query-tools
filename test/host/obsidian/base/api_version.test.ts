@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { compareVersions } from "../../../../src/host/obsidian/base/api_version.internal.js";
-import { apiVersion, requireApiVersion } from "../../../../src/host/obsidian/base/api_version.js";
+import { compareVersions } from "../../../../src/host/obsidian/base/api_version.internal.ts";
+import { apiVersion, requireApiVersion } from "../../../../src/host/obsidian/base/api_version.ts";
 
 test("API version defaults to 1.0.0", () => {
 	assert.equal(apiVersion, "1.0.0");

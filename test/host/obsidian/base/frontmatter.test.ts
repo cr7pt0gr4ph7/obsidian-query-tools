@@ -7,7 +7,7 @@ import {
 	parseFrontMatterTags,
 	parseYaml,
 	stringifyYaml,
-} from "../../../../src/host/obsidian/base/frontmatter.js";
+} from "../../../../src/host/obsidian/base/frontmatter.ts";
 
 test("frontmatter entry lookup supports exact and regular-expression keys", () => {
 	const frontmatter = { foo: "bar", baz: "qux" };

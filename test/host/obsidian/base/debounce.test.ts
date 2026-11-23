@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { debounce } from "../../../../src/host/obsidian/base/debounce.js";
+import { debounce } from "../../../../src/host/obsidian/base/debounce.ts";
 
 test("debounce resets the timer and runs the latest arguments", async () => {
 	const calls: string[] = [];

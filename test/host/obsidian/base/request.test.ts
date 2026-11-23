@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import { test } from "node:test";
-import { request, requestUrl } from "../../../../src/host/obsidian/base/request.js";
+import { request, requestUrl } from "../../../../src/host/obsidian/base/request.ts";
 
 async function withServer(
 	handler: (request: http.IncomingMessage, response: http.ServerResponse) => void,

@@ -6,7 +6,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import { openVault } from "../../src/api/index.js";
+import { openVault } from "../../src/api/index.ts";
 
 const exec = promisify(execFile);
 const cli = fileURLToPath(new URL("../../src/cli/index.js", import.meta.url));
