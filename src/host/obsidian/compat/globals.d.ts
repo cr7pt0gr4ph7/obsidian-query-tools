@@ -2570,3 +2570,5 @@ declare global {
 		touchType: "stylus" | "direct";
 	}
 }
+
+export {};

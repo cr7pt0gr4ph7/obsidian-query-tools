@@ -5,6 +5,7 @@ import { Keymap, Scope } from "./compat/editor/keyboard.js";
 import { RenderContext } from "./compat/rendercontext.js";
 import { SecretStorage } from "./compat/secrets.js";
 import { Workspace } from "./compat/workspace/workspace.js";
+import { Plugins } from "./extensions/plugins.unofficial.js";
 import { FileSystemAdapter } from "./files/adapter_filesystem.js";
 import type { FileManager } from "./files/files.js";
 import { Vault } from "./files/vault.js";
@@ -75,12 +76,21 @@ export class App {
 	 */
 	secretStorage: SecretStorage;
 
+	/** @unofficial */
+	appId?: string;
+
+	/** @unofficial */
+	plugins: Plugins;
+
 	constructor(options: AppConfig) {
 		const adapter = new FileSystemAdapter(options.basePath, options.allowAbsolutePaths);
 		this.vault = new Vault(adapter, options.configDir);
 		this.fileManager = this.vault.fileManager;
 		this.secretStorage = new SecretStorage();
 		this.metadataCache = new MetadataCache();
+
+		this.appId = options.appId;
+		this.plugins = new Plugins(this);
 
 		this.keymap = new Keymap();
 		this.scope = new Scope();
