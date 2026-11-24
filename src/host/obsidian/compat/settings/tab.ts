@@ -141,8 +141,6 @@ export abstract class SettingTab {
  * @since 0.9.7
  */
 export abstract class PluginSettingTab extends SettingTab {
-	plugin: Plugin;
-
 	/**
 	 * @param app The app instance.
 	 * @param plugin The plugin.
@@ -150,7 +148,6 @@ export abstract class PluginSettingTab extends SettingTab {
 	 */
 	constructor(app: App, plugin: Plugin) {
 		super(app);
-		this.plugin = plugin;
 	}
 
 	/**
