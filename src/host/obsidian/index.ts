@@ -58,6 +58,7 @@ export * from "./compat/extensions/hover.js";
 export * from "./compat/extensions/markdown.js";
 export * from "./compat/extensions/protocol.js";
 export * from "./compat/externals/index.js";
+export * from "./compat/global-mocks.js";
 export * from "./compat/globals.js";
 export * from "./compat/html.js";
 export * from "./compat/icons.js";
