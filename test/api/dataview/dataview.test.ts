@@ -7,6 +7,7 @@ import test from "node:test";
 import { DataviewApi, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "obsidian-dataview";
 import { DataviewManifest } from "../../../src/host/dataview/manifest.ts";
 import { App } from "../../../src/host/obsidian/app.ts";
+import { Component } from "../../../src/host/obsidian/base/component.ts";
 
 async function createTestVaultFixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
@@ -19,12 +20,20 @@ async function createTestVaultFixture(t: TestContext) {
 }
 
 test("can initialize a Dataview API instance", async (t) => {
-	const root = await createTestVaultFixture(t);
-	const app = new App({ appId: "test-vault", basePath: root });
-	const index = FullIndex.create(app, DataviewManifest.indexVersion, () => {
-		console.log("Dataview index has changed");
-	});
-	const settings = DEFAULT_DATAVIEW_SETTINGS;
-	const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
-	assert.ok(api);
+	const rootComponent = new Component();
+	rootComponent.load();
+	try {
+		const root = await createTestVaultFixture(t);
+		const app = new App({ appId: "test-vault", basePath: root });
+		const index = rootComponent.addChild(
+			FullIndex.create(app, DataviewManifest.indexVersion, () => {
+				console.log("Dataview index has changed");
+			}),
+		);
+		const settings = DEFAULT_DATAVIEW_SETTINGS;
+		const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
+		assert.ok(api);
+	} finally {
+		rootComponent.unload();
+	}
 });
