@@ -1,0 +1,10 @@
+{
+    "name": "obsidian",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./index.js",
+            "types": "./index.d.ts"
+        }
+    }
+}
