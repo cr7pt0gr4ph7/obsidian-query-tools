@@ -4,7 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import type { TestContext } from "node:test";
 import test from "node:test";
-import { DataviewApi, DataviewWrapper, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "../../../lib/dataview/wrapper.ts";
+import { DataviewApi, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "obsidian-dataview";
+import { DataviewManifest } from "../../../src/host/dataview/manifest.ts";
 import { App } from "../../../src/host/obsidian/app.ts";
 
 async function createTestVaultFixture(t: TestContext) {
@@ -20,10 +21,10 @@ async function createTestVaultFixture(t: TestContext) {
 test("can initialize a Dataview API instance", async (t) => {
 	const root = await createTestVaultFixture(t);
 	const app = new App({ appId: "test-vault", basePath: root });
-	const index = FullIndex.create(app, DataviewWrapper.indexVersion, () => {
+	const index = FullIndex.create(app, DataviewManifest.indexVersion, () => {
 		console.log("Dataview index has changed");
 	});
 	const settings = DEFAULT_DATAVIEW_SETTINGS;
-	const api = new DataviewApi(app, index, settings, DataviewWrapper.pluginVersion);
+	const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
 	assert.ok(api);
 });

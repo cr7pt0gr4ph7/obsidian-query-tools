@@ -18,7 +18,14 @@
 		"node": ">=24"
 	},
 	"scripts": {
-		"build": "tsc && chmod +x dist/src/cli/index.js dist/src/mcp/index.js && cp --update=all src/host/obsidian/package.json dist/src/host/obsidian/package.json",
+		"preinstall": "npm run install:deps && npm run build:deps",
+		"install:deps": "npm run install:deps:dataview",
+		"install:deps:dataview": "cd lib/dataview && npm run install-build-deps",
+		"build:deps": "npm run build:deps:dataview",
+		"build:deps:dataview": "cd lib/dataview && npm run build",
+		"build": "npm run build:project",
+		"build:full": "npm run install:deps && npm run build:deps && npm install && npm run build",
+		"build:project": "tsc && chmod +x dist/src/cli/index.js dist/src/mcp/index.js && cp --update=all src/host/obsidian/package.json dist/src/host/obsidian/package.json",
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"test": "npm run build && tsc -p tsconfig.test.json && node --test dist/test/host/obsidian/**/*.test.js dist/test/api/**/*.test.js dist/test/cli/**/*.test.js dist/test/mcp/**/*.test.js",
@@ -45,7 +52,7 @@
 		"@modelcontextprotocol/client": "2.4.0",
 		"@types/node": "^24.19.2",
 		"obsidian": "file:./dist/src/host/obsidian",
-		"obsidian-dataview": "file:./lib/dataview/dataview",
+		"obsidian-dataview": "file:./dist/lib/dataview",
 		"typescript": "6.0.3"
 	},
 	"overrides": {
