@@ -1,5 +1,8 @@
+import type { App } from "../app.js";
 import { type EventRef, Events } from "../base/events.js";
+import { parseYaml } from "../base/frontmatter.js";
 import type { TFile } from "../files/files.js";
+import type { Vault } from "../files/vault.js";
 import type { BlockCache, BlockSubpathResult } from "./blocks.js";
 import type { EmbedCache } from "./embeds.js";
 import type { FootnoteCache, FootnoteRefCache, FootnoteSubpathResult } from "./footnotes.js";
@@ -260,6 +263,16 @@ export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean |
 	return false;
 }
 
+/** Extracts the frontmatter from the given Markdown file. Returns null if no frontmatter is found. */
+function extractFrontMatterFromMarkdown(content: string): Record<string, any> | null {
+	const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+	const match = content.match(frontmatterRegex);
+	if (!match) {
+		return null;
+	}
+	return parseYaml(match[1]) as Record<string, any>;
+}
+
 /**
  * Provides access to the cached metadata of the files in the vault.
  *
@@ -269,6 +282,47 @@ export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean |
  * @public
  */
 export class MetadataCache extends Events {
+	/** @internal */
+	private fileMetadata: Map<string, CachedMetadata> = new Map();
+
+	/** @unofficial */
+	constructor(
+		public app: App,
+		public vault: Vault,
+	) {
+		super();
+	}
+
+	/** @unofficial */
+	async initialize(): Promise<void> {
+		for (const file of this.vault.getMarkdownFiles()) {
+			await this.computeFileMetadataAsync(file);
+		}
+	}
+
+	/** @unofficial */
+	async computeFileMetadataAsync(file: TFile): Promise<void> {
+		this.fileMetadata.set(file.path, {
+			links: [],
+			embeds: [],
+			tags: [],
+			headings: [],
+			footnotes: [],
+			footnoteRefs: [],
+			referenceLinks: [],
+			sections: [],
+			listItems: [],
+			frontmatter:
+				(extractFrontMatterFromMarkdown((await this.vault.read(file)) ?? "") as Record<string, any> | null) ?? {},
+			frontmatterPosition: {
+				start: { line: 0, col: 0, offset: 0 },
+				end: { line: 0, col: 0, offset: 0 },
+			},
+			frontmatterLinks: [],
+			blocks: {},
+		});
+	}
+
 	/**
 	 * Get the best match for a linkpath.
 	 * @param linkpath The linkpath.
@@ -289,7 +343,7 @@ export class MetadataCache extends Events {
 	 * @since 0.9.21
 	 */
 	getFileCache(file: TFile): CachedMetadata | null {
-		throw new Error("Method not implemented.");
+		return this.fileMetadata.get(file.path) ?? null;
 	}
 
 	/**
@@ -300,7 +354,12 @@ export class MetadataCache extends Events {
 	 * @since 0.14.5
 	 */
 	getCache(path: string): CachedMetadata | null {
-		throw new Error("Method not implemented.");
+		// TODO: Is there a difference between getCache and getFileCache?
+		const file = this.vault.fileManager.getFileByPath(path);
+		if (!file) {
+			return null;
+		}
+		return this.getFileCache(file);
 	}
 
 	/**

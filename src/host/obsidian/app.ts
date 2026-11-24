@@ -87,7 +87,7 @@ export class App {
 		this.vault = new Vault(adapter, options.configDir);
 		this.fileManager = this.vault.fileManager;
 		this.secretStorage = new SecretStorage();
-		this.metadataCache = new MetadataCache();
+		this.metadataCache = new MetadataCache(this, this.vault);
 
 		this.appId = options.appId;
 		this.plugins = new Plugins(this);

@@ -63,7 +63,8 @@ suite("Dataview API", () => {
 
 	test("correctly indexes the pages when initializing the Dataview index", async (t) => {
 		const app = new App({ appId: "test-vault", basePath: root });
-		app.vault.initialize();
+		await app.vault.initialize();
+		await app.metadataCache.initialize();
 
 		const index = rootComponent.addChild(
 			FullIndex.create(app, DataviewManifest.indexVersion, () => {
