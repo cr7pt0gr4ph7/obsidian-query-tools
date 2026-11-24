@@ -13,7 +13,7 @@
 		"noUnusedLocals": true,
 		"useUnknownInCatchVariables": false,
 		"importHelpers": true,
-		"esModuleInterop": true,
+		"esModuleInterop": true
 	},
 	"include": ["dataview/src/**/*.ts", "dataview/src/typings/workers.d.ts"]
 }

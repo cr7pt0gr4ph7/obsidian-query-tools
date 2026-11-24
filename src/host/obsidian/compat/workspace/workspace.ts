@@ -488,10 +488,10 @@ export class Workspace extends Events {
 		throw new Error("Method not implemented.");
 	}
 
-    /**
-     * @public
-     */
-    iterateCodeMirrors(callback: (cm: any) => any): void {
+	/**
+	 * @public
+	 */
+	iterateCodeMirrors(callback: (cm: any) => any): void {
 		throw new Error("Method not implemented.");
 	}
 

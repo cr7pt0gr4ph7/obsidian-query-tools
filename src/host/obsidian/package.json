@@ -1,12 +1,12 @@
 {
-    "name": "obsidian",
-    "version": "1.14.4",
-    "type": "module",
-    "exports": {
-        ".": {
-            "default": "./index.js",
-            "import": "./index.js",
-            "types": "./index.d.ts"
-        }
-    }
+	"name": "obsidian",
+	"version": "1.14.4",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./index.js",
+			"import": "./index.js",
+			"types": "./index.d.ts"
+		}
+	}
 }
