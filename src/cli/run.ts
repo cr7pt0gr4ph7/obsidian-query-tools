@@ -8,7 +8,7 @@ import type { CliCommand } from "./commands/index.js";
 import { createProgram } from "./commands/index.js";
 import { loadConfig, mergeOptions } from "./config.js";
 
-const version = createRequire(import.meta.url)("../../package.json").version;
+const version = createRequire(import.meta.url)("../../../package.json").version;
 
 function invalidArguments(message: string): never {
 	throw Errors.Options.InvalidOptions(message);
