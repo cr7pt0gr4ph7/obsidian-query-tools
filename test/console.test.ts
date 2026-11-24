@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import test, { suite } from "node:test";
 import type { ConsoleRequest, ConsoleResult } from "../src/console.ts";
 import { runConsole } from "../src/console.ts";
 
@@ -47,281 +47,286 @@ async function* stdin(...chunks: string[]) {
 	}
 }
 
-test("passes inline source, vault, and current-file context to the mocked API", async () => {
-	const h = harness();
-	const status = await runConsole(
-		[
-			"query",
-			"--vault",
-			"/private/vault",
-			"--type",
-			"dataview",
-			"--query",
-			'LIST FROM "Projects"',
-			"--file",
-			"Projects/Index.md",
-		],
-		h.dependencies,
-	);
-	assert.equal(status, 0);
-	assert.deepEqual(h.calls, [
-		{
-			vault: "/private/vault",
-			type: "dataview",
-			query: 'LIST FROM "Projects"',
-			file: "Projects/Index.md",
-		},
-	]);
-	assert.deepEqual(JSON.parse(h.stdout()), {
-		data: ["one", "two"],
-		diagnostics: [],
-		truncated: false,
-		generation: 3,
+suite("CLI", () => {
+	test("passes inline source, vault, and current-file context to the mocked API", async () => {
+		const h = harness();
+		const status = await runConsole(
+			[
+				"query",
+				"--vault",
+				"/private/vault",
+				"--type",
+				"dataview",
+				"--query",
+				'LIST FROM "Projects"',
+				"--file",
+				"Projects/Index.md",
+			],
+			h.dependencies,
+		);
+		assert.equal(status, 0);
+		assert.deepEqual(h.calls, [
+			{
+				vault: "/private/vault",
+				type: "dataview",
+				query: 'LIST FROM "Projects"',
+				file: "Projects/Index.md",
+			},
+		]);
+		assert.deepEqual(JSON.parse(h.stdout()), {
+			data: ["one", "two"],
+			diagnostics: [],
+			truncated: false,
+			generation: 3,
+		});
+		assert.equal(h.stderr(), "");
 	});
-	assert.equal(h.stderr(), "");
-});
 
-test("reads multiline stdin unchanged and maps dql to the same API operation", async () => {
-	const h = harness();
-	const status = await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
-		...h.dependencies,
-		stdin: stdin('LIST FROM "Folder"\n', "SORT file.name"),
+	test("reads multiline stdin unchanged and maps dql to the same API operation", async () => {
+		const h = harness();
+		const status = await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
+			...h.dependencies,
+			stdin: stdin('LIST FROM "Folder"\n', "SORT file.name"),
+		});
+		assert.equal(status, 0);
+		assert.deepEqual(h.calls, [
+			{
+				vault: "vault",
+				type: "dataview",
+				query: 'LIST FROM "Folder"\nSORT file.name',
+			},
+		]);
 	});
-	assert.equal(status, 0);
-	assert.deepEqual(h.calls, [
-		{
-			vault: "vault",
-			type: "dataview",
-			query: 'LIST FROM "Folder"\nSORT file.name',
-		},
-	]);
-});
 
-test("both declarative aliases and input sources invoke the same API mode", async () => {
-	for (const type of ["dataview", "dql"]) {
-		for (const source of ["query", "stdin"]) {
-			const h = harness();
-			const args = ["query", "--vault", "vault", "--type", type];
-			if (source === "query") {
-				args.push("--query", "TABLE file.name");
-			} else {
-				args.push("--stdin");
+	test("both declarative aliases and input sources invoke the same API mode", async () => {
+		for (const type of ["dataview", "dql"]) {
+			for (const source of ["query", "stdin"]) {
+				const h = harness();
+				const args = ["query", "--vault", "vault", "--type", type];
+				if (source === "query") {
+					args.push("--query", "TABLE file.name");
+				} else {
+					args.push("--stdin");
+				}
+				assert.equal(
+					await runConsole(args, {
+						...h.dependencies,
+						...(source === "stdin" ? { stdin: stdin("TABLE ", "file.name") } : {}),
+					}),
+					0,
+				);
+				assert.deepEqual(h.calls, [
+					{
+						vault: "vault",
+						type: "dataview",
+						query: "TABLE file.name",
+					},
+				]);
 			}
-			assert.equal(
-				await runConsole(args, {
-					...h.dependencies,
-					...(source === "stdin" ? { stdin: stdin("TABLE ", "file.name") } : {}),
-				}),
-				0,
-			);
-			assert.deepEqual(h.calls, [
-				{
-					vault: "vault",
-					type: "dataview",
-					query: "TABLE file.name",
-				},
-			]);
 		}
-	}
-});
-
-test("defaults to JSON and includes diagnostics and truncation metadata", async () => {
-	const h = harness({
-		data: ["partial"],
-		diagnostics: [{ code: "LIMIT", message: "Output was bounded." }],
-		truncated: true,
 	});
-	assert.equal(await runConsole(["query", "--vault", "vault", "--type", "dql", "--query", "query"], h.dependencies), 0);
-	assert.deepEqual(JSON.parse(h.stdout()), {
-		data: ["partial"],
-		diagnostics: [{ code: "LIMIT", message: "Output was bounded." }],
-		truncated: true,
-	});
-	assert.equal(h.stderr(), "");
-});
 
-test("formats simple result lists and reports diagnostics outside stdout", async () => {
-	const h = harness({
-		data: ["one|two", "three\nfour"],
-		diagnostics: [{ code: "NOTICE", message: "Some data may have changed." }],
-		truncated: true,
+	test("defaults to JSON and includes diagnostics and truncation metadata", async () => {
+		const h = harness({
+			data: ["partial"],
+			diagnostics: [{ code: "LIMIT", message: "Output was bounded." }],
+			truncated: true,
+		});
+		assert.equal(
+			await runConsole(["query", "--vault", "vault", "--type", "dql", "--query", "query"], h.dependencies),
+			0,
+		);
+		assert.deepEqual(JSON.parse(h.stdout()), {
+			data: ["partial"],
+			diagnostics: [{ code: "LIMIT", message: "Output was bounded." }],
+			truncated: true,
+		});
+		assert.equal(h.stderr(), "");
 	});
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
-			h.dependencies,
-		),
-		0,
-	);
-	assert.equal(h.stdout(), "- one\\|two\n- three&#10;four\n");
-	assert.equal(h.stderr(), "NOTICE: Some data may have changed.\nResult truncated.\n");
-});
 
-test("formats records as a Markdown table with escaped pipes", async () => {
-	const h = harness({
-		data: [{ Name: "A|B", Count: 2 }],
-		diagnostics: [],
-		truncated: false,
+	test("formats simple result lists and reports diagnostics outside stdout", async () => {
+		const h = harness({
+			data: ["one|two", "three\nfour"],
+			diagnostics: [{ code: "NOTICE", message: "Some data may have changed." }],
+			truncated: true,
+		});
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
+				h.dependencies,
+			),
+			0,
+		);
+		assert.equal(h.stdout(), "- one\\|two\n- three&#10;four\n");
+		assert.equal(h.stderr(), "NOTICE: Some data may have changed.\nResult truncated.\n");
 	});
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
-			h.dependencies,
-		),
-		0,
-	);
-	assert.equal(h.stdout(), "| Name | Count |\n| --- | --- |\n| A\\|B | 2 |\n");
-});
 
-test("escapes HTML-sensitive text in Markdown results", async () => {
-	const h = harness({
-		data: ["<script>alert(1)</script>&"],
-		diagnostics: [],
-		truncated: false,
+	test("formats records as a Markdown table with escaped pipes", async () => {
+		const h = harness({
+			data: [{ Name: "A|B", Count: 2 }],
+			diagnostics: [],
+			truncated: false,
+		});
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
+				h.dependencies,
+			),
+			0,
+		);
+		assert.equal(h.stdout(), "| Name | Count |\n| --- | --- |\n| A\\|B | 2 |\n");
 	});
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dql", "--query", "query", "--format", "markdown"],
-			h.dependencies,
-		),
-		0,
-	);
-	assert.equal(h.stdout(), "- &lt;script&gt;alert\\(1\\)&lt;/script&gt;&amp;\n");
-});
 
-test("empty markdown results produce one newline", async () => {
-	const h = harness({
-		data: [],
-		diagnostics: [],
-		truncated: false,
+	test("escapes HTML-sensitive text in Markdown results", async () => {
+		const h = harness({
+			data: ["<script>alert(1)</script>&"],
+			diagnostics: [],
+			truncated: false,
+		});
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dql", "--query", "query", "--format", "markdown"],
+				h.dependencies,
+			),
+			0,
+		);
+		assert.equal(h.stdout(), "- &lt;script&gt;alert\\(1\\)&lt;/script&gt;&amp;\n");
 	});
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dql", "--query", 'LIST FROM "missing"', "--format", "markdown"],
-			h.dependencies,
-		),
-		0,
-	);
-	assert.equal(h.stdout(), "\n");
-	assert.equal(h.stderr(), "");
-});
 
-test("disabled JavaScript aliases fail explicitly without invoking the API", async () => {
-	for (const type of ["dataviewjs", "dqljs"]) {
-		for (const source of ["query", "stdin"]) {
-			const h = harness();
-			const args = ["query", "--vault", "vault", "--type", type];
-			if (source === "query") {
-				args.push("--query", "dv.list('x')");
-			} else {
-				args.push("--stdin");
+	test("empty markdown results produce one newline", async () => {
+		const h = harness({
+			data: [],
+			diagnostics: [],
+			truncated: false,
+		});
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dql", "--query", 'LIST FROM "missing"', "--format", "markdown"],
+				h.dependencies,
+			),
+			0,
+		);
+		assert.equal(h.stdout(), "\n");
+		assert.equal(h.stderr(), "");
+	});
+
+	test("disabled JavaScript aliases fail explicitly without invoking the API", async () => {
+		for (const type of ["dataviewjs", "dqljs"]) {
+			for (const source of ["query", "stdin"]) {
+				const h = harness();
+				const args = ["query", "--vault", "vault", "--type", type];
+				if (source === "query") {
+					args.push("--query", "dv.list('x')");
+				} else {
+					args.push("--stdin");
+				}
+				assert.equal(
+					await runConsole(args, {
+						...h.dependencies,
+						...(source === "stdin" ? { stdin: stdin("dv.list('x')") } : {}),
+					}),
+					1,
+				);
+				assert.deepEqual(h.calls, []);
+				assert.equal(h.stdout(), "");
+				assert.match(
+					h.stderr(),
+					/^UNSUPPORTED_FEATURE: JavaScript query modes are disabled; pass --unsafe-allow-js to run trusted scripts\.\n$/,
+				);
+				assert.doesNotMatch(h.stderr(), /dv\.list/);
 			}
-			assert.equal(
-				await runConsole(args, {
-					...h.dependencies,
-					...(source === "stdin" ? { stdin: stdin("dv.list('x')") } : {}),
-				}),
-				1,
-			);
+		}
+	});
+
+	test("help and version do not call the API or require a vault", async () => {
+		const h = harness();
+		assert.equal(await runConsole(["--help"], h.dependencies), 0);
+		assert.match(h.stdout(), /Usage: obsidian-query query/);
+		assert.match(h.stdout(), /1 MiB/);
+		assert.deepEqual(h.calls, []);
+		const version = harness();
+		assert.equal(await runConsole(["--version"], version.dependencies), 0);
+		assert.equal(version.stdout(), "2.3.4\n");
+		assert.deepEqual(version.calls, []);
+	});
+
+	test("rejects conflicting, missing, empty, and unknown input options without API calls", async () => {
+		const cases = [
+			["query", "--vault", "vault", "--type", "dql"],
+			["query", "--vault", "vault", "--type", "dql", "--query", "x", "--stdin"],
+			["query", "--vault", "vault", "--type", "dql", "--query", ""],
+			["query", "--vault", "vault", "--type", "dql", "--stdin"],
+			["query", "--vault", "vault", "--type", "dql", "--query", "x", "--unexpected"],
+			["query", "--vault", "vault", "--type", "dql", "--query", "x", "--format", "yaml"],
+		];
+		for (const args of cases) {
+			const h = harness();
+			assert.equal(await runConsole(args, h.dependencies), 1, args.join(" "));
 			assert.deepEqual(h.calls, []);
 			assert.equal(h.stdout(), "");
-			assert.match(
-				h.stderr(),
-				/^UNSUPPORTED_FEATURE: JavaScript query modes are disabled; pass --unsafe-allow-js to run trusted scripts\.\n$/,
-			);
-			assert.doesNotMatch(h.stderr(), /dv\.list/);
+			assert.notEqual(h.stderr(), "");
 		}
-	}
-});
-
-test("help and version do not call the API or require a vault", async () => {
-	const h = harness();
-	assert.equal(await runConsole(["--help"], h.dependencies), 0);
-	assert.match(h.stdout(), /Usage: obsidian-query query/);
-	assert.match(h.stdout(), /1 MiB/);
-	assert.deepEqual(h.calls, []);
-	const version = harness();
-	assert.equal(await runConsole(["--version"], version.dependencies), 0);
-	assert.equal(version.stdout(), "2.3.4\n");
-	assert.deepEqual(version.calls, []);
-});
-
-test("rejects conflicting, missing, empty, and unknown input options without API calls", async () => {
-	const cases = [
-		["query", "--vault", "vault", "--type", "dql"],
-		["query", "--vault", "vault", "--type", "dql", "--query", "x", "--stdin"],
-		["query", "--vault", "vault", "--type", "dql", "--query", ""],
-		["query", "--vault", "vault", "--type", "dql", "--stdin"],
-		["query", "--vault", "vault", "--type", "dql", "--query", "x", "--unexpected"],
-		["query", "--vault", "vault", "--type", "dql", "--query", "x", "--format", "yaml"],
-	];
-	for (const args of cases) {
-		const h = harness();
-		assert.equal(await runConsole(args, h.dependencies), 1, args.join(" "));
-		assert.deepEqual(h.calls, []);
-		assert.equal(h.stdout(), "");
-		assert.notEqual(h.stderr(), "");
-	}
-});
-
-test("rejects malformed or oversized stdin before invoking the API", async () => {
-	const malformed = harness();
-	assert.equal(
-		await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
-			...malformed.dependencies,
-			stdin: (async function* () {
-				yield Uint8Array.of(0xff);
-			})(),
-		}),
-		1,
-	);
-	assert.deepEqual(malformed.calls, []);
-	assert.match(malformed.stderr(), /^INVALID_INPUT: Stdin must contain valid UTF-8\./);
-
-	const oversized = harness();
-	assert.equal(
-		await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
-			...oversized.dependencies,
-			stdin: stdin("x".repeat(1_048_577)),
-		}),
-		1,
-	);
-	assert.deepEqual(oversized.calls, []);
-	assert.match(oversized.stderr(), /^LIMIT_EXCEEDED:/);
-});
-
-test("API failures produce no success output and do not echo query source", async () => {
-	const h = harness();
-	h.dependencies.api.query = () => {
-		throw Object.assign(new Error("Invalid query private query: current file is outside the vault."), {
-			code: "INVALID_PATH",
-		});
-	};
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dql", "--query", "private query", "--file", "../outside.md"],
-			h.dependencies,
-		),
-		1,
-	);
-	assert.equal(h.stdout(), "");
-	assert.equal(h.stderr(), "INVALID_PATH: Invalid query [query]: current file is outside the vault.\n");
-	assert.doesNotMatch(h.stderr(), /private query/);
-});
-
-test("rejects Markdown output when the result cannot be represented faithfully", async () => {
-	const h = harness({
-		data: [{ nested: { value: "x" } }],
-		diagnostics: [],
-		truncated: false,
 	});
-	assert.equal(
-		await runConsole(
-			["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
-			h.dependencies,
-		),
-		1,
-	);
-	assert.equal(h.stdout(), "");
-	assert.match(h.stderr(), /^UNSUPPORTED_FORMAT:/);
+
+	test("rejects malformed or oversized stdin before invoking the API", async () => {
+		const malformed = harness();
+		assert.equal(
+			await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
+				...malformed.dependencies,
+				stdin: (async function* () {
+					yield Uint8Array.of(0xff);
+				})(),
+			}),
+			1,
+		);
+		assert.deepEqual(malformed.calls, []);
+		assert.match(malformed.stderr(), /^INVALID_INPUT: Stdin must contain valid UTF-8\./);
+
+		const oversized = harness();
+		assert.equal(
+			await runConsole(["query", "--vault", "vault", "--type", "dql", "--stdin"], {
+				...oversized.dependencies,
+				stdin: stdin("x".repeat(1_048_577)),
+			}),
+			1,
+		);
+		assert.deepEqual(oversized.calls, []);
+		assert.match(oversized.stderr(), /^LIMIT_EXCEEDED:/);
+	});
+
+	test("API failures produce no success output and do not echo query source", async () => {
+		const h = harness();
+		h.dependencies.api.query = () => {
+			throw Object.assign(new Error("Invalid query private query: current file is outside the vault."), {
+				code: "INVALID_PATH",
+			});
+		};
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dql", "--query", "private query", "--file", "../outside.md"],
+				h.dependencies,
+			),
+			1,
+		);
+		assert.equal(h.stdout(), "");
+		assert.equal(h.stderr(), "INVALID_PATH: Invalid query [query]: current file is outside the vault.\n");
+		assert.doesNotMatch(h.stderr(), /private query/);
+	});
+
+	test("rejects Markdown output when the result cannot be represented faithfully", async () => {
+		const h = harness({
+			data: [{ nested: { value: "x" } }],
+			diagnostics: [],
+			truncated: false,
+		});
+		assert.equal(
+			await runConsole(
+				["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
+				h.dependencies,
+			),
+			1,
+		);
+		assert.equal(h.stdout(), "");
+		assert.match(h.stderr(), /^UNSUPPORTED_FORMAT:/);
+	});
 });

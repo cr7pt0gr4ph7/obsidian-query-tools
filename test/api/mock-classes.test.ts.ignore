@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { test } from "node:test";
-import ts from "typescript";
+import test, { suite } from "node:test";import ts from "typescript";
 
 async function findClass(file: string, name: string): Promise<ts.ClassDeclaration> {
 	const text = await readFile(file, "utf8");
