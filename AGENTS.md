@@ -36,6 +36,10 @@ substantive decisions change.
   mood, and has no trailing period. Examples: `docs: Update the design notes`,
   `build: Update the build scripts`.
 
+Run `git submodule update` to make sure the Git submodules are up to date,
+both on initial checkout and when Git indicates that the submodules are not
+up to date.
+
 Run `npm ci` to install dependencies, `npm run build` to compile TypeScript,
 and `npm test` to build, type-check, and run the current tests.
 Use `npm run format` to reformat code with Biome's standard settings;
