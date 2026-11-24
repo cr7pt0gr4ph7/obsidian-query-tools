@@ -6,8 +6,6 @@ import type { TestContext } from "node:test";
 import test from "node:test";
 import { DataviewApi, DataviewWrapper, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "../../../lib/dataview/wrapper.ts";
 import { App } from "../../../src/host/obsidian/app.ts";
-import "../../../src/host/web-worker/worker-polyfill.ts";
-
 
 async function createTestVaultFixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
