@@ -1,6 +1,6 @@
-import type { MetadataCache } from "../cache/cache";
 import type { EventRef } from "./events";
-import type { OverloadParameters, OverloadUnion } from "./overloads.internal";
+import type { OverloadUnion } from "./overloads.internal";
+import type { withTimeout } from "./promises.internal";
 
 // biome-ignore lint/suspicious/noConfusingVoidType: This type resolves an empty tuple to void, a single-element tuple to the element type, and otherwise keeps the tuple as-is.
 type TupleOrSingleOrVoid<TArgs extends any[]> = TArgs extends [] ? void : TArgs extends [infer T] ? T : TArgs;
@@ -35,16 +35,20 @@ type FindEventArgs<TSearchForKey extends string, TOverload extends (...args: any
  * Convert the argument types of the specified event key in the given overloaded "on" function
  * to a single type suitable for the resolved value of `awaitEvent`.
  */
-type AwaitEventResult<TKey extends string,TOverload extends (...args: any[]) => any> = TupleOrSingleOrVoid<
+type AwaitEventResult<TKey extends string, TOverload extends (...args: any[]) => any> = TupleOrSingleOrVoid<
 	FindEventArgs<TKey, TOverload>
 >;
 
-export function awaitEvent<TKey extends string, TOn extends (event: string, callback: (...args: any[]) => void, ctx?: any) => EventRef>(
+export function awaitEvent<
+	TKey extends string,
+	TOn extends (event: string, callback: (...args: any[]) => void, ctx?: any) => EventRef,
+>(
 	emitter: {
 		on: TOn;
 		offref: (ref: EventRef) => void;
 	},
 	event: TKey,
+	timeoutMs?: number,
 ): Promise<AwaitEventResult<TKey, TOn>>;
 
 export function awaitEvent(
@@ -53,6 +57,7 @@ export function awaitEvent(
 		offref: (ref: EventRef) => void;
 	},
 	event: string,
+	timeoutMs?: number,
 ): Promise<unknown>;
 
 export function awaitEvent(
@@ -61,13 +66,37 @@ export function awaitEvent(
 		offref: (ref: EventRef) => void;
 	},
 	event: string,
+	timeoutMs?: number,
 ): Promise<any> {
-	return new Promise((resolve) => {
+	if (timeoutMs && timeoutMs <= 0) {
+		timeoutMs = undefined;
+	}
+	return new Promise((resolve, reject) => {
 		let ref: EventRef | undefined;
+		let timeout: ReturnType<typeof setTimeout> | undefined;
 		ref = emitter.on(event, (...args) => {
-			// biome-ignore lint/style/noNonNullAssertion: Will always be non-null at this point.
-			emitter.offref(ref!);
+			if (ref !== undefined) {
+				emitter.offref(ref);
+				ref = undefined;
+			}
+			if (timeout !== undefined) {
+				clearTimeout(timeout);
+				timeout = undefined;
+			}
 			resolve(args.length === 0 ? undefined : args.length === 1 ? args[0] : args);
 		});
+		if (timeoutMs !== undefined) {
+			timeout = setTimeout(() => {
+				if (ref !== undefined) {
+					emitter.offref(ref);
+					ref = undefined;
+				}
+				if (timeout !== undefined) {
+					clearTimeout(timeout);
+					timeout = undefined;
+				}
+				reject(new Error(`awaitEvent('${event}') timed out after ${timeoutMs} ms`));
+			}, timeoutMs);
+		}
 	});
 }

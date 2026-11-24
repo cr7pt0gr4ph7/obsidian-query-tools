@@ -8,6 +8,7 @@ import { DataviewApi, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "obsidian-data
 import { DataviewManifest } from "../../../src/host/dataview/manifest.ts";
 import { App } from "../../../src/host/obsidian/app.ts";
 import { Component } from "../../../src/host/obsidian/base/component.ts";
+import { awaitEvent } from "../../../src/host/obsidian/base/events.internal.js";
 
 async function createTestVaultFixture(t: TestContext) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
@@ -56,7 +57,31 @@ suite("Dataview API", () => {
 		);
 		const settings = DEFAULT_DATAVIEW_SETTINGS;
 		const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
-		assert.ok(api);
 		api.index.initialize();
+		assert.ok(api);
+	});
+
+	test("correctly indexes the pages when initializing the Dataview index", async (t) => {
+		const app = new App({ appId: "test-vault", basePath: root });
+		const index = rootComponent.addChild(
+			FullIndex.create(app, DataviewManifest.indexVersion, () => {
+				console.log("Dataview index has changed");
+			}),
+		);
+
+		const settings = DEFAULT_DATAVIEW_SETTINGS;
+		const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
+		const indexReady = awaitEvent(app.metadataCache, "dataview:index-ready", 5000);
+		api.index.initialize();
+
+		console.log("Waiting for index");
+		await indexReady;
+		console.log("Index ready");
+
+		assert.equal(api.index.pages.size, 3);
+		assert.ok(api.index.pages.has(path.join(root, "Tasks", "a.md")));
+		assert.ok(api.index.pages.has(path.join(root, "Tasks", "nested", "b.md")));
+		assert.ok(api.index.pages.has(path.join(root, "root.md")));
+		assert.ok(api);
 	});
 });
