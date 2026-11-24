@@ -366,7 +366,11 @@ export class MetadataCache extends Events {
 	 * @public
 	 */
 	on(name: "resolved", callback: () => any, ctx?: any): EventRef;
-	on(name: "changed" | "deleted" | "resolve" | "resolved", callback: (...args: any[]) => any, ctx?: any): EventRef {
+
+	/** @inheritDoc */
+	on(name: string, callback: (...args: any[]) => any, ctx?: any): EventRef;
+
+	on(name: string, callback: (...args: any[]) => any, ctx?: any): EventRef {
 		return super.on(name, callback, ctx);
 	}
 }
