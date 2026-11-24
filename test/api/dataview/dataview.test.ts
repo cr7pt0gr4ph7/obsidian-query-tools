@@ -46,4 +46,17 @@ suite("Dataview API", () => {
 		const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
 		assert.ok(api);
 	});
+
+	test("can initialize the Dataview index", async (t) => {
+		const app = new App({ appId: "test-vault", basePath: root });
+		const index = rootComponent.addChild(
+			FullIndex.create(app, DataviewManifest.indexVersion, () => {
+				console.log("Dataview index has changed");
+			}),
+		);
+		const settings = DEFAULT_DATAVIEW_SETTINGS;
+		const api = new DataviewApi(app, index, settings, DataviewManifest.pluginVersion);
+		assert.ok(api);
+		api.index.initialize();
+	});
 });
