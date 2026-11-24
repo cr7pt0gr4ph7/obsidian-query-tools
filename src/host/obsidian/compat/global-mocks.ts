@@ -1,7 +1,8 @@
-import { LocalStorage } from "node-localstorage";	
+import "fake-indexeddb/auto";
+import { LocalStorage } from "node-localstorage";
 
 if (!globalThis.localStorage) {
-	globalThis.localStorage = new LocalStorage('./scratch');
+	globalThis.localStorage = new LocalStorage("./scratch");
 }
 
 if (!globalThis.window) {
