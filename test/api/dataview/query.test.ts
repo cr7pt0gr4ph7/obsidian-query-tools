@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
+import { Worker } from "node:worker_threads";
+import { FullIndex } from "obsidian-dataview";
 import { buildDataviewIndex } from "../../../src/api/dataview/query.ts";
 import { openVault } from "../../../src/api/index.ts";
+import { BoundedDataAdapter } from "../../../src/host/obsidian/files/adapter_bounded.ts";
 
 test("pinned Dataview engine evaluates LIST and TABLE over frontmatter", async (t) => {
 	const root = await mkdtemp(path.join(os.tmpdir(), "dataview-query-"));
@@ -93,8 +96,29 @@ test("vault publishes both query indexes together and preserves them after faile
 	await assert.rejects(vault.refresh());
 	assert.equal((await vault.query("LIST")).generation, 2);
 	assert.deepEqual(vault.list('LIST FROM ""').data, ["a.md", "b.md"]);
+	await rm(path.join(root, "b.md"));
+	await writeFile(path.join(root, "a.md"), "---\nstatus: changed\npriority: 4\n---\n");
+	assert.equal(await vault.refresh(), 3);
+	assert.deepEqual((await vault.query("TABLE WITHOUT ID status")).data, {
+		type: "table",
+		headers: ["status"],
+		values: [["changed"]],
+	});
+	assert.deepEqual(vault.list('LIST FROM ""').data, ["a.md"]);
 	vault.close();
 	await assert.rejects(vault.query("LIST"), { code: "VAULT_CLOSED" });
+});
+
+test("vault content is neither executed nor modified by indexing", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "dataview-private-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	const note = '---\nstatus: open\n---\n```dataviewjs\nthrow new Error("DO NOT EXECUTE");\n```\n';
+	const file = path.join(root, "a.md");
+	await writeFile(file, note);
+	const vault = await openVault(root);
+	t.after(() => vault.close());
+	assert.equal((await vault.query('LIST WHERE status = "open"')).data.values.length, 1);
+	assert.equal(await readFile(file, "utf8"), note);
 });
 
 test("Dataview serializes nested frontmatter and uses current-file context", async (t) => {
@@ -131,4 +155,45 @@ test("Dataview serializes nested frontmatter and uses current-file context", asy
 	});
 	assert.equal((await vault.query("LIST", { limit: 1 })).truncated, true);
 	assert.deepEqual((await vault.query('LIST FROM "missing"')).data, { type: "list", values: [] });
+});
+
+test("upstream worker errors become structured query errors", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "dataview-worker-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "# a\n");
+	const create = FullIndex.create;
+	FullIndex.create = (...args) => {
+		const index = create(...args);
+		const workers: unknown = Reflect.get(index.importer, "workers");
+		assert.ok(Array.isArray(workers) && workers[0] instanceof Worker);
+		queueMicrotask(() => workers[0].emit("error", new Error("worker failure")));
+		return index;
+	};
+	try {
+		const index = await buildDataviewIndex(root, { maxEntries: 10, maxFiles: 10, maxFileBytes: 1000, maxResults: 10 });
+		t.after(() => index.close());
+		await assert.rejects(index.query("LIST", undefined, 1, 10), { code: "VAULT_READ_ERROR" });
+	} finally {
+		FullIndex.create = create;
+	}
+});
+
+test("a failed Dataview rebuild leaves both published indexes usable", async (t) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "dataview-rebuild-"));
+	t.after(() => rm(root, { recursive: true, force: true }));
+	await writeFile(path.join(root, "a.md"), "# a\n");
+	const vault = await openVault(root);
+	t.after(() => vault.close());
+	await writeFile(path.join(root, "b.md"), "# b\n");
+	const create = BoundedDataAdapter.create;
+	BoundedDataAdapter.create = async () => {
+		throw new Error("Injected Dataview snapshot failure");
+	};
+	try {
+		await assert.rejects(vault.refresh(), /Injected Dataview snapshot failure/);
+		assert.equal((await vault.query("LIST")).generation, 1);
+		assert.deepEqual(vault.list('LIST FROM ""').data, ["a.md"]);
+	} finally {
+		BoundedDataAdapter.create = create;
+	}
 });

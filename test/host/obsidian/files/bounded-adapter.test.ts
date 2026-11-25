@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { suite, test } from "node:test";
+import { App } from "../../../../src/host/obsidian/app.ts";
 import { BoundedDataAdapter } from "../../../../src/host/obsidian/files/adapter_bounded.ts";
 import { Vault } from "../../../../src/host/obsidian/files/vault.ts";
 
@@ -75,6 +77,32 @@ suite("Bounded data adapter", () => {
 		await writeFile(path.join(outside, "secret.md"), "secret");
 		await symlink(outside, path.join(root, "linked"));
 		await assert.rejects(BoundedDataAdapter.create(root, limits), { code: "UNSAFE_PATH" });
+		await rm(path.join(root, "linked"));
+		await symlink(path.join(outside, "secret.md"), path.join(root, "leaf.md"));
+		await assert.rejects(BoundedDataAdapter.create(root, limits), { code: "UNSAFE_PATH" });
+		await rm(path.join(root, "leaf.md"));
+		execFileSync("mkfifo", [path.join(root, "pipe")]);
+		await assert.rejects(BoundedDataAdapter.create(root, limits), { code: "UNSAFE_PATH" });
 		assert.equal(await readFile(path.join(outside, "secret.md"), "utf8"), "secret");
+	});
+
+	test("injected snapshot supplies partial metadata and deterministic link resolution", async (t) => {
+		const root = await mkdtemp(path.join(os.tmpdir(), "bounded-host-"));
+		t.after(() => rm(root, { recursive: true, force: true }));
+		await mkdir(path.join(root, "first"));
+		await mkdir(path.join(root, "second"));
+		await writeFile(path.join(root, "first", "item.md"), "---\r\nstatus: open\r\n---\r\n# body\nfield:: hidden\n");
+		await writeFile(path.join(root, "second", "item.md"), "# other\n");
+		await writeFile(path.join(root, "second", "source.md"), "# source\n");
+		const adapter = await BoundedDataAdapter.create(root, { maxEntries: 10, maxFiles: 3, maxFileBytes: 100 });
+		const app = new App({ appId: "test", basePath: root, adapter });
+		await app.vault.initialize();
+		await app.metadataCache.initialize();
+		assert.equal(app.metadataCache.getCache("first/item.md")?.frontmatter?.status, "open");
+		assert.deepEqual(app.metadataCache.getCache("first/item.md")?.sections, []);
+		assert.equal(app.metadataCache.getFirstLinkpathDest("item", "second/source.md")?.path, "second/item.md");
+		assert.equal(app.metadataCache.getFirstLinkpathDest("first/item", "second/source.md")?.path, "first/item.md");
+		assert.equal(app.metadataCache.getFirstLinkpathDest("item", "source.md")?.path, "first/item.md");
+		assert.equal(app.metadataCache.getFirstLinkpathDest("../outside", "source.md"), null);
 	});
 });
