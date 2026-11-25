@@ -45,3 +45,7 @@ and `npm test` to build, type-check, and run the current tests.
 Use `npm run format` to reformat code with Biome's standard settings;
 `npm run format:check` checks formatting and is a required CI check. Run
 `npm run format:check` whenever TypeScript files are changed.
+
+You also need to install `bun` for building the `lib/breadcrumbs` submodule.
+You can use `bun --version`to verify the presence of the executable.
+You can install `bun` by running `curl -fsSL https://bun.com/install | bash`.
