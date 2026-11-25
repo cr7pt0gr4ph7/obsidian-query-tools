@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import path from "node:path";
 import type { TestContext } from "node:test";
 import test, { beforeEach, suite } from "node:test";
 import { DataviewApi, DEFAULT_DATAVIEW_SETTINGS, FullIndex } from "obsidian-dataview";
@@ -58,10 +57,7 @@ suite("Dataview API", () => {
 		const indexReady = awaitEvent(app.metadataCache, "dataview:index-ready", 5000);
 		api.index.initialize();
 		await indexReady;
-		assert.equal(api.index.pages.size, 3);
-		assert.ok(api.index.pages.has(path.join(root, "Tasks", "a.md")));
-		assert.ok(api.index.pages.has(path.join(root, "Tasks", "nested", "b.md")));
-		assert.ok(api.index.pages.has(path.join(root, "root.md")));
+		assert.deepEqual([...api.index.pages.keys()].sort(), ["Tasks/a.md", "Tasks/nested/b.md", "root.md"]);
 		assert.ok(api);
 	});
 });

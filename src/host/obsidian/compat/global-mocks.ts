@@ -16,6 +16,7 @@ if (!globalThis.window) {
 		clearInterval: globalThis.clearInterval,
 		setTimeout: globalThis.setTimeout,
 		clearTimeout: globalThis.clearTimeout,
+		performance: globalThis.performance,
 		navigator: {
 			get language() {
 				return globalThis.navigator?.language ?? "en-US";

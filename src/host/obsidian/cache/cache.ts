@@ -286,6 +286,9 @@ export class MetadataCache extends Events {
 	private fileMetadata: Map<string, CachedMetadata> = new Map();
 
 	/** @unofficial */
+	initialized = false;
+
+	/** @unofficial */
 	constructor(
 		public app: App,
 		public vault: Vault,
@@ -293,11 +296,18 @@ export class MetadataCache extends Events {
 		super();
 	}
 
-	/** @unofficial */
+	/**
+	 * Indexes the vault's Markdown files and emits `initialized` when complete.
+	 *
+	 * @returns A promise that resolves after initialization.
+	 * @unofficial
+	 */
 	async initialize(): Promise<void> {
 		for (const file of this.vault.getMarkdownFiles()) {
 			await this.computeFileMetadataAsync(file);
 		}
+		this.initialized = true;
+		this.trigger("initialized");
 	}
 
 	/** @unofficial */

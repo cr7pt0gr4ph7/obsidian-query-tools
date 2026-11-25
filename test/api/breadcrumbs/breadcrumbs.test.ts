@@ -22,11 +22,19 @@ suite("Breadcrumbs API", () => {
 	});
 
 	test("can initialize a Breadcrumbs plugin instance", async (t) => {
-		const graphReady = awaitEvent(app.workspace, "graph-update", 5000);
-		const plugin = rootComponent.addChild(new BreadcrumbsPlugin(app, breadcrumbsManifest));
-		console.log("Waiting for graph to become ready...")
+		const plugin = new BreadcrumbsPlugin(app, breadcrumbsManifest);
+		let pluginLoaded: Promise<void> | undefined;
+		const onload = plugin.onload.bind(plugin);
+		plugin.onload = () => {
+			pluginLoaded = Promise.resolve(onload());
+			return pluginLoaded;
+		};
+		rootComponent.addChild(plugin);
+		assert.ok(pluginLoaded);
+		await pluginLoaded;
+
+		const graphReady = awaitEvent(plugin.events, "graph-update", 5000);
 		await graphReady;
-		console.log("Graph is ready")
 		assert.ok(plugin);
 	});
 });
