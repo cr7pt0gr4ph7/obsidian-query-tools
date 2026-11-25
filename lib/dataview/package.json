@@ -4,9 +4,9 @@
 	"description": "Advanced data views for Obsidian.md.",
 	"exports": {
 		".": {
-			"default": "./lib/index.js",
 			"require": "./lib/index.js",
-			"types": "./lib/index.d.ts"
+			"types": "./lib/index.d.ts",
+			"default": "./lib/index.js"
 		},
 		"./manifest.json": "./manifest.json"
 	},
