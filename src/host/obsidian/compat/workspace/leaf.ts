@@ -1,3 +1,4 @@
+import type { App } from "../../app.js";
 import type { EventRef } from "../../base/events.js";
 import type { TFile } from "../../files/files.js";
 import type { HoverParent, HoverPopover } from "../extensions/hover.js";
@@ -67,13 +68,23 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	declare hoverPopover: HoverPopover | null;
 
 	/**
+	 * The workspace item type identifier for this leaf.
+	 * @unofficial
+	 */
+	declare readonly type: "leaf";
+
+	constructor(app: App, id?: string) {
+		super(app.workspace, id);
+	}
+
+	/**
 	 * Open a file in this leaf.
 	 * @param file The file.
 	 * @param openState Options for opening the file.
 	 * @public
 	 */
-	openFile(file: TFile, openState?: OpenViewState): Promise<void> {
-		throw new Error("Method not implemented.");
+	async openFile(file: TFile, openState?: OpenViewState): Promise<void> {
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -81,8 +92,9 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @param view The view.
 	 * @public
 	 */
-	open(view: View): Promise<View> {
-		throw new Error("Method not implemented.");
+	async open(view: View): Promise<View> {
+		// Ignored, as this is a stub implementation
+		return null as any as View;
 	}
 
 	/**
@@ -90,7 +102,8 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @public
 	 */
 	getViewState(): ViewState {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return {} as any as ViewState;
 	}
 
 	/**
@@ -99,8 +112,8 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @param eState The ephemeral state.
 	 * @public
 	 */
-	setViewState(viewState: ViewState, eState?: any): Promise<void> {
-		throw new Error("Method not implemented.");
+	async setViewState(viewState: ViewState, eState?: any): Promise<void> {
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -111,7 +124,8 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @public
 	 */
 	get isDeferred(): boolean {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		return false;
 	}
 
 	/**
@@ -119,8 +133,8 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 	 * @since 1.7.2
 	 * @public
 	 */
-	loadIfDeferred(): Promise<void> {
-		throw new Error("Method not implemented.");
+	async loadIfDeferred(): Promise<void> {
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -226,3 +240,10 @@ export class WorkspaceLeaf extends WorkspaceItem implements HoverParent {
 		return super.on(name, callback, ctx);
 	}
 }
+
+Object.defineProperty(WorkspaceLeaf.prototype, "type", {
+	value: "leaf",
+	writable: false,
+	enumerable: true,
+	configurable: true
+});

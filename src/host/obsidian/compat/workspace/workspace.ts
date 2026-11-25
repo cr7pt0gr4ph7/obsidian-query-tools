@@ -123,7 +123,8 @@ export class Workspace extends Events {
 	 * @since 0.11.0
 	 */
 	onLayoutReady(callback: () => any): void {
-		throw new Error("Method not implemented.");
+		// Execute immediately, as this is a stub implementation
+		callback();
 	}
 
 	/**
@@ -132,8 +133,8 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.9.7
 	 */
-	changeLayout(workspace: any): Promise<void> {
-		throw new Error("Method not implemented.");
+	async changeLayout(workspace: any): Promise<void> {
+        // Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -142,7 +143,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getLayout(): Record<string, unknown> {
-		throw new Error("Method not implemented.");
+        // Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {};
 	}
 
 	/**
@@ -153,7 +156,9 @@ export class Workspace extends Events {
 	 * @since 0.9.11
 	 */
 	createLeafInParent(parent: WorkspaceSplit, index: number): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+        // Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -165,7 +170,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	createLeafBySplit(leaf: WorkspaceLeaf, direction?: SplitDirection, before?: boolean): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+        // Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -176,7 +183,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	splitActiveLeaf(direction?: SplitDirection): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+        // Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -199,12 +208,14 @@ export class Workspace extends Events {
 	 */
 	duplicateLeaf(leaf: WorkspaceLeaf, leafType: PaneType | boolean, direction?: SplitDirection): Promise<WorkspaceLeaf>;
 
-	duplicateLeaf(
+	async duplicateLeaf(
 		leaf: WorkspaceLeaf,
 		directionOrLeafType?: SplitDirection | PaneType | boolean,
 		direction?: SplitDirection,
 	): Promise<WorkspaceLeaf> {
-		throw new Error("Method not implemented.");
+        // Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -213,7 +224,9 @@ export class Workspace extends Events {
 	 * @deprecated - You should use {@link Workspace.getLeaf|getLeaf(false)} instead which does the same thing.
 	 */
 	getUnpinnedLeaf(): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -241,7 +254,9 @@ export class Workspace extends Events {
 	 * @since 0.16.0
 	 */
 	getLeaf(newLeaf?: PaneType | boolean): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -254,7 +269,9 @@ export class Workspace extends Events {
 	 * @since 0.15.4
 	 */
 	moveLeafToPopout(leaf: WorkspaceLeaf, data?: WorkspaceWindowInitData): WorkspaceWindow {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceWindow;
 	}
 
 	/**
@@ -265,7 +282,9 @@ export class Workspace extends Events {
 	 * @since 0.15.4
 	 */
 	openPopoutLeaf(data?: WorkspaceWindowInitData): WorkspaceLeaf {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -277,13 +296,13 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 0.16.0
 	 */
-	openLinkText(
+	async openLinkText(
 		linktext: string,
 		sourcePath: string,
 		newLeaf?: PaneType | boolean,
 		openViewState?: OpenViewState,
 	): Promise<void> {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -314,7 +333,7 @@ export class Workspace extends Events {
 	setActiveLeaf(leaf: WorkspaceLeaf, pushHistory: boolean, focus: boolean): void;
 
 	setActiveLeaf(leaf: WorkspaceLeaf, paramsOrPushHistory?: boolean | { focus?: boolean }, focus?: boolean): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -325,7 +344,9 @@ export class Workspace extends Events {
 	 * @since 1.5.1
 	 */
 	getLeafById(id: string): WorkspaceLeaf | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Always return null, indicating that no leaf with this ID exists.
+		return null;
 	}
 
 	/**
@@ -335,7 +356,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getGroupLeaves(group: string): WorkspaceLeaf[] {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an empty array, indicating that no leaves belong to this group.
+		return [];
 	}
 
 	/**
@@ -346,7 +369,9 @@ export class Workspace extends Events {
 	 * @since 0.15.4
 	 */
 	getMostRecentLeaf(root?: WorkspaceParent): WorkspaceLeaf | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return null, indicating that there is no most recent leaf.
+		return null;
 	}
 
 	/**
@@ -356,7 +381,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getLeftLeaf(split: boolean): WorkspaceLeaf | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return null, indicating that no left leaf exists.
+		return null;
 	}
 
 	/**
@@ -366,7 +393,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getRightLeaf(split: boolean): WorkspaceLeaf | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return null, indicating that no right leaf exists.
+		return null;
 	}
 
 	/**
@@ -377,7 +406,7 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 1.7.2
 	 */
-	ensureSideLeaf(
+	async ensureSideLeaf(
 		type: string,
 		side: Side,
 		options?: {
@@ -394,7 +423,9 @@ export class Workspace extends Events {
 			state?: any;
 		},
 	): Promise<WorkspaceLeaf> {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an invalid stub value
+		return {} as WorkspaceLeaf;
 	}
 
 	/**
@@ -405,7 +436,9 @@ export class Workspace extends Events {
 	 * @since 0.9.16
 	 */
 	getActiveViewOfType<T extends View>(type: Constructor<T>): T | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return null, indicating that no active view of this type exists.
+		return null;
 	}
 
 	/**
@@ -415,7 +448,9 @@ export class Workspace extends Events {
 	 * @public
 	 */
 	getActiveFile(): TFile | null {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return null, indicating that there is no active file.
+		return null;
 	}
 
 	/**
@@ -425,7 +460,8 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	iterateRootLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Do nothing.
 	}
 
 	/**
@@ -435,7 +471,8 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Do nothing.
 	}
 
 	/**
@@ -445,7 +482,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getLeavesOfType(viewType: string): WorkspaceLeaf[] {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an empty array, indicating that no leaves of this type exist.
+		return [];
 	}
 
 	/**
@@ -455,7 +494,8 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	detachLeavesOfType(viewType: string): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Do nothing.
 	}
 
 	/**
@@ -465,8 +505,8 @@ export class Workspace extends Events {
 	 * @public
 	 * @since 1.7.2
 	 */
-	revealLeaf(leaf: WorkspaceLeaf): Promise<void> {
-		throw new Error("Method not implemented.");
+	async revealLeaf(leaf: WorkspaceLeaf): Promise<void> {
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -475,7 +515,9 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getLastOpenFiles(): string[] {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return an empty array, indicating that there are no recently opened files.
+		return [];
 	}
 
 	/**
@@ -485,14 +527,14 @@ export class Workspace extends Events {
 	 * @since 0.13.21
 	 */
 	updateOptions(): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
 	 * @public
 	 */
 	iterateCodeMirrors(callback: (cm: any) => any): void {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -501,7 +543,9 @@ export class Workspace extends Events {
 	 * @since 0.12.10
 	 */
 	handleLinkContextMenu(menu: Menu, linktext: string, sourcePath: string, leaf?: WorkspaceLeaf): boolean {
-		throw new Error("Method not implemented.");
+		// Ignored, as this is a stub implementation
+		// Return false, indicating that the context menu was not handled.
+		return false;
 	}
 
 	/**

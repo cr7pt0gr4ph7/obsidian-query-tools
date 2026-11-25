@@ -4,7 +4,7 @@ import path from "node:path";
 import type { TestContext } from "node:test";
 import { Component } from "../../src/host/obsidian/base/component.ts";
 
-export async function createTestVaultFixture(kind: "simple", t: TestContext) {
+export async function createTestVaultFixture(kind: "simple" | "simple-breadcrumbs", t: TestContext) {
 	if (kind === "simple") {
 		const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
 		t.after(() => rm(root, { recursive: true, force: true }));
@@ -12,6 +12,61 @@ export async function createTestVaultFixture(kind: "simple", t: TestContext) {
 		await writeFile(path.join(root, "Tasks", "a.md"), `---\nparent: root\n---\nstatus:: open\n`);
 		await writeFile(path.join(root, "Tasks", "nested", "b.md"), "---\nparent: [root.md, Tasks/a.md]\n---\n");
 		await writeFile(path.join(root, "root.md"), "# Root\n");
+		return root;
+	} else if (kind === "simple-breadcrumbs") {
+		const root = await mkdtemp(path.join(os.tmpdir(), "query-tools-test-"));
+		t.after(() => rm(root, { recursive: true, force: true }));
+		await mkdir(path.join(root, "Tasks", "nested"), { recursive: true });
+		await writeFile(path.join(root, "Tasks", "a.md"), `---\nparent: root\n---\nstatus:: open\n`);
+		await writeFile(path.join(root, "Tasks", "nested", "b.md"), "---\nparent: [root.md, Tasks/a.md]\n---\n");
+		await writeFile(path.join(root, "root.md"), "# Root\n");
+		await mkdir(path.join(root, ".obsidian", "breadcrumbs"));
+		await writeFile(
+			path.join(root, ".obsidian", "breadcrumbs", "data.json"),
+			JSON.stringify({
+				is_dirty: false,
+				edge_fields: [
+					{
+						label: "parent",
+					},
+					{
+						label: "child",
+					},
+				],
+				edge_field_groups: [
+					{
+						label: "Tree",
+						fields: ["parent", "child"],
+					},
+				],
+				implied_relations: {
+					transitive: [
+						{
+							chain: [
+								{
+									field: "child",
+								},
+							],
+							close_field: "parent",
+							close_reversed: true,
+							name: "child <=> parent (inverse)",
+							rounds: 1,
+						},
+						{
+							chain: [
+								{
+									field: "parent",
+								},
+							],
+							close_field: "child",
+							close_reversed: true,
+							name: "parent <=> child (inverse)",
+							rounds: 1,
+						},
+					],
+				},
+			}),
+		);
 		return root;
 	} else {
 		throw new Error(`Unknown test vault kind: ${kind}`);

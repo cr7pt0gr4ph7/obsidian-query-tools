@@ -18,7 +18,20 @@ export class WorkspaceSplit extends WorkspaceParent {
 	 * @public
 	 */
 	declare parent: WorkspaceParent;
+
+	/**
+	 * @inheritDoc
+	 * @unofficial
+	 */
+	declare readonly type: "split";
 }
+
+Object.defineProperty(WorkspaceSplit.prototype, "type", {
+	value: "split",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
 
 /**
  * A top-level split of the workspace, which belongs to a single window.
@@ -94,7 +107,20 @@ export class WorkspaceFloating extends WorkspaceParent {
 	 * @since 0.15.2
 	 */
 	declare parent: WorkspaceParent;
+
+	/**
+	 * The type of this workspace item.
+	 * @unofficial
+	 */
+	declare readonly type: string;
 }
+
+Object.defineProperty(WorkspaceFloating.prototype, "type", {
+	value: "floating",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
 
 /**
  * The mobile version of {@link WorkspaceSidedock}, shown as a drawer.
@@ -112,14 +138,20 @@ export class WorkspaceMobileDrawer extends WorkspaceParent {
 	 * Whether the mobile drawer is collapsed.
 	 * @public
 	 */
-	declare collapsed: boolean;
+	collapsed: boolean = true;
+
+	/**
+	 * The type of this workspace item.
+	 * @unofficial
+	 */
+	declare readonly type: string;
 
 	/**
 	 * Expand the mobile drawer.
 	 * @public
 	 */
 	expand(): void {
-		throw new Error("Method not implemented.");
+		this.collapsed = false;
 	}
 
 	/**
@@ -127,7 +159,7 @@ export class WorkspaceMobileDrawer extends WorkspaceParent {
 	 * @public
 	 */
 	collapse(): void {
-		throw new Error("Method not implemented.");
+		this.collapsed = true;
 	}
 
 	/**
@@ -135,9 +167,16 @@ export class WorkspaceMobileDrawer extends WorkspaceParent {
 	 * @public
 	 */
 	toggle(): void {
-		throw new Error("Method not implemented.");
+		this.collapsed = !this.collapsed;
 	}
 }
+
+Object.defineProperty(WorkspaceMobileDrawer.prototype, "type", {
+	value: "mobile-drawer",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
 
 /**
  * The root split of the workspace in the main window, which contains the main area.
@@ -158,6 +197,13 @@ export class WorkspaceRoot extends WorkspaceContainer {
 	declare doc: Document;
 }
 
+Object.defineProperty(WorkspaceRoot.prototype, "type", {
+	value: "root",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
+
 /**
  * A tab group, which shows one of its leaves at a time.
  * @public
@@ -168,7 +214,20 @@ export class WorkspaceTabs extends WorkspaceParent {
 	 * @public
 	 */
 	declare parent: WorkspaceSplit;
+
+	/**
+	 * The type of this workspace item.
+	 * @unofficial
+	 */
+	declare readonly type: string;
 }
+
+Object.defineProperty(WorkspaceTabs.prototype, "type", {
+	value: "tabs",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
 
 /**
  * A popout window in the workspace.
@@ -188,6 +247,13 @@ export class WorkspaceWindow extends WorkspaceContainer {
 	 */
 	declare doc: Document;
 }
+
+Object.defineProperty(WorkspaceWindow.prototype, "type", {
+	value: "window",
+	writable: false,
+	enumerable: true,
+	configurable: true,
+});
 
 /**
  * Options for creating a popout window.

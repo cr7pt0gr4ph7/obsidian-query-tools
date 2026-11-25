@@ -1,5 +1,6 @@
 import { Events } from "../../base/events.js";
 import type { WorkspaceContainer, WorkspaceParent } from "./parent.js";
+import type { Workspace } from "./workspace.js";
 
 /**
  * An item in the workspace layout, such as a leaf or a parent containing other items.
@@ -13,6 +14,28 @@ export abstract class WorkspaceItem extends Events {
 	 * @since 1.6.6
 	 */
 	abstract parent: WorkspaceParent;
+
+	/**
+	 * Unique identifier for this workspace item.
+	 * @unofficial
+	 */
+	id: string;
+
+	/**
+	 * The type identifier for this workspace item.
+	 * @unofficial
+	 */
+	abstract readonly type: string;
+
+	constructor(workspace: Workspace, id?: string) {
+		super();
+		this.id = id ?? crypto.randomUUID();
+	}
+
+	/** @unofficial */
+	setParent(parent: WorkspaceParent): void {
+		this.parent = parent;
+	}
 
 	/**
 	 * Get the root container that this item is in.
