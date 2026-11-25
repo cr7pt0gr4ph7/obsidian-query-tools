@@ -245,5 +245,5 @@ Object.defineProperty(WorkspaceLeaf.prototype, "type", {
 	value: "leaf",
 	writable: false,
 	enumerable: true,
-	configurable: true
+	configurable: true,
 });

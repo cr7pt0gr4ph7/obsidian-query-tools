@@ -10,19 +10,23 @@ import { awaitEvent, createRootComponent, createTestVaultFixture } from "../../t
 suite("Breadcrumbs API", () => {
 	let rootComponent: Component;
 	let root: string;
-    let app: App;
+	let app: App;
 
 	beforeEach(async (t) => {
 		rootComponent = createRootComponent(t as TestContext);
 		root = await createTestVaultFixture("simple-breadcrumbs", t as TestContext);
-        app = new App({ appId: "test-vault", basePath: root });
+		app = new App({ appId: "test-vault", basePath: root });
 
-        await app.vault.initialize();
+		await app.vault.initialize();
 		await app.metadataCache.initialize();
 	});
 
 	test("can initialize a Breadcrumbs plugin instance", async (t) => {
+		const graphReady = awaitEvent(app.workspace, "graph-update", 5000);
 		const plugin = rootComponent.addChild(new BreadcrumbsPlugin(app, breadcrumbsManifest));
+		console.log("Waiting for graph to become ready...")
+		await graphReady;
+		console.log("Graph is ready")
 		assert.ok(plugin);
 	});
 });

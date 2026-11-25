@@ -6,10 +6,27 @@ import type { EventRef } from "./events.js";
  * @since 0.9.7
  */
 export class Component {
-	private loaded = false;
-	private started = false;
-	private readonly children = new Set<Component>();
-	private readonly cleanups: Array<() => unknown> = [];
+	/**
+	 * Whether the component and its children are currently loaded.
+	 * @unofficial
+	 */
+	_loaded = false;
+
+	/**
+	 * Whether the component has been started (load process initiated).
+	 * @internal
+	 */
+	_started = false;
+
+	/**
+	 * Child Components attached to current component,
+	 * will be unloaded on unloading parent component.
+	 * @unofficial
+	 */
+	readonly _children = new Set<Component>();
+
+	/** @internal */
+	readonly _cleanups: Array<() => unknown> = [];
 
 	/**
 	 * Load this component and its children.
@@ -17,18 +34,18 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	load(): void {
-		if (this.loaded) {
+		if (this._loaded) {
 			return;
 		}
-		this.started = true;
-		this.loaded = true;
+		this._started = true;
+		this._loaded = true;
 		try {
 			this.onload();
 		} catch (error) {
-			this.loaded = false;
+			this._loaded = false;
 			throw error;
 		}
-		for (const child of this.children) {
+		for (const child of this._children) {
 			child.load();
 		}
 	}
@@ -49,10 +66,10 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	unload(): void {
-		if (!this.loaded) {
+		if (!this._loaded) {
 			return;
 		}
-		this.loaded = false;
+		this._loaded = false;
 		let firstError: unknown;
 		const runCleanup = (cleanup: () => unknown) => {
 			try {
@@ -66,11 +83,11 @@ export class Component {
 		} catch (error) {
 			firstError ??= error;
 		}
-		for (const cleanup of [...this.cleanups].reverse()) {
+		for (const cleanup of [...this._cleanups].reverse()) {
 			runCleanup(cleanup);
 		}
-		this.cleanups.length = 0;
-		for (const child of [...this.children].reverse()) {
+		this._cleanups.length = 0;
+		for (const child of [...this._children].reverse()) {
 			try {
 				child.unload();
 			} catch (error) {
@@ -99,8 +116,8 @@ export class Component {
 	 * @since 0.12.0
 	 */
 	addChild<T extends Component>(component: T): T {
-		this.children.add(component);
-		if (this.loaded) {
+		this._children.add(component);
+		if (this._loaded) {
 			component.load();
 		}
 		return component;
@@ -113,7 +130,7 @@ export class Component {
 	 * @since 0.12.0
 	 */
 	removeChild<T extends Component>(component: T): T {
-		this.children.delete(component);
+		this._children.delete(component);
 		component.unload();
 		return component;
 	}
@@ -125,11 +142,11 @@ export class Component {
 	 * @since 0.9.7
 	 */
 	register(cb: () => any): void {
-		if (this.started && !this.loaded) {
+		if (this._started && !this._loaded) {
 			cb();
 			return;
 		}
-		this.cleanups.push(cb);
+		this._cleanups.push(cb);
 	}
 
 	/**

@@ -134,7 +134,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	async changeLayout(workspace: any): Promise<void> {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 	}
 
 	/**
@@ -143,7 +143,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	getLayout(): Record<string, unknown> {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 		// Return an invalid stub value
 		return {};
 	}
@@ -156,7 +156,7 @@ export class Workspace extends Events {
 	 * @since 0.9.11
 	 */
 	createLeafInParent(parent: WorkspaceSplit, index: number): WorkspaceLeaf {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 		// Return an invalid stub value
 		return {} as WorkspaceLeaf;
 	}
@@ -170,7 +170,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	createLeafBySplit(leaf: WorkspaceLeaf, direction?: SplitDirection, before?: boolean): WorkspaceLeaf {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 		// Return an invalid stub value
 		return {} as WorkspaceLeaf;
 	}
@@ -183,7 +183,7 @@ export class Workspace extends Events {
 	 * @since 0.9.7
 	 */
 	splitActiveLeaf(direction?: SplitDirection): WorkspaceLeaf {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 		// Return an invalid stub value
 		return {} as WorkspaceLeaf;
 	}
@@ -213,7 +213,7 @@ export class Workspace extends Events {
 		directionOrLeafType?: SplitDirection | PaneType | boolean,
 		direction?: SplitDirection,
 	): Promise<WorkspaceLeaf> {
-        // Ignored, as this is a stub implementation
+		// Ignored, as this is a stub implementation
 		// Return an invalid stub value
 		return {} as WorkspaceLeaf;
 	}

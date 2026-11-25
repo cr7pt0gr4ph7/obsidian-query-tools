@@ -20,9 +20,9 @@ export async function createTestVaultFixture(kind: "simple" | "simple-breadcrumb
 		await writeFile(path.join(root, "Tasks", "a.md"), `---\nparent: root\n---\nstatus:: open\n`);
 		await writeFile(path.join(root, "Tasks", "nested", "b.md"), "---\nparent: [root.md, Tasks/a.md]\n---\n");
 		await writeFile(path.join(root, "root.md"), "# Root\n");
-		await mkdir(path.join(root, ".obsidian", "breadcrumbs"));
+		await mkdir(path.join(root, ".obsidian", "plugins", "breadcrumbs"), { recursive: true });
 		await writeFile(
-			path.join(root, ".obsidian", "breadcrumbs", "data.json"),
+			path.join(root, ".obsidian", "plugins", "breadcrumbs", "data.json"),
 			JSON.stringify({
 				is_dirty: false,
 				edge_fields: [

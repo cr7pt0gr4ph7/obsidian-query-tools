@@ -9,6 +9,7 @@ import { Plugins } from "./extensions/plugins.unofficial.js";
 import { FileSystemAdapter } from "./files/adapter_filesystem.js";
 import type { FileManager } from "./files/files.js";
 import { Vault } from "./files/vault.js";
+import { MetadataTypeManager } from "./metadata/metadata.unofficial.js";
 
 /**
  * The main app object.
@@ -51,6 +52,11 @@ export class App {
 	metadataCache: MetadataCache;
 
 	/**
+	 * @unofficial
+	 */
+	metadataTypeManager: MetadataTypeManager;
+
+	/**
 	 * The file manager.
 	 * @public
 	 * @since 0.11.0
@@ -88,6 +94,7 @@ export class App {
 		this.fileManager = this.vault.fileManager;
 		this.secretStorage = new SecretStorage();
 		this.metadataCache = new MetadataCache(this, this.vault);
+		this.metadataTypeManager = new MetadataTypeManager(this);
 
 		this.appId = options.appId;
 		this.plugins = new Plugins(this);
