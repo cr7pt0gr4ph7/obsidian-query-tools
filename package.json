@@ -19,7 +19,7 @@
 	},
 	"scripts": {
 		"preinstall": "npm run install:deps && npm run build:deps",
-		"install:deps": "npm run install:deps:dataview",
+		"install:deps": "npm run install:deps:dataview && npm run install:deps:breadcrumbs",
 		"install:deps:dataview": "cd lib/dataview && npm run install-build-deps",
 		"install:deps:breadcrumbs": "cd lib/breadcrumbs && npm run install-build-deps",
 		"build:deps": "npm run build:deps:dataview && npm run build:deps:breadcrumbs",
