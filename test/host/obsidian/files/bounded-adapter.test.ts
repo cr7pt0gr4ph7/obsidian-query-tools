@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from "node:fs/promises";
+import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { suite, test } from "node:test";
@@ -104,5 +105,50 @@ suite("Bounded data adapter", () => {
 		assert.equal(app.metadataCache.getFirstLinkpathDest("first/item", "second/source.md")?.path, "first/item.md");
 		assert.equal(app.metadataCache.getFirstLinkpathDest("item", "source.md")?.path, "first/item.md");
 		assert.equal(app.metadataCache.getFirstLinkpathDest("../outside", "source.md"), null);
+	});
+
+	test("rejects file and directory replacements between lookup and open", async (t) => {
+		const root = await mkdtemp(path.join(os.tmpdir(), "bounded-race-"));
+		const outside = await mkdtemp(path.join(os.tmpdir(), "bounded-race-outside-"));
+		t.after(async () => {
+			await rm(root, { recursive: true, force: true });
+			await rm(outside, { recursive: true, force: true });
+		});
+		const sentinel = path.join(outside, "secret.md");
+		await writeFile(sentinel, "outside");
+		const original = fs.lstat;
+		try {
+			for (const kind of ["file", "directory"]) {
+				const name = kind === "file" ? "victim.md" : "victim";
+				const victim = path.join(root, name);
+				if (kind === "file") await writeFile(victim, "safe");
+				else await mkdir(victim);
+				let replaced = false;
+				Object.defineProperty(fs, "lstat", {
+					configurable: true,
+					writable: true,
+					value: async (target: string) => {
+						const stat = await original(target);
+						if (!replaced && target.endsWith(`/${name}`)) {
+							replaced = true;
+							await rename(target, `${target}.old`);
+							await symlink(kind === "file" ? sentinel : outside, target);
+						}
+						return stat;
+					},
+				});
+				syncBuiltinESMExports();
+				await assert.rejects(BoundedDataAdapter.create(root, limits), { code: "VAULT_READ_ERROR" });
+				assert.equal(replaced, true);
+				Object.defineProperty(fs, "lstat", { configurable: true, writable: true, value: original });
+				syncBuiltinESMExports();
+				await rm(victim);
+				await rm(`${victim}.old`, { recursive: kind === "directory" });
+			}
+		} finally {
+			Object.defineProperty(fs, "lstat", { configurable: true, writable: true, value: original });
+			syncBuiltinESMExports();
+		}
+		assert.equal(await readFile(sentinel, "utf8"), "outside");
 	});
 });
