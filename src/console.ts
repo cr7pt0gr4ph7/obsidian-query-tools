@@ -138,6 +138,35 @@ function escapeMarkdown(value: string): string {
 }
 
 function markdown(data: unknown): string {
+	if (data && typeof data === "object" && "type" in data && "values" in data && Array.isArray(data.values)) {
+		const cell = (value: unknown): string => {
+			if (value && typeof value === "object" && "type" in value) {
+				if (value.type === "link" && "path" in value && typeof value.path === "string") {
+					return value.path;
+				}
+				if (value.type === "list-pair" && "key" in value && "value" in value) {
+					return `${cell(value.key)}: ${cell(value.value)}`;
+				}
+			}
+			if (Array.isArray(value)) return value.map(cell).join(", ");
+			if (value !== null && typeof value === "object") return JSON.stringify(value);
+			return markdownValue(value);
+		};
+		if (data.type === "list") {
+			return data.values.length ? `${data.values.map((item) => `- ${escapeMarkdown(cell(item))}`).join("\n")}\n` : "\n";
+		}
+		if (data.type === "table" && "headers" in data && Array.isArray(data.headers)) {
+			const headers = data.headers;
+			if (
+				!headers.every((header) => typeof header === "string") ||
+				!data.values.every((row) => Array.isArray(row) && row.length === headers.length)
+			) {
+				throw new ConsoleError("UNSUPPORTED_FORMAT", "This result cannot be represented as a Markdown table.");
+			}
+			const row = (values: unknown[]) => `| ${values.map((value) => escapeMarkdown(cell(value))).join(" | ")} |`;
+			return `${[row(headers), `| ${headers.map(() => "---").join(" | ")} |`, ...data.values.map(row)].join("\n")}\n`;
+		}
+	}
 	if (typeof data === "string") {
 		return `${escapeMarkdown(data)}\n`;
 	}

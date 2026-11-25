@@ -2,6 +2,7 @@
 
 /** Options for folder-list queries. */
 export type { ListOptions } from "./dataview/list.js";
+export type { DataviewQueryData, DataviewQueryOptions, DataviewQueryResult, DataviewValue } from "./dataview/query.js";
 
 /** Describe supported operations, limits and error codes. */
 export { Description, describe } from "./description.js";

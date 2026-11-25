@@ -1,0 +1,9 @@
+{
+	"extends": "./dataview/tsconfig-lib.json",
+	"compilerOptions": {
+		"rootDir": ".",
+		"typeRoots": ["./dataview/node_modules/@types", "../../node_modules/@types"]
+	},
+	"include": ["entry.ts", "dataview/src/**/*.ts"],
+	"exclude": ["dataview/src/test/**/*", "dataview/lib/**/*"]
+}

@@ -76,7 +76,7 @@ export async function runCli(args: string[]): Promise<number> {
 						};
 						return request.type === "dataviewjs"
 							? await vault.script(request.query, options)
-							: vault.list(request.query, options);
+							: await vault.query(request.query, options);
 					} finally {
 						vault.close();
 					}

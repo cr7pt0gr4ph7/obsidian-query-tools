@@ -5,8 +5,10 @@ vault, the operations, export formats, default limits and error codes.
 
 ## Conventions
 
-- Global options come before the subcommand: `--vault <dir>`, repeatable
-  `--edge-field <field>`, `--opposite <field:type>`, `--allow-wikilinks`.
+- For graph operations, global options come before the subcommand:
+  `--vault <dir>`, repeatable `--edge-field <field>`,
+  `--opposite <field:type>`, `--allow-wikilinks`. For `query`, put
+  `--vault` after the subcommand.
 - Success: exit status `0`, one JSON document on stdout, nothing on stderr.
 - Failure: exit status `1`, nothing on stdout, and one line on stderr:
   `{"error":{"code":"...","message":"...","path":"..."}}` (the `query`
@@ -31,10 +33,16 @@ inside the vault, cannot enable `unsafeJavaScript`, and flags add to it.
     obsidian-query-tools $V graph siblings Projects/a.md
     obsidian-query-tools $V graph cycles
     obsidian-query-tools $V graph export --format mermaid
-    obsidian-query-tools --vault ./notes query --type dataview --query 'LIST FROM "Projects"'
+    obsidian-query-tools query --vault ./notes --type dataview --query 'LIST FROM "Projects"'
+    obsidian-query-tools query --vault ./notes --type dql --query 'TABLE status FROM "Projects" SORT status'
 
 Use `--opposite parent:child` to also see implied reverse edges (flagged
 `"implied": true`).
+
+Dataview query `data` is a typed list or table, unlike the MCP `list` tool's
+array of paths. The host supplies frontmatter and file paths only; body
+metadata-dependent queries can be incomplete without warnings. CSV, TASK and
+CALENDAR are disabled, and upstream expression errors can silently omit rows.
 
 ## Safety
 

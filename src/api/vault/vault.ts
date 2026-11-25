@@ -1,5 +1,6 @@
 import { lstat, realpath } from "node:fs/promises";
 import { type ListOptions, list } from "../dataview/list.js";
+import { buildDataviewIndex, type DataviewQueryOptions, type DataviewQueryResult } from "../dataview/query.js";
 import { findCycles, findSiblings, graphStats, listNodes, shortestPath } from "../graph/analysis.js";
 import type { GraphLimits } from "../graph/config.js";
 import { exportGraph } from "../graph/export.js";
@@ -39,6 +40,11 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		throw Errors.Vault.InvalidVault("Vault root is not an accessible directory.");
 	}
 	let index = await buildIndex(canonical, config);
+	let dataview = await buildDataviewIndex(canonical, config.limits);
+	if (index.graph.files.join("\0") !== dataview.files.join("\0")) {
+		dataview.close();
+		throw Errors.Vault.VaultChangedWhileIndexing("Vault files changed while indexing.");
+	}
 	let generation = 1;
 	let closed = false;
 	let refreshing = false;
@@ -94,6 +100,14 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 		}
 	}
 	return {
+		async query(source, options = {}) {
+			ensureOpen();
+			const limit = requestLimit(options, config.limits.maxResults, ["limit", "file"]);
+			checkFile(options.file);
+			const snapshot = dataview;
+			const at = generation;
+			return snapshot.query(source, options.file, at, limit);
+		},
 		list(query, options = {}) {
 			ensureOpen();
 			const limit = requestLimit(options, config.limits.maxResults, ["limit", "file"]);
@@ -137,15 +151,30 @@ export async function openVault(root: string, options: VaultOptions = {}): Promi
 			refreshing = true;
 			try {
 				const next = await buildIndex(canonical, config);
-				ensureOpen();
+				const nextDataview = await buildDataviewIndex(canonical, config.limits);
+				try {
+					ensureOpen();
+					if (next.graph.files.join("\0") !== nextDataview.files.join("\0")) {
+						throw Errors.Vault.VaultChangedWhileIndexing("Vault files changed while indexing.");
+					}
+				} catch (error) {
+					nextDataview.close();
+					throw error;
+				}
+				const previous = dataview;
 				index = next;
-				return ++generation;
+				dataview = nextDataview;
+				generation++;
+				previous.close();
+				return generation;
 			} finally {
 				refreshing = false;
 			}
 		},
 		close() {
+			if (closed) return;
 			closed = true;
+			dataview.close();
 		},
 	};
 } /** Resource limits applied while reading and querying a vault. */
@@ -182,6 +211,15 @@ export interface VaultOptions {
 } /** Read-only operations over one open vault and its published index. */
 
 export interface Vault {
+	/**
+	 * Execute a Dataview LIST or TABLE query against the published index.
+	 *
+	 * @param query Dataview query text.
+	 * @param options Result limit and optional current-file context.
+	 * @returns Typed query data and index metadata.
+	 */
+	query(query: string, options?: DataviewQueryOptions): Promise<DataviewQueryResult>;
+
 	/**
 	 * List Markdown paths using the supported `LIST FROM "<folder>"` subset.
 	 *

@@ -167,6 +167,7 @@ suite("CLI", () => {
 			diagnostics: [],
 			truncated: false,
 		});
+
 		assert.equal(
 			await runConsole(
 				["query", "--vault", "vault", "--type", "dataview", "--query", "query", "--format", "markdown"],
@@ -175,6 +176,21 @@ suite("CLI", () => {
 			0,
 		);
 		assert.equal(h.stdout(), "| Name | Count |\n| --- | --- |\n| A\\|B | 2 |\n");
+	});
+
+	test("formats typed Dataview tables and rejects malformed rows", async () => {
+		const args = ["query", "--vault", "vault", "--type", "dql", "--query", "TABLE x", "--format", "markdown"];
+		const h = harness({
+			data: { type: "table", headers: ["File", "x|y"], values: [[{ type: "link", path: "a.md" }, "<x>\n"]] },
+			diagnostics: [],
+			truncated: false,
+		});
+		assert.equal(await runConsole(args, h.dependencies), 0);
+		assert.equal(h.stdout(), "| File | x\\|y |\n| --- | --- |\n| a\\.md | &lt;x&gt;&#10; |\n");
+		const bad = harness({ data: { type: "table", headers: ["a"], values: [[]] }, diagnostics: [], truncated: false });
+		assert.equal(await runConsole(args, bad.dependencies), 1);
+		assert.equal(bad.stdout(), "");
+		assert.match(bad.stderr(), /^UNSUPPORTED_FORMAT:/);
 	});
 
 	test("escapes HTML-sensitive text in Markdown results", async () => {

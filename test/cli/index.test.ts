@@ -30,6 +30,7 @@ suite("CLI", () => {
 		await writeFile(path.join(root, "a.md"), "---\nparent: b\n---\n");
 		await writeFile(path.join(root, "b.md"), "# b\n");
 		const vault = await openVault(root, { edgeFields: ["parent"] });
+		t.after(() => vault.close());
 		const common = [cli, "--vault", root, "--edge-field", "parent"];
 		const query = await exec(process.execPath, [
 			cli,
@@ -46,7 +47,7 @@ suite("CLI", () => {
 		assert.equal(query.stderr, "");
 		assert.deepEqual(
 			JSON.parse(query.stdout),
-			vault.list('LIST FROM ""', {
+			await vault.query('LIST FROM ""', {
 				file: "a.md",
 			}),
 		);
@@ -55,7 +56,25 @@ suite("CLI", () => {
 			encoding: "utf8",
 		});
 		assert.equal(stdinQuery.status, 0, stdinQuery.stderr);
-		assert.deepEqual(JSON.parse(stdinQuery.stdout), vault.list('LIST FROM ""\n'));
+		assert.deepEqual(JSON.parse(stdinQuery.stdout), await vault.query('LIST FROM ""\n'));
+		const tableQuery = 'TABLE parent FROM "" SORT file.name ASC';
+		const table = await exec(process.execPath, [cli, "query", "--vault", root, "--type", "dql", "--query", tableQuery]);
+		assert.equal(table.stderr, "");
+		assert.deepEqual(JSON.parse(table.stdout), await vault.query(tableQuery));
+		const markdownTable = await exec(process.execPath, [
+			cli,
+			"query",
+			"--vault",
+			root,
+			"--type",
+			"dql",
+			"--query",
+			tableQuery,
+			"--format",
+			"markdown",
+		]);
+		assert.equal(markdownTable.stdout, "| File | parent |\n| --- | --- |\n| a\\.md | b |\n| b\\.md |  |\n");
+		assert.match(markdownTable.stderr, /^NON_ATOMIC_SNAPSHOT:/);
 		const markdown = await exec(process.execPath, [
 			cli,
 			"query",
@@ -124,7 +143,7 @@ suite("CLI", () => {
 				assert.ok(typeof error.stderr === "string");
 				assert.equal(error.code, 1);
 				assert.equal(error.stdout, "");
-				assert.match(error.stderr, /^INVALID_QUERY:/);
+				assert.match(error.stderr, /^UNSUPPORTED_FEATURE:/);
 				return true;
 			},
 		);

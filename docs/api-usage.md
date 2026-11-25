@@ -64,6 +64,34 @@ const vault = await openVault("/home/me/Notes", {
 });
 ```
 
+## Dataview queries
+
+`await vault.query(query, { limit, file })` evaluates upstream Dataview `LIST`
+and `TABLE` queries, including `WHERE` and `SORT`. `file` is an optional,
+existing vault-relative Markdown file used as the current-file context.
+The JSON-safe result envelope contains `generation`, `diagnostics`,
+`truncated`, and `data`: `{ type: "list", values: [...] }` or
+`{ type: "table", headers: [...], values: [[...]] }`. File links are objects
+with `type: "link"`, `path`, `linkType`, `embed`, `subpath`, and `display`;
+dates and durations serialize as ISO strings, and nested values are retained.
+
+```js
+const result = await vault.query('TABLE status, priority FROM "Projects" WHERE status = "open" SORT priority ASC', {
+	limit: 25,
+});
+console.log(result.data);
+```
+
+Only frontmatter and file paths are provided by the mock metadata cache.
+Body tags, inline fields, headings, tasks and body-link metadata may be absent.
+Queries using missing metadata are allowed and may be incomplete without a
+warning. TASK, CALENDAR, and CSV sources are unsupported. Dataview may silently
+drop individual rows when expressions fail. The output limit does not bound
+the work needed to execute a query. This is not an Obsidian parity claim.
+Dataview's index constructor starts Node workers even though snapshot imports
+run in-process; incompatible inherited Node flags such as `--input-type=module`
+can cause worker failure and `VAULT_READ_ERROR`.
+
 ## List Markdown paths
 
 `list(query, options?)` supports only `LIST FROM "<folder>"`. The keywords are
@@ -116,17 +144,17 @@ project:
 ```
 
 This creates typed, directed relationships from the note containing the
-frontmatter to each target. Wikilinks, aliases, inferred relationships, and
-transitive traversal are not supported. An unresolved target or an invalid
-field value fails index construction.
+frontmatter to each target. Wikilink values and implied opposite edges are
+available through explicit options; Breadcrumbs transitive rules are not
+implemented. An unresolved target or an invalid field value fails indexing.
 
-`neighbors(path, options?)` returns direct edges. `direction` defaults to
+`vault.graph().neighbors(path, options?)` returns direct edges. `direction` defaults to
 `"outgoing"`; use `"incoming"` to find edges that point to the requested note.
 `types` defaults to all configured edge fields and may select a subset (or an
 empty array for no edges). `limit` behaves as it does for `list`.
 
 ```js
-const result = vault.neighbors("Projects/Active/task.md", {
+const result = vault.graph().neighbors("Projects/Active/task.md", {
 	direction: "outgoing",
 	types: ["parent"],
 });
@@ -143,7 +171,8 @@ invalid. A path that is valid but not indexed raises `NOT_FOUND`.
 
 ## Results, refresh, and errors
 
-Both query methods return a `QueryResult<T>`:
+The synchronous list and graph methods return a `QueryResult<T>`; the
+asynchronous Dataview query uses the typed `data` shape described above:
 
 ```ts
 interface QueryResult<T> {
@@ -159,9 +188,11 @@ The initial index is generation `1`. Every query includes a
 concurrent changes, but indexing is not an atomic snapshot of a changing
 vault.
 
-Call `refresh()` after vault files change. It rebuilds the index and returns
+Call `refresh()` after vault files change. It rebuilds both indexes and returns
 the new generation number. A successful refresh replaces the index; if it
-fails, the previous generation remains available. Only one refresh can run at
+fails, the previous generation remains available. The independently captured indexes check for
+matching file paths, but equal paths do not guarantee equal contents during
+concurrent writes. Only one refresh can run at
 a time. Close the handle with `close()` when finished; subsequent operations
 raise `VAULT_CLOSED`.
 
@@ -170,7 +201,7 @@ and an optional vault-relative `path` identifying the affected file:
 
 ```js
 try {
-	vault.list("TABLE FROM #projects");
+	await vault.query("invalid query");
 } catch (error) {
 	if (error instanceof VaultQueryError) {
 		console.error(error.code, error.path, error.message);
@@ -194,9 +225,9 @@ not modify vault contents, execute scripts embedded in notes, or send vault
 data over the network. Symlinks and special files are rejected. The index is
 in memory and is discarded when the process exits.
 
-The query and relationship semantics are a deliberately narrow,
-project-defined subset, not a compatibility implementation of Dataview or
-Breadcrumbs. See [the design](../design/DESIGN.md) and
+The Dataview query engine is upstream-backed but uses an incomplete host;
+graph semantics are project-defined rather than Breadcrumbs-compatible.
+Neither constitutes a parity claim. See [the design](../design/DESIGN.md) and
 [requirements](../design/REQUIREMENTS.md) for the full contract and limits.
 
 ## Unsafe script execution

@@ -12,7 +12,7 @@ export interface Description {
 	defaultLimits: Record<string, number>;
 	/** Stable error codes. */
 	errorCodes: string[];
-	/** Query forms accepted by the `list`/`query` operation. */
+	/** Query forms accepted by the `list` and `query` operations. */
 	queryGrammar: string[];
 	/** Vault-opening options and their meaning. */
 	openOptions: Record<string, string>;
@@ -26,7 +26,8 @@ export interface Description {
 export function describe(): Description {
 	return {
 		operations: [
-			{ name: "list", summary: 'LIST FROM "<folder>" query', cli: "query" },
+			{ name: "query", summary: "Dataview LIST and TABLE queries with partial metadata", cli: "query" },
+			{ name: "list", summary: 'project-defined LIST FROM "<folder>" query', cli: "(MCP and API only)" },
 			{
 				name: "neighbors",
 				summary: "direct typed edges",
@@ -64,7 +65,7 @@ export function describe(): Description {
 		exportFormats: [...exportFormats],
 		defaultLimits: { ...defaultLimits },
 		errorCodes: Errors.codes(),
-		queryGrammar: ['LIST FROM "<folder>"'],
+		queryGrammar: ['vault.list: LIST FROM "<folder>"', "vault.query: Dataview LIST and TABLE (partial metadata)"],
 		openOptions: {
 			edgeFields: "frontmatter fields interpreted as edges (--edge-field)",
 			oppositeFields: "field to implied reverse type (--opposite field:type)",

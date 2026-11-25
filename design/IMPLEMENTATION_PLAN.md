@@ -1,7 +1,7 @@
 # Implementation status
 
 The project provides a read-only TypeScript API, CLI, and stdio MCP server for
-a deliberately narrow, project-defined query subset. It does not claim
+a deliberately limited query subset. It does not claim
 Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 [design](DESIGN.md) for the contract and constraints.
 
@@ -10,13 +10,19 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 - Shared vault index and API split across `vault/`, `graph/`, and `dataview/`
   modules for `LIST FROM "<folder>"` and direct edges from configured
   frontmatter fields, with limits, refresh, and structured errors.
+- Asynchronous `vault.query()` and CLI `dataview`/`dql` selectors use the
+  pinned upstream Dataview parser and evaluator for LIST and TABLE over a
+  bounded, read-only host snapshot. The host supplies only partial metadata;
+  CSV, TASK, and CALENDAR are not supported. MCP list remains folder-only.
+- Independent graph and Dataview indexes are published together after
+  successful construction and path comparison, with a non-atomic diagnostic.
 - Public `VaultGraph` interface for direct-neighbor queries, obtained via `Vault.graph()`.
 - Graph-specific limits, configuration, and index structures within the shared vault index.
 - Shared API domain modules with a stable public entrypoint and unchanged
   CLI/MCP API usage.
 - Commander-based CLI and stdio MCP adapters that use the API and return
   bounded results.
-- Preliminary `obsidian-query query` command with `dataview`/`dql` aliases,
+- `obsidian-query query` command with `dataview`/`dql` aliases,
   bounded inline/stdin input, API-validated file context, JSON/Markdown output,
   and JavaScript selectors disabled unless `--unsafe-allow-js` is given
   (`Vault.script()`, opt-in `unsafeJavaScript` open option; not a sandbox).
@@ -48,11 +54,11 @@ Dataview or Breadcrumbs parity. See [requirements](REQUIREMENTS.md) and
 
 ## Remaining work
 
-- Breadcrumbs integration: pin an upstream revision, then define edge-field
+- Breadcrumbs integration: use the pinned revision only after defining edge-field
   semantics (implied/opposite edges, transitive rules) as new scoped work with
   fixtures; current traversal is plain reachability only.
-- Possible next steps: frontmatter-property queries (new query grammar),
-  inline `field:: value` edges, additional output formats (NDJSON), and
+- Possible next steps: richer host metadata, inline `field:: value` edges,
+  additional output formats (NDJSON), and
   Breadcrumbs-style transitive rules, each needing design, fixtures and an
   explicit non-parity statement first.
 
