@@ -1,3 +1,5 @@
+import type { DataAdapter } from "./files/adapter.js";
+
 export interface AppConfig {
 	/** ID That uniquely identifies the vault. */
 	appId: string;
@@ -10,4 +12,7 @@ export interface AppConfig {
 
 	/** Whether absolute paths outside of the {@link basePath} are allowed. */
 	allowAbsolutePaths?: boolean;
+
+	/** Optional adapter supplied by the standalone host. */
+	adapter?: DataAdapter;
 }

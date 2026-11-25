@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { App } from "../app.js";
 import { type EventRef, Events } from "../base/events.js";
 import { parseYaml } from "../base/frontmatter.js";
@@ -265,7 +266,7 @@ export function iterateRefs(refs: Reference[], cb: (ref: Reference) => boolean |
 
 /** Extracts the frontmatter from the given Markdown file. Returns null if no frontmatter is found. */
 function extractFrontMatterFromMarkdown(content: string): Record<string, any> | null {
-	const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+	const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 	const match = content.match(frontmatterRegex);
 	if (!match) {
 		return null;
@@ -342,7 +343,25 @@ export class MetadataCache extends Events {
 	 * @since 0.12.5
 	 */
 	getFirstLinkpathDest(linkpath: string, sourcePath: string): TFile | null {
-		throw new Error("Method not implemented.");
+		const target = linkpath.split("#", 1)[0].replaceAll("\\", "/");
+		if (!target || target.startsWith("/") || /^[a-z]:/i.test(target) || target.includes("\0")) return null;
+		const candidates = (value: string) => (value.toLowerCase().endsWith(".md") ? [value] : [value, `${value}.md`]);
+		const resolve = (value: string): TFile | null => {
+			const normalized = path.posix.normalize(value);
+			if (normalized === ".." || normalized.startsWith("../") || normalized.startsWith("/")) return null;
+			for (const candidate of candidates(normalized)) {
+				const file = this.vault.getFileByPath(candidate);
+				if (file) return file;
+			}
+			return null;
+		};
+		const exact = resolve(target);
+		if (exact) return exact;
+		const relative = resolve(path.posix.join(path.posix.dirname(sourcePath), target));
+		if (relative) return relative;
+		if (target.includes("/")) return null;
+		const names = new Set(candidates(target));
+		return this.vault.getMarkdownFiles().find((file) => names.has(file.name)) ?? null;
 	}
 
 	/**

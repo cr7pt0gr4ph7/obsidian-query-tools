@@ -89,7 +89,7 @@ export class App {
 	plugins: Plugins;
 
 	constructor(options: AppConfig) {
-		const adapter = new FileSystemAdapter(options.basePath, options.allowAbsolutePaths);
+		const adapter = options.adapter ?? new FileSystemAdapter(options.basePath, options.allowAbsolutePaths);
 		this.vault = new Vault(adapter, options.configDir);
 		this.fileManager = this.vault.fileManager;
 		this.secretStorage = new SecretStorage();

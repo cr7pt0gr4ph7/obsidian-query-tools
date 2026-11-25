@@ -1,9 +1,18 @@
 import "fake-indexeddb/auto";
-import { LocalStorage } from "node-localstorage";
 import Worker from "web-worker";
 
-if (!globalThis.localStorage) {
-	globalThis.localStorage = new LocalStorage("./scratch");
+if (typeof globalThis.window === "undefined" || !globalThis.localStorage) {
+	const values = new Map<string, string>();
+	globalThis.localStorage = {
+		get length() {
+			return values.size;
+		},
+		clear: () => values.clear(),
+		getItem: (key) => values.get(String(key)) ?? null,
+		key: (index) => [...values.keys()][index] ?? null,
+		removeItem: (key) => values.delete(String(key)),
+		setItem: (key, value) => values.set(String(key), String(value)),
+	};
 }
 
 if (!globalThis.Worker) {

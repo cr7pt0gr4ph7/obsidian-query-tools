@@ -247,6 +247,9 @@ export class FileManager {
 	 * @returns The cached file-system object, or null.
 	 */
 	getAbstractFileByPath(filePath: string): TAbstractFile | null {
+		if (filePath === "/") {
+			return this.root;
+		}
 		return this.files.get(normalizeVaultPath(filePath)) ?? null;
 	}
 
