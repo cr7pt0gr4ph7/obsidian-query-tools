@@ -4,4 +4,5 @@
 	branch = dev
 [submodule "lib/breadcrumbs/breadcrumbs"]
 	path = lib/breadcrumbs/breadcrumbs
-	url = https://github.com/michaelpporter/breadcrumbs.git
+	url = https://github.com/cr7pt0gr4ph7/obsidian-breadcrumbs.git
+	branch = dev

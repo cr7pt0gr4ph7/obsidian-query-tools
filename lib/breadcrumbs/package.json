@@ -1,0 +1,25 @@
+{
+	"name": "obsidian-breadcrumbs",
+	"version": "4.23.0",
+	"description": "Add typed-links to your Obsidian notes",
+	"exports": {
+		".": {
+			"require": "./lib/index.js",
+			"types": "./lib/index.d.ts",
+			"default": "./lib/index.js"
+		},
+		"./manifest.json": "./manifest.json"
+	},
+	"scripts": {
+		"install-build-deps": "cd breadcrumbs && test -f ./package.json && bun install",
+		"build:copy": "mkdir --parents ../../dist/lib/breadcrumbs && cp --update=all breadcrumbs/manifest.json ../../dist/lib/breadcrumbs/manifest.json && cp --update=all package.json ../../dist/lib/breadcrumbs/package.json",
+		"build:project": "cd breadcrumbs && bun run build",
+		"build": "npm run build:project && npm run build:copy"
+	},
+	"keywords": [],
+	"author": "michaelpporter",
+	"license": "MIT",
+	"engines": {
+		"node": ">=24"
+	}
+}
